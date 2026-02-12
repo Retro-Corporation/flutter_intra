@@ -1,21 +1,24 @@
-# See https://www.dartlang.org/guides/libraries/private-files
-
-# === OS & Editor ===
+# ════ DEVELOPMENT & ENVIRONMENT ════
 .DS_Store
-.atom/
-.svn/
+.history
 .swiftpm/
-
-# IDE - IntelliJ
+*.swp
+.env*
+#   • IntelliJ
 *.iml
 *.ipr
 *.iws
 .idea/
+#   • VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+!*.code-workspace
 
-# IDE - VSCode (uncomment to include launch configuration)
-# .vscode/
-
-# === Dart/Flutter ===
+# ════ DART & FLUTTER ════
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -23,32 +26,28 @@
 .pub-cache/
 .pub/
 pubspec.lock
-
-# === Build & Generated ===
+migrate_working_dir/
+*.log
+*.pyc
 /build/
 /coverage/
 **/doc/api/
-*.dart.js
-*.js
-*.js.deps
-*.js.map
 app.*.symbols
 app.*.map.json
 
-# === Environment ===
-.env*
-
-# === Android ===
+# ════ PLATFORM-SPECIFIC ════
+#   • Android
 /android/app/debug/
 /android/app/profile/
 /android/app/release/
 .gradle/
+*.class
+*.jks
+bugreport-sdk*.zip
 **/android/local.properties
 **/android/key.properties
 **/android/captures/
-*.jks
-
-# === iOS ===
+#   • iOS
 /ios/Pods/
 **/ios/.symlinks/
 **/ios/.generated/
@@ -59,31 +58,24 @@ app.*.map.json
 **/ios/**/xcuserdata/
 **/ios/**/*.pbxuser
 **/ios/**/*.perspectivev3
-
-# === macOS ===
+#   • Web
+*.dart.js
+*.js
+*.js_
+*.js.deps
+*.js.map
+*.info.json
+*.lock
+#   • macOS
 /macos/Pods/
 **/macos/Flutter/GeneratedPluginRegistrant.swift
 **/macos/Flutter/ephemeral/
 **/macos/**/xcuserdata/
-
-# === Windows ===
+#   • Windows
 **/windows/flutter/generated_plugin_registrant.cc
 **/windows/flutter/generated_plugin_registrant.h
 **/windows/flutter/generated_plugins.cmake
-
-# === Linux ===
+#   • Linux
 **/linux/flutter/generated_plugin_registrant.cc
 **/linux/flutter/generated_plugin_registrant.h
 **/linux/flutter/generated_plugins.cmake
-
-# === Misc Build Files ===
-*.class
-*.log
-*.lock
-*.pyc
-*.swp
-.build/
-.buildlog/
-.history
-migrate_working_dir/
-bugreport-sdk*.zip
