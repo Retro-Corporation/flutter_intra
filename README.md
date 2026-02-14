@@ -98,6 +98,7 @@ flutter run -d emulator-5554
 ### During development:
 - Press `r` for hot reload
 - Press `R` for full restart
+- Press `p` for debug paint
 - Press `q` to quit
 
 ## Project Dependencies
