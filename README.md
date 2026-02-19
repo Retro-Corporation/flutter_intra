@@ -112,7 +112,11 @@ flutter pub get
 
 ## File Structure
 
-- `lib/main.dart` - Main application entry point
+- `lib/main.dart` — Application entry point (runs the app)
+- `lib/app.dart` — Global app configuration (theme, MaterialApp setup)
+- `lib/app_shell.dart` — Primary app container and homepage (navigation + persistent runtime)
+- `lib/pages/` — Screen-level widgets (no business logic)
+- `lib/services/` — Domain-based services and infrastructure
 - `android/` - Android-specific configuration
 - `ios/` - iOS-specific configuration
 - `pubspec.yaml` - Project dependencies and configuration
