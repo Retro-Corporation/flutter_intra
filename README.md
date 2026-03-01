@@ -134,6 +134,50 @@ If commands like `flutter`, `sdkmanager`, or `emulator` are not recognized, veri
 
 Restart your terminal after modifying PATH.
 
+### Emulator Executable Not Found
+
+If the emulator installs but you get "can't find the emulator executable":
+
+1. Verify the emulator directory exists:
+```powershell
+Test-Path "C:\Android\sdk\emulator"
+```
+
+2. Try running with the full path:
+```powershell
+"C:\Android\sdk\emulator\emulator.exe" -avd Pixel_6_x86_64
+```
+
+3. If the directory doesn't exist or the exe isn't there, reinstall the emulator:
+```powershell
+cd C:\Android\sdk\cmdline-tools\latest\bin
+.\sdkmanager "emulator"
+```
+
+4. Close all terminals and open a new one to refresh PATH.
+
+### Corrupted Emulator Package
+
+The emulator package itself can corrupt due to interrupted downloads or incomplete installations. If you suspect corruption:
+
+1. Uninstall it:
+```powershell
+cd C:\Android\sdk\cmdline-tools\latest\bin
+.\sdkmanager --uninstall "emulator"
+```
+
+2. Clean up any leftover files:
+```powershell
+Remove-Item "C:\Android\sdk\emulator" -Recurse -Force
+```
+
+3. Reinstall:
+```powershell
+.\sdkmanager "emulator"
+```
+
+4. Close all terminals and open a new one.
+
 ### Delete and Recreate an Emulator
 
 If you need to delete an AVD and recreate it:
@@ -142,6 +186,8 @@ If you need to delete an AVD and recreate it:
 avdmanager delete avd -n "Pixel_6_x86_64"
 avdmanager create avd -n "Pixel_6_x86_64" -k "system-images;android-36.1;google_apis;x86_64" -d "pixel_6"
 ```
+
+**Note:** If you get "Android Virtual Device already exists", the AVD is already created. You can either use it as-is or delete and recreate with the commands above.
 
 ### AVD System Freezes
 
