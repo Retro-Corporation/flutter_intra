@@ -134,6 +134,15 @@ If commands like `flutter`, `sdkmanager`, or `emulator` are not recognized, veri
 
 Restart your terminal after modifying PATH.
 
+### Delete and Recreate an Emulator
+
+If you need to delete an AVD and recreate it:
+
+```powershell
+avdmanager delete avd -n "Pixel_6_x86_64"
+avdmanager create avd -n "Pixel_6_x86_64" -k "system-images;android-36.1;google_apis;x86_64" -d "pixel_6"
+```
+
 ### AVD System Freezes
 
 If launching the emulator causes your **entire Windows OS to freeze**, it's usually a kernel conflict with HAXM or AEHD acceleration drivers. Switch to the native **Windows Hypervisor Platform (WHPX)**.
