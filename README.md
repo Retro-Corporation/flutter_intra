@@ -11,7 +11,7 @@ A Flutter application with pose detection using Google ML Kit.
 
 ### 1. Install Flutter
 
-Download and install Flutter from [flutter.dev](https://flutter.dev/docs/get-started/install).
+Download the flutter binary for your platfrom: [flutter.dev](https://docs.flutter.dev/install/manual). Then extract the folder called `flutter`
 
 Add Flutter to PATH:
 - Extract to `C:\tools\flutter`
@@ -32,21 +32,31 @@ dart --version
 
 #### Download and install cmdline-tools:
 1. Download from [Android Studio Command Line Tools](https://developer.android.com/studio#command-line-tools-only)
-2. Extract to `C:\Android\sdk\cmdline-tools\latest\`
-3. Add to PATH:
+2. Extract the zip file — you'll see folders like `bin` and `lib`
+3. Rename the parent folder (containing `bin` and `lib`) to `latest`
+4. Move the `latest` folder to `C:\Android\sdk\cmdline-tools\latest\`
+5. Navigate to the bin directory and run sdkmanager:
 ```powershell
-$env:PATH += ";C:\Android\sdk\cmdline-tools\latest\bin;C:\Android\sdk\platform-tools;C:\Android\sdk\emulator"
+cd C:\Android\sdk\cmdline-tools\latest\bin
 ```
 
 #### Install SDK packages:
 ```powershell
-sdkmanager "platform-tools"
-sdkmanager "platforms;android-36.1"
-sdkmanager "build-tools;36.1.0"
-sdkmanager "emulator"
-sdkmanager "system-images;android-36.1;google_apis;x86_64"
-sdkmanager --licenses
+.\sdkmanager "platform-tools"
+.\sdkmanager "platforms;android-36.1"
+.\sdkmanager "build-tools;36.1.0"
+.\sdkmanager "emulator"
+.\sdkmanager "system-images;android-36.1;google_apis;x86_64"
+.\sdkmanager --licenses
 ```
+
+#### Add SDK tools to PATH:
+After sdkmanager creates the necessary directories, add them permanently to your PATH:
+```powershell
+$currentPath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+[System.Environment]::SetEnvironmentVariable('Path', "$currentPath;C:\Android\sdk\cmdline-tools\latest\bin;C:\Android\sdk\platform-tools;C:\Android\sdk\emulator", 'User')
+```
+Restart your terminal for the changes to take effect.
 
 ### 3. Create Android Emulator
 
@@ -60,23 +70,34 @@ Create AVD (Android Virtual Device):
 avdmanager create avd -n "Pixel_6_x86_64" -k "system-images;android-36.1;google_apis;x86_64" -d "pixel_6"
 ```
 
-### 4. PATH Configuration
-
-Ensure your PATH includes (in order):
-1. `C:\tools\flutter\bin`
-2. `C:\Android\sdk\platform-tools`
-3. `C:\Android\sdk\cmdline-tools\latest\bin`
-4. `C:\Android\sdk\emulator`
-
-**Important:** Remove standalone Dart SDK from PATH if present. Flutter includes its own Dart in `C:\tools\flutter\bin\cache\dart-sdk`.
-
-### 5. Verify Setup
+### 4. Verify Setup
 
 ```powershell
 flutter doctor
 ```
 
-All items should show green checkmarks.
+All items should show green checkmarks. If you see issues, refer to the Troubleshooting section below.
+
+## File Structure
+
+- `lib/main.dart` — Application entry point (runs the app)
+- `lib/app.dart` — Global app configuration (theme, MaterialApp setup)
+- `lib/app_shell.dart` — Primary app container and homepage (navigation + persistent runtime)
+- `lib/pages/` — Screen-level widgets (no business logic)
+- `lib/services/` — Domain-based services and infrastructure
+- `android/` - Android-specific configuration
+- `ios/` - iOS-specific configuration
+- `pubspec.yaml` - Project dependencies and configuration
+
+## Project Dependencies
+
+This project uses `camera` and a fork of `flutter_pose_detection`.
+Packages are project-scoped via pubspec.yaml (no Python-style virtualenvs).
+
+Install dependencies (run from repo root):
+```powershell
+flutter pub get
+```
 
 ## Running the App
 
@@ -101,25 +122,62 @@ flutter run -d emulator-5554
 - Press `p` for debug paint
 - Press `q` to quit
 
-## Project Dependencies
+## Troubleshooting
 
-- `google_mlkit_pose_detection` - For real-time pose detection
+### Verify PATH Configuration
 
-Install dependencies:
-```powershell
-flutter pub get
+If commands like `flutter`, `sdkmanager`, or `emulator` are not recognized, verify your PATH includes:
+1. `C:\tools\flutter\bin`
+2. `C:\Android\sdk\platform-tools`
+3. `C:\Android\sdk\cmdline-tools\latest\bin`
+4. `C:\Android\sdk\emulator`
+
+Restart your terminal after modifying PATH.
+
+### AVD System Freezes
+
+If launching the emulator causes your **entire Windows OS to freeze**, it's usually a kernel conflict with HAXM or AEHD acceleration drivers. Switch to the native **Windows Hypervisor Platform (WHPX)**.
+
+#### Step 1: Remove Conflicting Drivers
+
+Open **Command Prompt as Administrator**:
+
+```cmd
+:: Check if services exist
+sc query intelhaxm
+sc query aehd
+
+:: If running, stop and delete them
+sc stop aehd & sc delete aehd
+sc stop intelhaxm & sc delete intelhaxm
+
+:: Clean up sdkmanager files
+sdkmanager --uninstall "extras;intel;Hardware_Accelerated_Execution_Manager"
 ```
 
-## File Structure
+#### Step 2: Enable Native Windows Features
 
-- `lib/main.dart` — Application entry point (runs the app)
-- `lib/app.dart` — Global app configuration (theme, MaterialApp setup)
-- `lib/app_shell.dart` — Primary app container and homepage (navigation + persistent runtime)
-- `lib/pages/` — Screen-level widgets (no business logic)
-- `lib/services/` — Domain-based services and infrastructure
-- `android/` - Android-specific configuration
-- `ios/` - iOS-specific configuration
-- `pubspec.yaml` - Project dependencies and configuration
+1. Search for **"Turn Windows features on or off"**
+2. Enable **Windows Hypervisor Platform** and **Virtual Machine Platform**
+
+#### Step 3: Force Hypervisor Boot Flag
+
+This ensures the hypervisor engine loads on startup:
+
+```cmd
+bcdedit /set hypervisorlaunchtype auto
+```
+
+> [!IMPORTANT]
+> **RESTART YOUR COMPUTER NOW.** The hypervisor will not load into memory until a full system reboot.
+
+#### Step 4: Verify Acceleration
+
+```cmd
+"%ANDROID_HOME%\emulator\emulator.exe" -accel-check
+```
+
+**Expected output:** `accel: 0 Windows Hypervisor Platform (WHPX) is installed and usable.`
 
 ## Resources
 
