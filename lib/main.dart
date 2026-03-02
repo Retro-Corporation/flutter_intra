@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_pose_detection/flutter_pose_detection.dart';
+import 'pose_overlay.dart';
 
 late List<CameraDescription> cameras;
 
@@ -105,44 +106,24 @@ class _PosePageState extends State<PosePage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final controller = _cameraController!;
+    final previewSize = controller.value.previewSize!;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          CameraPreview(_cameraController!),
-          if (_landmarks != null)
-            CustomPaint(
-              painter: PosePainter(
-                _landmarks!,
-                _cameraController!.value.previewSize!,
-              ),
-              size: Size.infinite,
-            ),
-        ],
+      body: Center(
+        child: AspectRatio(
+          aspectRatio: controller.value.aspectRatio,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CameraPreview(controller),
+
+              if (_landmarks != null)
+                PoseOverlay(landmarks: _landmarks!, previewSize: previewSize),
+            ],
+          ),
+        ),
       ),
     );
   }
-}
-
-class PosePainter extends CustomPainter {
-  final List<PoseLandmark> landmarks;
-  final Size imageSize;
-
-  PosePainter(this.landmarks, this.imageSize);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.green
-      ..strokeWidth = 4;
-
-    for (final landmark in landmarks) {
-      final dx = landmark.x * size.width;
-      final dy = landmark.y * size.height;
-
-      canvas.drawCircle(Offset(dx, dy), 4, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
