@@ -15,9 +15,7 @@ class PoseOverlay extends material.StatelessWidget {
   @override
   material.Widget build(material.BuildContext context) {
     return material.Positioned.fill(
-      child: material.CustomPaint(
-        painter: PosePainter(landmarks, previewSize),
-      ),
+      child: material.CustomPaint(painter: PosePainter(landmarks, previewSize)),
     );
   }
 }
