@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_pose_detection/flutter_pose_detection.dart';
 import 'pose_overlay.dart';
+import 'pose_controller.dart';
 
 late List<CameraDescription> cameras;
 
@@ -31,95 +31,50 @@ class PosePage extends StatefulWidget {
 }
 
 class _PosePageState extends State<PosePage> {
-  CameraController? _cameraController;
-  final NpuPoseDetector _detector = NpuPoseDetector();
-
-  bool _isProcessing = false;
-  List<PoseLandmark>? _landmarks;
+  late final PoseController _controller;
 
   @override
   void initState() {
     super.initState();
-    _initialize();
+    _controller = PoseController(cameras.first);
+    _controller.addListener(_onUpdate);
+    _controller.initialize();
   }
 
-  Future<void> _initialize() async {
-    await _detector.initialize();
-
-    _cameraController = CameraController(
-      cameras.first,
-      ResolutionPreset.medium,
-      enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.yuv420,
-    );
-
-    await _cameraController!.initialize();
-    await _cameraController!.startImageStream(_processCameraImage);
-
-    setState(() {});
-  }
-
-  Future<void> _processCameraImage(CameraImage image) async {
-    if (_isProcessing || !_detector.isInitialized) return;
-    _isProcessing = true;
-
-    try {
-      final planes = image.planes
-          .map(
-            (p) => {
-              'bytes': p.bytes,
-              'bytesPerRow': p.bytesPerRow,
-              'bytesPerPixel': p.bytesPerPixel,
-            },
-          )
-          .toList();
-
-      final result = await _detector.processFrame(
-        planes: planes,
-        width: image.width,
-        height: image.height,
-        format: 'yuv420',
-        rotation: _cameraController!.description.sensorOrientation,
-      );
-
-      if (result.hasPoses) {
-        final pose = result.firstPose!;
-        setState(() {
-          _landmarks = pose.landmarks;
-        });
-      }
-    } finally {
-      _isProcessing = false;
-    }
+  void _onUpdate() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    _cameraController?.dispose();
-    _detector.dispose();
+    _controller.disposeController();
+    _controller.removeListener(_onUpdate);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+    final cam = _controller.cameraController;
+
+    if (cam == null || !cam.value.isInitialized) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final controller = _cameraController!;
-    final previewSize = controller.value.previewSize!;
+    final previewSize = cam.value.previewSize!;
 
     return Scaffold(
       body: Center(
         child: AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
+          aspectRatio: cam.value.aspectRatio,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              CameraPreview(controller),
-
-              if (_landmarks != null)
-                PoseOverlay(landmarks: _landmarks!, previewSize: previewSize),
+              CameraPreview(cam),
+              if (_controller.landmarks != null)
+                PoseOverlay(
+                  landmarks: _controller.landmarks!,
+                  previewSize: previewSize,
+                ),
             ],
           ),
         ),
