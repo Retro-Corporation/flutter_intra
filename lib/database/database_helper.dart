@@ -28,14 +28,13 @@ class DatabaseHelper {
     );
   }
 
-
-  // So basicall
+  // So bascially this is what creates the tables
   Future<void> _onCreate(Database db, int version) async {
     await createTables(db); 
   }
 
   Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
-    // Future schema upgrades go here
+    // All the updates that occurs later within the schemas goes here
   }
 }

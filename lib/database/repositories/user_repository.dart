@@ -1,4 +1,3 @@
-// database/repositories/user_repository.dart
 import 'package:sqflite/sqflite.dart';
 
 class UserRepository {

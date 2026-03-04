@@ -1,8 +1,7 @@
-// database/repositories/session_frame_repository.dart
 import 'package:sqflite/sqflite.dart';
 
 class SessionFrameRepository {
-  final DatabaseExecutor db; // ✅ allows Database OR Transaction
+  final DatabaseExecutor db; 
   SessionFrameRepository(this.db);
 
   Future<int> insertSessionFrame({
