@@ -34,13 +34,21 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
   flutter_pose_detection:
     git:
       url: https://github.com/Cognizaunce/flutter_pose_detection.git
       # ref: v0.4.2-cognizaunce
       ref: dev
+
   camera: ^0.12.0
-  camerawesome: ^2.5.0
+
+  # Added for SQLite database
+  sqflite: ^2.3.0
+  path: ^1.9.0
+
+  # Added for password hashing / auth service
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:
