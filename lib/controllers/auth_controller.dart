@@ -1,4 +1,4 @@
-// lib/controllers/auth_controller.dart
+
 import '../servicesbackend/auth_service.dart';
 
 class AuthController {
@@ -9,6 +9,7 @@ class AuthController {
   /// POST /auth/register
   /// Input: username, password
   /// Output: { success, userId }
+  
   Future<Map<String, Object?>> register({
     required String username,
     required String password,
@@ -30,6 +31,8 @@ class AuthController {
   /// POST /auth/login
   /// Input: username, password
   /// Output: { success, user }
+  
+
   Future<Map<String, Object?>> login({
     required String username,
     required String password,
@@ -38,7 +41,7 @@ class AuthController {
       final user = await _auth.login(userName: username, password: password);
       return {
         'success': true,
-        'user': user, // Map<String, Object?>
+        'user': user, 
       };
     } catch (e) {
       return {
