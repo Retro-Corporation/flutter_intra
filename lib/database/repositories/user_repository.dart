@@ -2,7 +2,7 @@
 import 'package:sqflite/sqflite.dart';
 
 class UserRepository {
-  final DatabaseExecutor db; // ✅ allows Database OR Transaction
+  final DatabaseExecutor db; 
   UserRepository(this.db);
 
   Future<int> createUser({

@@ -1,4 +1,3 @@
-
 import '../servicesbackend/session_service.dart';
 
 class SessionController {
@@ -52,7 +51,7 @@ class SessionController {
 
       return {
         'success': true,
-        'accuracy': accuracy, // double? (0..100) or null
+        'accuracy': accuracy, 
       };
     } catch (e) {
       return {

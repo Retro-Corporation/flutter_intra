@@ -1,8 +1,7 @@
-// database/repositories/reference_frame_repository.dart
 import 'package:sqflite/sqflite.dart';
 
 class ReferenceFrameRepository {
-  final DatabaseExecutor db; // ✅ allows Database OR Transaction
+  final DatabaseExecutor db; // 
   ReferenceFrameRepository(this.db);
 
   Future<int> insertReferenceFrame({

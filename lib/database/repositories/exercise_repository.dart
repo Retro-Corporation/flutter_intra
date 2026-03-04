@@ -1,8 +1,7 @@
-// database/repositories/exercise_repository.dart
 import 'package:sqflite/sqflite.dart';
 
 class ExerciseRepository {
-  final DatabaseExecutor db; // ✅ changed from Database to DatabaseExecutor
+  final DatabaseExecutor db; 
   ExerciseRepository(this.db);
 
   Future<int> createExercise({
@@ -40,6 +39,7 @@ class ExerciseRepository {
 
   Future<int> deleteExercise(int exerciseId) async {
     // Reference frames will be auto-deleted because of ON DELETE CASCADE
+    // Basically occurs when you want to delete if the excerise itself doesn't exist
     return db.delete('Exercises', where: 'Exercise_ID = ?', whereArgs: [exerciseId]);
   }
 }

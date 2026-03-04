@@ -28,8 +28,10 @@ class DatabaseHelper {
     );
   }
 
+
+  // So basicall
   Future<void> _onCreate(Database db, int version) async {
-    await createTables(db); // 🔥 calls migration
+    await createTables(db); 
   }
 
   Future<void> _onUpgrade(
