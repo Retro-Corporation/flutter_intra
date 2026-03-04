@@ -7,8 +7,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
+# Both the version and the builder number may be overridden by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
 # In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
@@ -34,13 +33,25 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
   flutter_pose_detection:
     git:
       url: https://github.com/Cognizaunce/flutter_pose_detection.git
       # ref: v0.4.2-cognizaunce
       ref: dev
+
   camera: ^0.12.0
   camerawesome: ^2.5.0
+
+  # ✅ Added for SQLite database
+  sqflite: ^2.3.0
+  path: ^1.9.0
+
+  # ✅ Added for SQLite on Dart VM / server (fixes your import errors)
+  sqflite_common_ffi: ^2.3.2
+
+  # ✅ Added for password hashing / auth service
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +61,7 @@ dev_dependencies:
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # rules and activating specific ones.
   flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -62,8 +73,8 @@ flutter:
     - assets/models/pose_landmarker_lite.task
 
   # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+  # included with your application, so that you can use the icons in the
+  # material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
