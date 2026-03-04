@@ -108,13 +108,9 @@ emulator -avd Pixel_6_x86_64
 
 ### In a new terminal, run the app:
 ```powershell
-flutter run
-```
-
-Or specify the device:
-```powershell
 flutter run -d emulator-5554
 ```
+> -d selects device, in this case, the emulator on the standard port.
 
 ### During development:
 - Press `r` for hot reload
@@ -238,5 +234,5 @@ bcdedit /set hypervisorlaunchtype auto
 
 - [Flutter Documentation](https://flutter.dev/docs)
 - [Dart Documentation](https://dart.dev/guides)
-- [ML Kit for Flutter](https://firebase.google.com/docs/ml-kit/flutter-get-started)
+- [flutter_pose_landmark](https://pub.dev/documentation/flutter_pose_detection/latest/)
 - [Android Emulator Documentation](https://developer.android.com/studio/run/emulator)
