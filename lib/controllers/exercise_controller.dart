@@ -1,4 +1,4 @@
-// lib/controllers/exercise_controller.dart
+
 import '../servicesbackend/exercise_service.dart';
 
 class ExerciseController {
@@ -7,7 +7,7 @@ class ExerciseController {
   ExerciseController(this._exercise);
 
   /// POST /exercises
-  /// Creates an exercise + reference frames
+  /// Creates an exercise and  reference frames
   /// Output: { success, exerciseId }
   Future<Map<String, Object?>> createExercise({
     required int userId,
@@ -17,7 +17,6 @@ class ExerciseController {
     required List<Map<String, Object?>> referenceFrames,
   }) async {
     try {
-      // Convert partner-friendly maps -> ReferenceFrameInput objects
       final frames = referenceFrames.map((f) {
         return ReferenceFrameInput(
           frameNumber: (f['frameNumber'] as num).toInt(),
@@ -55,7 +54,7 @@ class ExerciseController {
       final exercises = await _exercise.listExercisesForUser(userId);
       return {
         'success': true,
-        'exercises': exercises, // List<Map<String,Object?>>
+        'exercises': exercises, 
       };
     } catch (e) {
       return {
@@ -66,7 +65,6 @@ class ExerciseController {
   }
 
   /// DELETE /exercises/:id
-  /// Output: { success }
   Future<Map<String, Object?>> deleteExercise({
     required int userId,
     required int exerciseId,
