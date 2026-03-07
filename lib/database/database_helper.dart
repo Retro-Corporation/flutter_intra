@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-import 'migrations/create_tables.dart';
+import 'schema.dart';
 
 class DatabaseHelper {
   static Database? _database;
@@ -28,13 +27,16 @@ class DatabaseHelper {
     );
   }
 
-  // So bascially this is what creates the tables
   Future<void> _onCreate(Database db, int version) async {
-    await createTables(db); 
+    await db.execute(createUserTable);
+    await db.execute(createExerciseTable);
+    await db.execute(createReferenceFrameTable);
+    await db.execute(createSessionTable);
+    await db.execute(createSessionFrameTable);
+    await db.execute(createSessionPerformanceMetricsTable);
   }
 
-  Future<void> _onUpgrade(
-      Database db, int oldVersion, int newVersion) async {
-    // All the updates that occurs later within the schemas goes here
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // Future schema updates go here
   }
 }
