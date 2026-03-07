@@ -1,36 +1,25 @@
-
 import '../servicesbackend/exercise_service.dart';
 
+
+// Updated File
 class ExerciseController {
   final ExerciseService _exercise;
 
   ExerciseController(this._exercise);
 
   /// POST /exercises
-  /// Creates an exercise and  reference frames
+  /// Creates an exercise
   /// Output: { success, exerciseId }
   Future<Map<String, Object?>> createExercise({
-    required int userId,
     required String name,
     String? description,
-    String? validationRules,
-    required List<Map<String, Object?>> referenceFrames,
+    required String referencePoseJson,
   }) async {
     try {
-      final frames = referenceFrames.map((f) {
-        return ReferenceFrameInput(
-          frameNumber: (f['frameNumber'] as num).toInt(),
-          timestamp: (f['timestamp'] as num).toDouble(),
-          poseJson: f['poseJson'] as String,
-        );
-      }).toList();
-
-      final exerciseId = await _exercise.createExerciseWithReferenceFrames(
-        creatorUserId: userId,
+      final exerciseId = await _exercise.createExercise(
         exerciseName: name,
         description: description,
-        validationRules: validationRules,
-        frames: frames,
+        referencePoseJson: referencePoseJson,
       );
 
       return {
@@ -45,16 +34,41 @@ class ExerciseController {
     }
   }
 
-  /// GET /exercises?userId=...
+  /// GET /exercises
   /// Output: { success, exercises: [...] }
-  Future<Map<String, Object?>> listExercises({
-    required int userId,
-  }) async {
+  Future<Map<String, Object?>> listExercises() async {
     try {
-      final exercises = await _exercise.listExercisesForUser(userId);
+      final exercises = await _exercise.listExercises();
+
       return {
         'success': true,
-        'exercises': exercises, 
+        'exercises': exercises,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'error': e.toString(),
+      };
+    }
+  }
+
+  /// GET /exercises/:id
+  Future<Map<String, Object?>> getExercise({
+    required int exerciseId,
+  }) async {
+    try {
+      final exercise = await _exercise.getExercise(exerciseId);
+
+      if (exercise == null) {
+        return {
+          'success': false,
+          'error': 'Exercise not found',
+        };
+      }
+
+      return {
+        'success': true,
+        'exercise': exercise,
       };
     } catch (e) {
       return {
@@ -65,15 +79,15 @@ class ExerciseController {
   }
 
   /// DELETE /exercises/:id
+  /// Output: { success }
   Future<Map<String, Object?>> deleteExercise({
-    required int userId,
     required int exerciseId,
   }) async {
     try {
       await _exercise.deleteExercise(
-        requestUserId: userId,
         exerciseId: exerciseId,
       );
+
       return {
         'success': true,
       };
