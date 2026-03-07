@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+
 import 'pose_overlay.dart';
 import 'pose_controller.dart';
 
-// DB Setup file that helps with setting up the db
+// DB setup
 import 'database/database_helper.dart';
 
-// Repositories Path
-import 'database/repositories/user_repository.dart';
-import 'database/repositories/exercise_repository.dart';
-import 'database/repositories/reference_frame_repository.dart';
-import 'database/repositories/session_repository.dart';
-import 'database/repositories/session_frame_repository.dart';
-import 'database/repositories/session_performance_metrics_repository.dart';
+// repositories
+import 'database/repositories/repository.dart';
 
-// Services Path
+// services
 import 'servicesbackend/auth_service.dart';
 import 'servicesbackend/exercise_service.dart';
-import 'servicesbackend/session_service.dart';
+import 'servicesbackend/system_metrics_service.dart';
 
-// Controllers Path
+// controllers
 import 'controllers/auth_controller.dart';
 import 'controllers/exercise_controller.dart';
-import 'controllers/session_controller.dart';
 
-// Importing Metrics Tracker
+// metrics
 import 'utils/metrics_tracker.dart';
 
 late List<CameraDescription> cameras;
@@ -32,12 +27,13 @@ late List<CameraDescription> cameras;
 // services
 late AuthService authService;
 late ExerciseService exerciseService;
-late SessionService sessionService;
+late SystemMetricsService systemMetricsService;
 
-// Controller
+// controllers
 late AuthController authController;
 late ExerciseController exerciseController;
-late SessionController sessionController;
+late PoseController poseController;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,36 +48,29 @@ Future<void> main() async {
   // Repo are what directly talk or modify the database
   // So any manipulation of the database is done via repo
 
-  // Repos for the 5 main tables of the database
-  final userRepo = UserRepository(db);
-  final exerciseRepo = ExerciseRepository(db);
-  final refRepo = ReferenceFrameRepository(db);
-  final sessionRepo = SessionRepository(db);
-  final sessionFrameRepo = SessionFrameRepository(db);
+// Repositories for database tables
+final userRepo = UserRepository(db);
+final exerciseRepo = ExerciseRepository(db);
+final systemMetricsRepo = SystemMetricsRepository(db);
 
-  // Repo for the metrics that were added later
-  final sessionMetricsRepo = SessionPerformanceMetricsRepository(db);
-
-  // Initialize services
-  authService = AuthService(userRepo);
-  exerciseService = ExerciseService(db, exerciseRepo, refRepo);
+// Initialize services
+authService = AuthService(userRepo);
+exerciseService = ExerciseService(exerciseRepo);
+systemMetricsService = SystemMetricsService(systemMetricsRepo);
 
   // So bascially this is the format of things that interact witht he backend - service
   // This is the format that is used to compare it to the excerise refrence frames
   // In order to calculate the accuracy, between both session frames and refrence frames.
-  sessionService = SessionService(
-    exerciseRepo,
-    refRepo,
-    sessionRepo,
-    sessionFrameRepo,
-    sessionMetricsRepo,
-    pipelineVersion: 'v1_baseline',
-  );
 
-  // Initialize controllers
-  authController = AuthController(authService);
-  exerciseController = ExerciseController(exerciseService);
-  sessionController = SessionController(sessionService);
+// Initialize services
+authService = AuthService(userRepo);
+exerciseService = ExerciseService(exerciseRepo);
+systemMetricsService = SystemMetricsService(systemMetricsRepo);
+
+// Initialize controllers
+authController = AuthController(authService);
+exerciseController = ExerciseController(exerciseService);
+
 
   // Camera setup
   cameras = await availableCameras();
