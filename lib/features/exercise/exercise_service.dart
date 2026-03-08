@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../database/repositories/repository.dart';
-import '../utils/metrics_tracker.dart';
+import '../../database/repositories.dart';
+import '../../core/metrics_tracker.dart';
 
 class ExerciseService {
   final ExerciseRepository _exercises;

@@ -78,18 +78,40 @@ flutter doctor
 
 All items should show green checkmarks. If you see issues, refer to the Troubleshooting section below.
 
-## File Structure
+## Project Structure
 
-- `lib/main.dart` — Application entry point (runs the app)
-- `lib/app.dart` — Global app configuration (theme, MaterialApp setup)
-- `lib/app_shell.dart` — Primary app container and homepage (navigation + persistent runtime)
-- `lib/pages/` — Screen-level widgets (no business logic)
-- `lib/services/` — Domain-based services and infrastructure
-- `android/` - Android-specific configuration
-- `ios/` - iOS-specific configuration
-- `pubspec.yaml` - Project dependencies and configuration
+```
+lib/
+├─ core/                       <-- Infrastructure-agnostic helpers & singletons
+│  └─ metrics_tracker.dart
+├─ services/                   <-- Global services, no controller
+│  └─ system_metrics_service.dart
+├─ widgets/                    <-- Global UI components
+│  └─ loader.dart
+├─ features/                   <-- Feature-specific code
+│  ├─ pose/
+│  │  ├─ pages/pose_page.dart
+│  │  └─ widgets/pose_overlay.dart
+│  ├─ exercise/
+│  │  ├─ pages/exercise_page.dart
+│  │  └─ widgets/exercise_card.dart
+│  └─ auth/
+│     ├─ pages/login_page.dart
+│     └─ widgets/login_form.dart
+├─ main.dart
+└─ app.dart
 
-## Project Dependencies
+### Folder Rules
+
+- `core/` → infrastructure-agnostic helpers, singletons, utilities
+- `services/` → global services with dependencies (DB, APIs)
+- `widgets/` → reusable widgets across multiple features
+- `features/<feature>/pages/` → feature-specific screens
+- `features/<feature>/widgets/` → feature-specific UI components
+- `features/<feature>/controllers/` → feature controllers
+- `features/<feature>/services/` → feature services
+
+## Dependencies
 
 This project uses `camera` and a fork of `flutter_pose_detection`.
 Packages are project-scoped via pubspec.yaml (no Python-style virtualenvs).

@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-import 'pose_overlay.dart';
-import 'pose_controller.dart';
+import 'features/pose/widgets/pose_overlay.dart';
+import 'features/pose/pose_controller.dart';
 
 // DB setup
 import 'database/database_helper.dart';
 
 // repositories
-import 'database/repositories/repository.dart';
+import 'database/repositories.dart';
 
 // services
-import 'services/auth_service.dart';
-import 'services/exercise_service.dart';
+import 'features/auth/auth_service.dart';
+import 'features/exercise/exercise_service.dart';
 import 'services/system_metrics_service.dart';
 
 // controllers
-import 'controllers/auth_controller.dart';
-import 'controllers/exercise_controller.dart';
+import 'features/auth/auth_controller.dart';
+import 'features/exercise/exercise_controller.dart';
 
 // metrics
-import 'utils/metrics_tracker.dart';
+import 'core/metrics_tracker.dart';
 
 late List<CameraDescription> cameras;
 
