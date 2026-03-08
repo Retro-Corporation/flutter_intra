@@ -11,9 +11,9 @@ import 'database/database_helper.dart';
 import 'database/repositories/repository.dart';
 
 // services
-import 'servicesbackend/auth_service.dart';
-import 'servicesbackend/exercise_service.dart';
-import 'servicesbackend/system_metrics_service.dart';
+import 'services/auth_service.dart';
+import 'services/exercise_service.dart';
+import 'services/system_metrics_service.dart';
 
 // controllers
 import 'controllers/auth_controller.dart';

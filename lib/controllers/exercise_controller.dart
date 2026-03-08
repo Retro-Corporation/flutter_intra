@@ -1,4 +1,4 @@
-import '../servicesbackend/exercise_service.dart';
+import '../services/exercise_service.dart';
 
 
 // Updated File

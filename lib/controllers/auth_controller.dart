@@ -1,5 +1,4 @@
-
-import '../servicesbackend/auth_service.dart';
+import '../services/auth_service.dart';
 
 class AuthController {
   final AuthService _auth;
