@@ -17,10 +17,10 @@ class MetricsTracker {
     _counters[name] = (_counters[name] ?? 0) + value;
   }
 
-  // ✅ NEW: read counters safely
+  // read counters safely
   int getCounter(String name) => _counters[name] ?? 0;
 
-  // ✅ NEW: check if latency exists
+  // check if latency exists
   bool hasLatency(String name) => (_latencies[name]?.isNotEmpty ?? false);
 
   double avg(String name) {
@@ -56,7 +56,7 @@ class MetricsTracker {
   }
 
   void printSummary() {
-    dev.log("========= PERFORMANCE METRICS =========");
+    dev.log("PERFORMANCE METRICS");
 
     _latencies.forEach((name, values) {
       final avgVal = avg(name).toStringAsFixed(2);
@@ -71,6 +71,5 @@ class MetricsTracker {
       dev.log("$name : $value");
     });
 
-    dev.log("=======================================");
   }
 }
