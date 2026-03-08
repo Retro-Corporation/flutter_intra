@@ -14,30 +14,67 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _emailFocus = FocusNode();
+  final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
   bool _showPassword = false;
   bool _loading = false;
+  String? _errorMessage;
 
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
-    _emailFocus.dispose();
+    _usernameFocus.dispose();
     _passwordFocus.dispose();
     super.dispose();
   }
 
-  void _handleLogin() async {
-    setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    if (mounted) setState(() => _loading = false);
+  Future<void> _handleLogin() async {
+    setState(() {
+      _errorMessage = null;
+      _loading = true;
+    });
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'All fields are required.';
+        _loading = false;
+      });
+      return;
+    }
+
+    try {
+      final result = await widget.authController.login(
+        username: username,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      if (result['success'] == true) {
+        Navigator.pushReplacementNamed(context, '/pose');
+      } else {
+        setState(() {
+          _errorMessage = result['error']?.toString() ?? 'Invalid credentials.';
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Login failed: $e';
+      });
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -175,15 +212,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 28),
 
-                      // Email field
-                      _FieldLabel('EMAIL'),
+                      // Username field
+                      _FieldLabel('USERNAME'),
                       const SizedBox(height: 8),
                       _InputField(
-                        controller: _emailController,
-                        focusNode: _emailFocus,
-                        hint: 'you@example.com',
-                        icon: Icons.mail_outline_rounded,
-                        keyboardType: TextInputType.emailAddress,
+                        controller: _usernameController,
+                        focusNode: _usernameFocus,
+                        hint: 'your_username',
+                        icon: Icons.person_outline_rounded,
+                        keyboardType: TextInputType.text,
                         accentColor: _lime,
                       ),
                       const SizedBox(height: 16),
@@ -210,6 +247,33 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() => _showPassword = !_showPassword),
                         ),
                       ),
+
+                      // Error message
+                      if (_errorMessage != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.redAccent.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFFFF6B6B),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 28),
 
                       // Sign in button
