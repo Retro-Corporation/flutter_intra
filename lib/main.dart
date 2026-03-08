@@ -21,7 +21,10 @@ import 'features/exercise/exercise_controller.dart';
 
 // metrics
 import 'core/metrics_tracker.dart';
+
+// Import Pages
 import 'features/auth/pages/login_page.dart';
+import 'features/auth/pages/sign_up.dart';
 
 late List<CameraDescription> cameras;
 
@@ -90,12 +93,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(authController: authController),
+        '/signup': (context) => SignUpScreen(authController: authController),
         '/pose': (context) => const PosePage(),
       },
     );
   }
 }
-
 
 
 

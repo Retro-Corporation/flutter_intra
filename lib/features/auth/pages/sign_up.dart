@@ -1,43 +1,115 @@
 import 'package:flutter/material.dart';
 import '../auth_controller.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   final AuthController authController;
 
-  const LoginScreen({
+  const SignUpScreen({
     super.key,
     required this.authController,
   });
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _emailFocus = FocusNode();
+  final _confirmPasswordController = TextEditingController();
+
+  final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
+  final _confirmPasswordFocus = FocusNode();
 
   bool _showPassword = false;
+  bool _showConfirmPassword = false;
   bool _loading = false;
+  String? _errorMessage;
 
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
 
+  late final AuthController _authController = widget.authController;
+
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
-    _emailFocus.dispose();
+    _confirmPasswordController.dispose();
+    _usernameFocus.dispose();
     _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
-  void _handleLogin() async {
-    setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    if (mounted) setState(() => _loading = false);
+  Future<void> _handleSignUp() async {
+    setState(() {
+      _errorMessage = null;
+      _loading = true;
+    });
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      setState(() {
+        _errorMessage = 'All fields are required.';
+        _loading = false;
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      setState(() {
+        _errorMessage = 'Password must be at least 6 characters.';
+        _loading = false;
+      });
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setState(() {
+        _errorMessage = 'Passwords do not match.';
+        _loading = false;
+      });
+      return;
+    }
+
+    try {
+      final result = await _authController.register(
+        username: username,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      if (result['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully. Please sign in.'),
+          ),
+        );
+
+        Navigator.pushReplacementNamed(context, '/');
+      } else {
+        setState(() {
+          _errorMessage =
+              result['error']?.toString() ?? 'Something went wrong.';
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _errorMessage = 'Sign up failed: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+    }
   }
 
   @override
@@ -46,18 +118,15 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: _bg,
       body: Stack(
         children: [
-          // Background grid
           CustomPaint(
             painter: _GridPainter(),
             size: MediaQuery.of(context).size,
           ),
-          // Green glow top-left
           Positioned(
             top: -60,
             left: -60,
             child: _Orb(color: _lime.withValues(alpha: 0.09), size: 420),
           ),
-          // Orange glow bottom-right
           Positioned(
             bottom: -80,
             right: -60,
@@ -66,7 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
               size: 380,
             ),
           ),
-          // Main content
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
@@ -92,7 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Logo
                       Center(
                         child: Column(
                           children: [
@@ -155,9 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 40),
 
-                      // Welcome text
                       const Text(
-                        'Ready to train?',
+                        'Start your journey.',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -167,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        'Sign in and pick up where you left off',
+                        'Create an account and begin training smarter',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.white.withValues(alpha: 0.3),
@@ -175,21 +241,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 28),
 
-                      // Email field
-                      _FieldLabel('EMAIL'),
+                      const _FieldLabel('USERNAME'),
                       const SizedBox(height: 8),
                       _InputField(
-                        controller: _emailController,
-                        focusNode: _emailFocus,
-                        hint: 'you@example.com',
-                        icon: Icons.mail_outline_rounded,
-                        keyboardType: TextInputType.emailAddress,
+                        controller: _usernameController,
+                        focusNode: _usernameFocus,
+                        hint: 'your_username',
+                        icon: Icons.person_outline_rounded,
                         accentColor: _lime,
                       ),
                       const SizedBox(height: 16),
 
-                      // Password field
-                      _FieldLabel('PASSWORD'),
+                      const _FieldLabel('PASSWORD'),
                       const SizedBox(height: 8),
                       _InputField(
                         controller: _passwordController,
@@ -206,13 +269,66 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.white.withValues(alpha: 0.35),
                             size: 20,
                           ),
-                          onPressed: () =>
-                              setState(() => _showPassword = !_showPassword),
+                          onPressed: () {
+                            setState(() => _showPassword = !_showPassword);
+                          },
                         ),
                       ),
+                      const SizedBox(height: 16),
+
+                      const _FieldLabel('CONFIRM PASSWORD'),
+                      const SizedBox(height: 8),
+                      _InputField(
+                        controller: _confirmPasswordController,
+                        focusNode: _confirmPasswordFocus,
+                        hint: '••••••••',
+                        icon: Icons.lock_outline_rounded,
+                        obscure: !_showConfirmPassword,
+                        accentColor: _lime,
+                        suffix: IconButton(
+                          icon: Icon(
+                            _showConfirmPassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.white.withValues(alpha: 0.35),
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _showConfirmPassword = !_showConfirmPassword;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      if (_errorMessage != null) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.redAccent.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFFFF6B6B),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 28),
 
-                      // Sign in button
                       SizedBox(
                         width: double.infinity,
                         height: 52,
@@ -241,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                           ),
                           child: TextButton(
-                            onPressed: _loading ? null : _handleLogin,
+                            onPressed: _loading ? null : _handleSignUp,
                             style: TextButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -257,7 +373,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   )
                                 : const Text(
-                                    "LET'S GO →",
+                                    'CREATE ACCOUNT →',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
@@ -270,7 +386,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Divider
                       Row(
                         children: [
                           Expanded(
@@ -297,22 +412,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Create account
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/signup');
+                            Navigator.pushReplacementNamed(context, '/');
                           },
                           child: RichText(
-                            text: TextSpan(
+                            text: const TextSpan(
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.white.withValues(alpha: 0.28),
+                                color: Color(0x47FFFFFF),
                               ),
-                              children: const [
-                                TextSpan(text: 'New here? '),
+                              children: [
+                                TextSpan(text: 'Already have an account? '),
                                 TextSpan(
-                                  text: 'Create account',
+                                  text: 'Sign in',
                                   style: TextStyle(
                                     color: Color(0xFFB4FF3C),
                                     fontWeight: FontWeight.w700,
@@ -335,22 +449,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// — Helpers —
-
 class _FieldLabel extends StatelessWidget {
   final String text;
+
   const _FieldLabel(this.text);
 
   @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: TextStyle(
-      fontSize: 11,
-      fontWeight: FontWeight.w700,
-      letterSpacing: 1.2,
-      color: Colors.white.withValues(alpha: 0.35),
-    ),
-  );
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.2,
+        color: Colors.white.withValues(alpha: 0.35),
+      ),
+    );
+  }
 }
 
 class _InputField extends StatefulWidget {
@@ -381,12 +496,22 @@ class _InputField extends StatefulWidget {
 class _InputFieldState extends State<_InputField> {
   bool _focused = false;
 
+  void _handleFocusChange() {
+    if (mounted) {
+      setState(() => _focused = widget.focusNode.hasFocus);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    widget.focusNode.addListener(
-      () => setState(() => _focused = widget.focusNode.hasFocus),
-    );
+    widget.focusNode.addListener(_handleFocusChange);
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_handleFocusChange);
+    super.dispose();
   }
 
   @override
@@ -433,17 +558,23 @@ class _InputFieldState extends State<_InputField> {
 class _Orb extends StatelessWidget {
   final Color color;
   final double size;
-  const _Orb({required this.color, required this.size});
+
+  const _Orb({
+    required this.color,
+    required this.size,
+  });
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: size,
-    height: size,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: RadialGradient(colors: [color, Colors.transparent]),
-    ),
-  );
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color, Colors.transparent]),
+      ),
+    );
+  }
 }
 
 class _GridPainter extends CustomPainter {
@@ -452,15 +583,18 @@ class _GridPainter extends CustomPainter {
     final paint = Paint()
       ..color = const Color(0xFFB4FF3C).withValues(alpha: 0.03)
       ..strokeWidth = 1;
+
     const step = 48.0;
+
     for (double x = 0; x < size.width; x += step) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
+
     for (double y = 0; y < size.height; y += step) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
 
   @override
-  bool shouldRepaint(_GridPainter old) => false;
+  bool shouldRepaint(_GridPainter oldDelegate) => false;
 }
