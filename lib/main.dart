@@ -85,12 +85,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PosePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(authController: authController),
+        '/pose': (context) => const PosePage(),
+      },
     );
   }
 }
+
+
+
 
 class PosePage extends StatefulWidget {
   const PosePage({super.key});

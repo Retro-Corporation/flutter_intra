@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(const PoseCoachApp());
-
-class PoseCoachApp extends StatelessWidget {
-  const PoseCoachApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
-    );
-  }
-}
+import '../auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final AuthController authController;
+
+  const LoginScreen({
+    super.key,
+    required this.authController,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
