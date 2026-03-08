@@ -17,10 +17,8 @@ class MetricsTracker {
     _counters[name] = (_counters[name] ?? 0) + value;
   }
 
-  // read counters safely
   int getCounter(String name) => _counters[name] ?? 0;
 
-  // check if latency exists
   bool hasLatency(String name) => (_latencies[name]?.isNotEmpty ?? false);
 
   double avg(String name) {
@@ -64,12 +62,13 @@ class MetricsTracker {
       final maxVal = maxValue(name);
       final p95 = percentile(name, 0.95).toStringAsFixed(2);
 
-      dev.log("$name | samples: ${values.length} | avg: $avgVal ms | min: $minVal | max: $maxVal | p95: $p95");
+      dev.log(
+        "$name | samples: ${values.length} | avg: $avgVal ms | min: $minVal | max: $maxVal | p95: $p95",
+      );
     });
 
     _counters.forEach((name, value) {
       dev.log("$name : $value");
     });
-
   }
 }
