@@ -21,6 +21,7 @@ import 'features/exercise/exercise_controller.dart';
 
 // metrics
 import 'core/metrics_tracker.dart';
+import 'features/auth/pages/login_page.dart';
 
 late List<CameraDescription> cameras;
 
@@ -33,6 +34,7 @@ late SystemMetricsService systemMetricsService;
 late AuthController authController;
 late ExerciseController exerciseController;
 late PoseController poseController;
+
 
 
 Future<void> main() async {
