@@ -1,4 +1,4 @@
-import '../database/repositories/repository.dart';
+import '../database/repositories.dart';
 
 class SystemMetricsService {
   final SystemMetricsRepository _metrics;

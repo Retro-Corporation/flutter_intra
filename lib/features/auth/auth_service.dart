@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 
-import '../database/repositories/repository.dart';
+import '../../database/repositories.dart';
 
 class AuthService {
   final UserRepository _users;
