@@ -14,6 +14,7 @@
 
 import 'dart:math' as math;
 import 'package:vector_math/vector_math_64.dart';
+import 'package:flutter_pose_detection/flutter_pose_detection.dart';
 
 class PoseFrame {
   final List<Vector3> landmarks;
@@ -24,6 +25,16 @@ class PoseFrame {
 
   PoseFrame({required List<Vector3> rawLandmarks, required this.timestamp})
     : landmarks = _orientToUserLeft(rawLandmarks) {
+    _computeAllJointAngles();
+  }
+
+  /// Creates a PoseFrame from library PoseLandmark objects
+  PoseFrame.fromPoseLandmarks({
+    required List<PoseLandmark> poseLandmarks,
+    required this.timestamp,
+  }) : landmarks = _orientToUserLeft(
+          poseLandmarks.map((l) => Vector3(l.x, l.y, l.z)).toList(),
+        ) {
     _computeAllJointAngles();
   }
 
