@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
+// pose
 import 'features/pose/widgets/pose_overlay.dart';
 import 'features/pose/pose_controller.dart';
 
@@ -22,7 +23,7 @@ import 'features/exercise/exercise_controller.dart';
 // metrics
 import 'core/metrics_tracker.dart';
 
-// Import Pages
+// pages
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
@@ -38,47 +39,33 @@ late AuthController authController;
 late ExerciseController exerciseController;
 late PoseController poseController;
 
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Reset metrics after each run
   MetricsTracker.instance.reset();
 
-  // Intialize database and repo
+  // Initialize database
   final db = await DatabaseHelper.instance.database;
 
-  
-  // Repo are what directly talk or modify the database
-  // So any manipulation of the database is done via repo
+  // Repositories
+  final userRepo = UserRepository(db);
+  final exerciseRepo = ExerciseRepository(db);
+  final systemMetricsRepo = SystemMetricsRepository(db);
 
-// Repositories for database tables
-final userRepo = UserRepository(db);
-final exerciseRepo = ExerciseRepository(db);
-final systemMetricsRepo = SystemMetricsRepository(db);
+  // Services
+  authService = AuthService(userRepo);
+  exerciseService = ExerciseService(exerciseRepo);
+  systemMetricsService = SystemMetricsService(systemMetricsRepo);
 
-// Initialize services
-authService = AuthService(userRepo);
-exerciseService = ExerciseService(exerciseRepo);
-systemMetricsService = SystemMetricsService(systemMetricsRepo);
+  // Controllers
+  authController = AuthController(authService);
+  exerciseController = ExerciseController(exerciseService);
 
-  // So bascially this is the format of things that interact witht he backend - service
-  // This is the format that is used to compare it to the excerise refrence frames
-  // In order to calculate the accuracy, between both session frames and refrence frames.
-
-// Initialize services
-authService = AuthService(userRepo);
-exerciseService = ExerciseService(exerciseRepo);
-systemMetricsService = SystemMetricsService(systemMetricsRepo);
-
-// Initialize controllers
-authController = AuthController(authService);
-exerciseController = ExerciseController(exerciseService);
-
-
-  // Camera setup
+  // Camera + pose controller
   cameras = await availableCameras();
+  poseController = PoseController(cameras.first);
+  await poseController.initialize(); 
 
   runApp(const MyApp());
 }
@@ -99,14 +86,14 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class 
-PosePage extends StatefulWidget {
+
+
+class PosePage extends StatefulWidget {
   const PosePage({super.key});
 
   @override
   State<PosePage> createState() => _PosePageState();
 }
-
 
 class _PosePageState extends State<PosePage> {
   late final PoseController _controller;
@@ -120,9 +107,8 @@ class _PosePageState extends State<PosePage> {
   @override
   void initState() {
     super.initState();
-    _controller = PoseController(cameras.first);
+    _controller = poseController;
     _controller.addListener(_onUpdate);
-    _controller.initialize();
   }
 
   void _onUpdate() {
@@ -131,23 +117,20 @@ class _PosePageState extends State<PosePage> {
 
   @override
   void dispose() {
-    _controller.disposeController();
     _controller.removeListener(_onUpdate);
     _feedbackController.dispose();
     super.dispose();
   }
 
-  void _toggleRecording() {
-    setState(() {
-      _isRecording = !_isRecording;
-    });
-
+  Future<void> _toggleRecording() async {
     if (_isRecording) {
-      debugPrint('Recording started');
-    } else {
+      setState(() => _isRecording = false);
+
       debugPrint('Recording stopped');
       debugPrint('Feedback: ${_feedbackController.text}');
-
+    } else {
+      setState(() => _isRecording = true);
+      debugPrint('Recording started');
     }
   }
 
@@ -186,196 +169,169 @@ class _PosePageState extends State<PosePage> {
             ),
           ),
 
-          Center(
-            child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 48,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.025),
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.07),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.6),
-                        blurRadius: 96,
-                        offset: const Offset(0, 48),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Row(
                     children: [
-                      Center(
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 68,
-                              height: 68,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFFB4FF3C),
-                                    Color(0xFF7ECF00),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: _lime.withValues(alpha: 0.35),
-                                    blurRadius: 40,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.fitness_center,
-                                color: Color(0xFF0D0D0D),
-                                size: 32,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            ShaderMask(
-                              shaderCallback: (bounds) =>
-                                  const LinearGradient(
-                                colors: [Colors.white, Color(0x66FFFFFF)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds),
-                              child: const Text(
-                                'Pose Coach',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -1,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'LIVE FORM ANALYSIS',
-                              style: TextStyle(
-                                fontSize: 11,
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white.withValues(alpha: 0.3),
-                              ),
+                      Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFFB4FF3C),
+                              Color(0xFF7ECF00),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _lime.withValues(alpha: 0.35),
+                              blurRadius: 30,
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 40),
-
-                      const Text(
-                        'Track your pose.',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xE6FFFFFF),
-                          letterSpacing: -0.4,
+                        child: const Icon(
+                          Icons.fitness_center,
+                          color: Color(0xFF0D0D0D),
+                          size: 26,
                         ),
                       ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Visualize your motion in real time and log quick feedback.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      const _SectionLabel('LIVE VIEW'),
-                      const SizedBox(height: 10),
-
-                      // Camera preview card
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(22),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.8),
-                            borderRadius: BorderRadius.circular(22),
-                            border: Border.all(
-                              color:
-                                  Colors.white.withValues(alpha: 0.06),
+                      const SizedBox(width: 14),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (bounds) =>
+                                const LinearGradient(
+                              colors: [Colors.white, Color(0x66FFFFFF)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ).createShader(bounds),
+                            child: const Text(
+                              'Pose Coach',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.8,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                          child: AspectRatio(
-                            aspectRatio: cam.value.aspectRatio,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                CameraPreview(cam),
-                                if (_controller.landmarks != null)
-                                  PoseOverlay(
-                                    landmarks: _controller.landmarks!,
-                                    previewSize: previewSize,
+                          const SizedBox(height: 2),
+                          Text(
+                            'LIVE FORM ANALYSIS',
+                            style: TextStyle(
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withValues(alpha: 0.3),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.06),
+                          ),
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: cam.value.aspectRatio,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              CameraPreview(cam),
+                              if (_controller.landmarks != null)
+                                PoseOverlay(
+                                  landmarks: _controller.landmarks!,
+                                  previewSize: previewSize,
+                                ),
+                              Positioned(
+                                top: 12,
+                                left: 12,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
                                   ),
-                                // Small LIVE badge
-                                Positioned(
-                                  top: 12,
-                                  left: 12,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.redAccent
-                                          .withValues(alpha: 0.85),
-                                      borderRadius:
-                                          BorderRadius.circular(999),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          width: 6,
-                                          height: 6,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                          ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent
+                                        .withValues(alpha: 0.85),
+                                    borderRadius:
+                                        BorderRadius.circular(999),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
                                         ),
-                                        const SizedBox(width: 6),
-                                        const Text(
-                                          'LIVE',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            letterSpacing: 1.2,
-                                          ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      const Text(
+                                        'LIVE',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          letterSpacing: 1.2,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                ),
 
-                      const SizedBox(height: 24),
-
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.06),
+                      ),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       const _SectionLabel('SESSION CONTROLS'),
                       const SizedBox(height: 10),
-
                       SizedBox(
-                        width: double.infinity,
-                        height: 52,
+                        height: 50,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             gradient: _isRecording
@@ -402,7 +358,7 @@ class _PosePageState extends State<PosePage> {
                                         ? Colors.redAccent
                                         : _lime)
                                     .withValues(alpha: 0.35),
-                                blurRadius: 28,
+                                blurRadius: 24,
                                 offset: const Offset(0, 6),
                               ),
                             ],
@@ -435,12 +391,9 @@ class _PosePageState extends State<PosePage> {
                           ),
                         ),
                       ),
-
-                      const SizedBox(height: 22),
-
+                      const SizedBox(height: 16),
                       const _SectionLabel('FEEDBACK'),
                       const SizedBox(height: 8),
-
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.03),
@@ -473,7 +426,7 @@ class _PosePageState extends State<PosePage> {
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -482,7 +435,7 @@ class _PosePageState extends State<PosePage> {
   }
 }
 
-/// Same label vibe as your `_FieldLabel` on SignUp
+
 class _SectionLabel extends StatelessWidget {
   final String text;
 
