@@ -84,8 +84,7 @@ class PoseController extends ChangeNotifier {
                 (lm) => Vector3(
                   lm.x.toDouble(),
                   lm.y.toDouble(),
-                  // adjust if PoseLandmark uses different field for z
-                  (lm.z ?? 0).toDouble(),
+                  (lm.z).toDouble(),
                 ),
               )
               .toList();
