@@ -3,7 +3,8 @@ import 'package:camera/camera.dart';
 
 // Pose
 import 'features/pose/widgets/pose_overlay.dart';
-import 'features/pose/pose_controller.dart'; 
+import 'features/pose/pose_controller.dart';
+import 'features/pose/pose_sequence.dart';
 
 // DB setup
 import 'database/database_helper.dart';
@@ -74,6 +75,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+// ───────── APP ROOT ─────────
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -92,6 +94,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// ───────── POSE PAGE (FULL-SCREEN) ─────────
 
 class PosePage extends StatefulWidget {
   const PosePage({super.key});
@@ -106,12 +109,16 @@ class _PosePageState extends State<PosePage> {
   bool _isRecording = false;
   final TextEditingController _feedbackController = TextEditingController();
 
+  // store last recorded sequence so we can compare / debug it
+  PoseSequence? _lastSequence;
+
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
 
   @override
   void initState() {
     super.initState();
+    // use the global poseController that main() initialized
     _controller = poseController;
     _controller.addListener(_onUpdate);
   }
@@ -129,21 +136,154 @@ class _PosePageState extends State<PosePage> {
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-  
+      // 🔴 STOP RECORDING
+      debugPrint('=== [POSE] Stop recording requested ===');
       setState(() => _isRecording = false);
 
       // Build a PoseSequence from the frames collected in PoseController
       final sequence = _controller.stopRecording();
+      _lastSequence = sequence;
 
-      // For now, just log it; later you’ll POST sequence.toJsonString() to your endpoint
-      debugPrint(sequence.toString());
-      debugPrint('JSON length: ${sequence.toJsonString().length}');
-      debugPrint('Feedback: ${_feedbackController.text}');
+      debugPrint('=== [POSE] Recording stopped ===');
+      debugPrint('Sequence summary: ${sequence.toString()}');
+      debugPrint('  • Frames   : ${sequence.frames.length}');
+      debugPrint('  • Duration : ${sequence.durationMs} ms');
+      debugPrint('  • FPS      : ${sequence.fps.toStringAsFixed(2)}');
+
+      if (sequence.frames.isNotEmpty) {
+        debugPrint(
+            '  • First frame timestamp : ${sequence.frames.first.timestamp} ms');
+        debugPrint(
+            '  • Last frame timestamp  : ${sequence.frames.last.timestamp} ms');
+      }
+
+      // Ask user: exercise name
+      final exerciseName = await _promptForText(
+        context: context,
+        title: 'Name this exercise',
+        hint: 'e.g., Barbell Squat Reference',
+      );
+
+      if (exerciseName == null || exerciseName.trim().isEmpty) {
+        debugPrint(
+            '[POSE] No exercise name provided — sequence not saved to DB.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Exercise not saved (no name provided).'),
+          ),
+        );
+        return;
+      }
+
+      // Ask user: description
+      final description = await _promptForText(
+        context: context,
+        title: 'Describe this exercise',
+        hint: 'e.g., Baseline reference for my squat form.',
+      );
+
+      await _saveSequenceAsExercise(
+        sequence: sequence,
+        exerciseName: exerciseName.trim(),
+        description: description?.trim() ?? '',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Exercise reference saved.')),
+      );
     } else {
+      // 🟢 START RECORDING
+      debugPrint('=== [POSE] Start recording requested ===');
       _controller.startRecording();
       setState(() => _isRecording = true);
-      debugPrint('Recording started');
+      debugPrint('=== [POSE] Recording started ===');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Recording started')),
+      );
     }
+  }
+
+  /// "Compare" button – right now used to debug that our sequence + JSON are valid.
+  ///
+  /// Later this can:
+  ///  1) Load a stored reference sequence from DB
+  ///  2) Capture a new live sequence
+  ///  3) Run a comparison algorithm
+  Future<void> _debugCompare() async {
+    debugPrint('=== [POSE] Compare button pressed ===');
+
+    if (_lastSequence == null) {
+      debugPrint('[POSE] No last sequence available to compare.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No recorded sequence yet. Record once first.'),
+        ),
+      );
+      return;
+    }
+
+    final seq = _lastSequence!;
+    debugPrint('=== [POSE] Debugging last recorded sequence ===');
+    debugPrint('Sequence summary: ${seq.toString()}');
+    debugPrint('  • Frames   : ${seq.frames.length}');
+    debugPrint('  • Duration : ${seq.durationMs} ms');
+    debugPrint('  • FPS      : ${seq.fps.toStringAsFixed(2)}');
+
+    if (seq.frames.isNotEmpty) {
+      final first = seq.frames.first;
+      final last = seq.frames.last;
+      debugPrint(
+          '  • First frame timestamp : ${first.timestamp} ms, angles: ${first.anglesInDegrees.keys.take(3).toList()}');
+      debugPrint(
+          '  • Last frame timestamp  : ${last.timestamp} ms, angles: ${last.anglesInDegrees.keys.take(3).toList()}');
+    }
+
+    // Also test JSON conversion round-trip length
+    final jsonString = seq.toJsonString();
+    debugPrint('  • JSON length: ${jsonString.length}');
+    debugPrint('  • JSON preview (first 400 chars):');
+    debugPrint(jsonString.length > 400
+        ? jsonString.substring(0, 400)
+        : jsonString);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Compare debug logged to console.'),
+      ),
+    );
+  }
+
+  /// Save PoseSequence + metadata via ExerciseController (hook point)
+  Future<void> _saveSequenceAsExercise({
+    required PoseSequence sequence,
+    required String exerciseName,
+    required String description,
+  }) async {
+    final poseReferenceJson = sequence.toJsonString();
+    final feedback = _feedbackController.text.trim();
+
+    debugPrint('=== [POSE] Saving Exercise Reference ===');
+    debugPrint('Name        : $exerciseName');
+    debugPrint('Description : $description');
+    debugPrint('Feedback    : $feedback');
+    debugPrint('Frames      : ${sequence.frames.length}');
+    debugPrint('Duration    : ${sequence.durationMs} ms');
+    debugPrint('FPS         : ${sequence.fps.toStringAsFixed(2)}');
+    debugPrint('JSON length : ${poseReferenceJson.length}');
+    debugPrint('JSON preview (first 400 chars):');
+    debugPrint(poseReferenceJson.length > 400
+        ? poseReferenceJson.substring(0, 400)
+        : poseReferenceJson);
+
+    // TODO: plug into your real controller method.
+    // Example (adjust to your actual API & model):
+    //
+    // await exerciseController.createExerciseReference(
+    //   name: exerciseName,
+    //   description: description,
+    //   poseJson: poseReferenceJson,
+    //   feedback: feedback,
+    // );
   }
 
   @override
@@ -163,6 +303,7 @@ class _PosePageState extends State<PosePage> {
       backgroundColor: _bg,
       body: Stack(
         children: [
+          // Background grid + orbs
           CustomPaint(
             painter: _GridPainter(),
             size: MediaQuery.of(context).size,
@@ -185,6 +326,7 @@ class _PosePageState extends State<PosePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // ───── HEADER ─────
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -254,6 +396,7 @@ class _PosePageState extends State<PosePage> {
                   ),
                 ),
 
+                // ───── CAMERA AREA (full-screen) ─────
                 Expanded(
                   child: Padding(
                     padding:
@@ -327,6 +470,7 @@ class _PosePageState extends State<PosePage> {
                   ),
                 ),
 
+                // ───── CONTROLS + FEEDBACK (bottom panel) ─────
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                   decoration: BoxDecoration(
@@ -343,67 +487,112 @@ class _PosePageState extends State<PosePage> {
                     children: [
                       const _SectionLabel('SESSION CONTROLS'),
                       const SizedBox(height: 10),
-                      SizedBox(
-                        height: 50,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: _isRecording
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFFF6B6B),
-                                      Color(0xFFFF3B3B),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : const LinearGradient(
-                                    colors: [
-                                      Color(0xFFB4FF3C),
-                                      Color(0xFF89D400),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
+
+                      // RECORD + COMPARE buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 50,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: _isRecording
+                                      ? const LinearGradient(
+                                          colors: [
+                                            Color(0xFFFF6B6B),
+                                            Color(0xFFFF3B3B),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        )
+                                      : const LinearGradient(
+                                          colors: [
+                                            Color(0xFFB4FF3C),
+                                            Color(0xFF89D400),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: (_isRecording
+                                              ? Colors.redAccent
+                                              : _lime)
+                                          .withValues(alpha: 0.35),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: TextButton.icon(
+                                  onPressed: _toggleRecording,
+                                  style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                   ),
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: [
-                              BoxShadow(
-                                color: (_isRecording
-                                        ? Colors.redAccent
-                                        : _lime)
-                                    .withValues(alpha: 0.35),
-                                blurRadius: 24,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: TextButton.icon(
-                            onPressed: _toggleRecording,
-                            style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            icon: Icon(
-                              _isRecording
-                                  ? Icons.stop_rounded
-                                  : Icons.fiber_manual_record_rounded,
-                              color: const Color(0xFF0D0D0D),
-                              size: 18,
-                            ),
-                            label: Text(
-                              _isRecording
-                                  ? 'FINISH RECORDING'
-                                  : 'START RECORDING',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF0D0D0D),
-                                letterSpacing: 0.6,
+                                  icon: Icon(
+                                    _isRecording
+                                        ? Icons.stop_rounded
+                                        : Icons.fiber_manual_record_rounded,
+                                    color: const Color(0xFF0D0D0D),
+                                    size: 18,
+                                  ),
+                                  label: Text(
+                                    _isRecording
+                                        ? 'FINISH RECORDING'
+                                        : 'START RECORDING',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF0D0D0D),
+                                      letterSpacing: 0.6,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: SizedBox(
+                              height: 50,
+                              child: OutlinedButton.icon(
+                                onPressed:
+                                    _lastSequence == null ? null : _debugCompare,
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(
+                                    color: Colors.white.withValues(alpha: 0.25),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                icon: Icon(
+                                  Icons.compare_arrows_rounded,
+                                  size: 18,
+                                  color: _lastSequence == null
+                                      ? Colors.white.withValues(alpha: 0.25)
+                                      : Colors.white.withValues(alpha: 0.85),
+                                ),
+                                label: Text(
+                                  'COMPARE',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.8,
+                                    color: _lastSequence == null
+                                        ? Colors.white.withValues(alpha: 0.35)
+                                        : Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+
                       const SizedBox(height: 16),
                       const _SectionLabel('FEEDBACK'),
                       const SizedBox(height: 8),
@@ -448,7 +637,58 @@ class _PosePageState extends State<PosePage> {
   }
 }
 
+// ───────── DIALOG HELPER ─────────
 
+Future<String?> _promptForText({
+  required BuildContext context,
+  required String title,
+  required String hint,
+}) async {
+  final controller = TextEditingController();
+
+  return showDialog<String>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        backgroundColor: const Color(0xFF111111),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: TextField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle:
+                const TextStyle(color: Color(0x66FFFFFF), fontSize: 14),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0x33FFFFFF)),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFB4FF3C)),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(null),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+// ───────── SHARED UI HELPERS ─────────
 
 class _SectionLabel extends StatelessWidget {
   final String text;
