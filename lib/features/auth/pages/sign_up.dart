@@ -474,7 +474,6 @@ class _InputField extends StatefulWidget {
   final String hint;
   final IconData icon;
   final bool obscure;
-  final TextInputType keyboardType;
   final Color accentColor;
   final Widget? suffix;
 
@@ -485,7 +484,6 @@ class _InputField extends StatefulWidget {
     required this.icon,
     required this.accentColor,
     this.obscure = false,
-    this.keyboardType = TextInputType.text,
     this.suffix,
   });
 
@@ -534,7 +532,6 @@ class _InputFieldState extends State<_InputField> {
         controller: widget.controller,
         focusNode: widget.focusNode,
         obscureText: widget.obscure,
-        keyboardType: widget.keyboardType,
         style: const TextStyle(fontSize: 14, color: Color(0xE0FFFFFF)),
         decoration: InputDecoration(
           hintText: widget.hint,

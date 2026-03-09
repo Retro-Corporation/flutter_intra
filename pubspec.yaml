@@ -44,11 +44,14 @@ dependencies:
   camera: ^0.12.0
 
   # Added for SQLite database
-  sqflite: ^2.3.0
-  path: ^1.9.0
+  sqflite: ^2.4.2
+  path: ^1.9.1
 
   # Added for password hashing / auth service
-  crypto: ^3.0.3
+  crypto: ^3.0.7
+
+  # Added for joint angle calculations
+  vector_math: ^2.2.0
 
 dev_dependencies:
   flutter_test:
