@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-// pose
+// Pose
 import 'features/pose/widgets/pose_overlay.dart';
-import 'features/pose/pose_controller.dart';
+import 'features/pose/pose_controller.dart'; 
 
 // DB setup
 import 'database/database_helper.dart';
@@ -27,6 +27,8 @@ import 'core/metrics_tracker.dart';
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
+// ───────── GLOBALS ─────────
+
 late List<CameraDescription> cameras;
 
 // services
@@ -38,6 +40,8 @@ late SystemMetricsService systemMetricsService;
 late AuthController authController;
 late ExerciseController exerciseController;
 late PoseController poseController;
+
+// ───────── MAIN ─────────
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,13 +66,14 @@ Future<void> main() async {
   authController = AuthController(authService);
   exerciseController = ExerciseController(exerciseService);
 
-  // Camera + pose controller
+  // Camera + Pose controller
   cameras = await availableCameras();
   poseController = PoseController(cameras.first);
-  await poseController.initialize(); 
+  await poseController.initialize(); // starts camera + pose detector
 
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -124,11 +129,18 @@ class _PosePageState extends State<PosePage> {
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
+  
       setState(() => _isRecording = false);
 
-      debugPrint('Recording stopped');
+      // Build a PoseSequence from the frames collected in PoseController
+      final sequence = _controller.stopRecording();
+
+      // For now, just log it; later you’ll POST sequence.toJsonString() to your endpoint
+      debugPrint(sequence.toString());
+      debugPrint('JSON length: ${sequence.toJsonString().length}');
       debugPrint('Feedback: ${_feedbackController.text}');
     } else {
+      _controller.startRecording();
       setState(() => _isRecording = true);
       debugPrint('Recording started');
     }
@@ -267,6 +279,7 @@ class _PosePageState extends State<PosePage> {
                                   landmarks: _controller.landmarks!,
                                   previewSize: previewSize,
                                 ),
+                              // LIVE badge
                               Positioned(
                                 top: 12,
                                 left: 12,
@@ -434,6 +447,7 @@ class _PosePageState extends State<PosePage> {
     );
   }
 }
+
 
 
 class _SectionLabel extends StatelessWidget {

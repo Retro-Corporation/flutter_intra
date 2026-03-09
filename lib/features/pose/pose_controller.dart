@@ -1,6 +1,11 @@
+// pose_controller.dart
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pose_detection/flutter_pose_detection.dart';
+import 'package:vector_math/vector_math_64.dart';
+
+import 'pose_frame.dart';
+import 'pose_sequence.dart';
 
 class PoseController extends ChangeNotifier {
   final CameraDescription camera;
@@ -13,6 +18,13 @@ class PoseController extends ChangeNotifier {
 
   CameraController? get cameraController => _cameraController;
   List<PoseLandmark>? get landmarks => _landmarks;
+
+  // ───── Recording state ─────
+  bool _isRecording = false;
+  int? _recordingStartMs;           // timestamp at start of recording (ms)
+  final List<PoseFrame> _recordedFrames = [];
+
+  bool get isRecording => _isRecording;
 
   PoseController(this.camera);
 
@@ -58,10 +70,51 @@ class PoseController extends ChangeNotifier {
       if (result.hasPoses) {
         _landmarks = result.firstPose!.landmarks;
         notifyListeners();
+
+        // 🔴 If recording, convert this pose to a PoseFrame and store it
+        if (_isRecording && _landmarks != null) {
+          final nowMs = DateTime.now().millisecondsSinceEpoch;
+
+          // Lazily set recording start time on first frame
+          _recordingStartMs ??= nowMs;
+          final relativeMs = nowMs - _recordingStartMs!;
+
+          // Convert PoseLandmark → Vector3
+          final rawVectors = _landmarks!
+              .map(
+                (lm) => Vector3(
+                  lm.x.toDouble(),
+                  lm.y.toDouble(),
+                  // adjust if PoseLandmark uses different field for z
+                  (lm.z ?? 0).toDouble(),
+                ),
+              )
+              .toList();
+
+          _recordedFrames.add(
+            PoseFrame(
+              rawLandmarks: rawVectors,
+              timestamp: relativeMs,
+            ),
+          );
+        }
       }
     } finally {
       _isProcessing = false;
     }
+  }
+
+  // Start collecting PoseFrames
+  void startRecording() {
+    _recordedFrames.clear();
+    _recordingStartMs = null;
+    _isRecording = true;
+  }
+
+  // Stop and return PoseSequence built from collected frames
+  PoseSequence stopRecording() {
+    _isRecording = false;
+    return PoseSequence(frames: List.unmodifiable(_recordedFrames));
   }
 
   Future<void> disposeController() async {
