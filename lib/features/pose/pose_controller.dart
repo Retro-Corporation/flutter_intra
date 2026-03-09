@@ -36,6 +36,7 @@ class PoseController extends ChangeNotifier {
       ResolutionPreset.medium,
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.yuv420,
+      fps: 20, // Limit to 20 FPS to reduce processing load
     );
 
     await _cameraController!.initialize();
@@ -84,7 +85,7 @@ class PoseController extends ChangeNotifier {
                 (lm) => Vector3(
                   lm.x.toDouble(),
                   lm.y.toDouble(),
-                  (lm.z).toDouble(),
+                  lm.z.toDouble(),
                 ),
               )
               .toList();
