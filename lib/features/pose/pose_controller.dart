@@ -19,9 +19,9 @@ class PoseController extends ChangeNotifier {
   CameraController? get cameraController => _cameraController;
   List<PoseLandmark>? get landmarks => _landmarks;
 
-  // ───── Recording state ─────
+
   bool _isRecording = false;
-  int? _recordingStartMs;           // timestamp at start of recording (ms)
+  int? _recordingStartMs;           
   final List<PoseFrame> _recordedFrames = [];
 
   bool get isRecording => _isRecording;
@@ -71,7 +71,6 @@ class PoseController extends ChangeNotifier {
         _landmarks = result.firstPose!.landmarks;
         notifyListeners();
 
-        // 🔴 If recording, convert this pose to a PoseFrame and store it
         if (_isRecording && _landmarks != null) {
           final nowMs = DateTime.now().millisecondsSinceEpoch;
 
