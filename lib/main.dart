@@ -28,7 +28,6 @@ import 'core/metrics_tracker.dart';
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
-// ───────── GLOBALS ─────────
 
 late List<CameraDescription> cameras;
 
@@ -41,8 +40,6 @@ late SystemMetricsService systemMetricsService;
 late AuthController authController;
 late ExerciseController exerciseController;
 late PoseController poseController;
-
-// ───────── MAIN ─────────
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,12 +67,12 @@ Future<void> main() async {
   // Camera + Pose controller
   cameras = await availableCameras();
   poseController = PoseController(cameras.first);
-  await poseController.initialize(); // starts camera + pose detector
+  await poseController.initialize(); 
 
   runApp(const MyApp());
 }
 
-// ───────── APP ROOT ─────────
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -94,7 +91,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ───────── POSE PAGE (FULL-SCREEN) ─────────
 
 class PosePage extends StatefulWidget {
   const PosePage({super.key});
@@ -136,7 +132,7 @@ class _PosePageState extends State<PosePage> {
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-      // 🔴 STOP RECORDING
+      
       debugPrint('=== [POSE] Stop recording requested ===');
       setState(() => _isRecording = false);
 
@@ -175,7 +171,7 @@ class _PosePageState extends State<PosePage> {
         return;
       }
 
-      // Ask user: description
+      
       final description = await _promptForText(
         context: context,
         title: 'Describe this exercise',
@@ -192,7 +188,7 @@ class _PosePageState extends State<PosePage> {
         const SnackBar(content: Text('Exercise reference saved.')),
       );
     } else {
-      // 🟢 START RECORDING
+      
       debugPrint('=== [POSE] Start recording requested ===');
       _controller.startRecording();
       setState(() => _isRecording = true);
@@ -303,7 +299,7 @@ class _PosePageState extends State<PosePage> {
       backgroundColor: _bg,
       body: Stack(
         children: [
-          // Background grid + orbs
+          // Background
           CustomPaint(
             painter: _GridPainter(),
             size: MediaQuery.of(context).size,
@@ -326,7 +322,7 @@ class _PosePageState extends State<PosePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // ───── HEADER ─────
+                // Header Comp.
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -396,7 +392,7 @@ class _PosePageState extends State<PosePage> {
                   ),
                 ),
 
-                // ───── CAMERA AREA (full-screen) ─────
+                // Camera Area
                 Expanded(
                   child: Padding(
                     padding:
@@ -470,7 +466,7 @@ class _PosePageState extends State<PosePage> {
                   ),
                 ),
 
-                // ───── CONTROLS + FEEDBACK (bottom panel) ─────
+                // CONTROLS + FEEDBACK (bottom panel) 
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                   decoration: BoxDecoration(
@@ -637,7 +633,7 @@ class _PosePageState extends State<PosePage> {
   }
 }
 
-// ───────── DIALOG HELPER ─────────
+
 
 Future<String?> _promptForText({
   required BuildContext context,
@@ -688,7 +684,7 @@ Future<String?> _promptForText({
   );
 }
 
-// ───────── SHARED UI HELPERS ─────────
+
 
 class _SectionLabel extends StatelessWidget {
   final String text;
