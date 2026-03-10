@@ -1,15 +1,10 @@
 import 'exercise_service.dart';
 
-
-// Updated File
 class ExerciseController {
   final ExerciseService _exercise;
 
   ExerciseController(this._exercise);
 
-  /// POST /exercises
-  /// Creates an exercise
-  /// Output: { success, exerciseId }
   Future<Map<String, Object?>> createExercise({
     required String name,
     String? description,
@@ -52,6 +47,27 @@ class ExerciseController {
     }
   }
 
+  /// Convenience method for UI:
+  /// returns just List<Map<String, Object?>> of exercises.
+  Future<List<Map<String, Object?>>> getAllExercises() async {
+    final result = await listExercises();
+
+    if (result['success'] == true) {
+      final exercises = result['exercises'];
+
+      if (exercises is List) {
+        return exercises
+            .map<Map<String, Object?>>(
+              (e) => Map<String, Object?>.from(e as Map),
+            )
+            .toList();
+      }
+      return [];
+    } else {
+      throw Exception(result['error'] ?? 'Failed to load exercises');
+    }
+  }
+
   /// GET /exercises/:id
   Future<Map<String, Object?>> getExercise({
     required int exerciseId,
@@ -79,7 +95,6 @@ class ExerciseController {
   }
 
   /// DELETE /exercises/:id
-  /// Output: { success }
   Future<Map<String, Object?>> deleteExercise({
     required int exerciseId,
   }) async {

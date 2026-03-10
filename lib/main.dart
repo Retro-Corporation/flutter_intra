@@ -1,46 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-// Pose
 import 'features/pose/widgets/pose_overlay.dart';
 import 'features/pose/pose_controller.dart';
 import 'features/pose/pose_sequence.dart';
 import 'features/pose/pose_frame.dart';
 
-// ML
 import 'features/ml/rep_counter.dart';
 
-// DB setup
 import 'database/database_helper.dart';
-
-// repositories
 import 'database/repositories.dart';
 
-// services
 import 'features/auth/auth_service.dart';
 import 'features/exercise/exercise_service.dart';
 import 'services/system_metrics_service.dart';
 
-// controllers
 import 'features/auth/auth_controller.dart';
 import 'features/exercise/exercise_controller.dart';
 
-// metrics
 import 'core/metrics_tracker.dart';
 
-// pages
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
-
 late List<CameraDescription> cameras;
 
-// services
 late AuthService authService;
 late ExerciseService exerciseService;
 late SystemMetricsService systemMetricsService;
 
-// controllers
 late AuthController authController;
 late ExerciseController exerciseController;
 late PoseController poseController;
@@ -48,35 +36,27 @@ late PoseController poseController;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Reset metrics after each run
   MetricsTracker.instance.reset();
 
-  // Initialize database
   final db = await DatabaseHelper.instance.database;
 
-  // Repositories
   final userRepo = UserRepository(db);
   final exerciseRepo = ExerciseRepository(db);
   final systemMetricsRepo = SystemMetricsRepository(db);
 
-  // Services
   authService = AuthService(userRepo);
   exerciseService = ExerciseService(exerciseRepo);
   systemMetricsService = SystemMetricsService(systemMetricsRepo);
 
-  // Controllers
   authController = AuthController(authService);
   exerciseController = ExerciseController(exerciseService);
 
-  // Camera + Pose controller
   cameras = await availableCameras();
   poseController = PoseController(cameras.first);
-  await poseController.initialize(); 
+  await poseController.initialize();
 
   runApp(const MyApp());
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -95,7 +75,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class PosePage extends StatefulWidget {
   const PosePage({super.key});
 
@@ -107,14 +86,15 @@ class _PosePageState extends State<PosePage> {
   late final PoseController _controller;
 
   bool _isRecording = false;
-  final TextEditingController _feedbackController = TextEditingController();
-
-  // store last recorded sequence so we can compare / debug it
-  PoseSequence? _lastSequence;
-  
-  // Rep counter for live comparison
-  RepCounter? _repCounter;
   bool _isCounting = false;
+
+  final TextEditingController _exerciseListController =
+      TextEditingController();
+
+  PoseSequence? _lastSequence;
+  RepCounter? _repCounter;
+
+  List<Map<String, dynamic>> _savedExercises = [];
 
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
@@ -122,13 +102,12 @@ class _PosePageState extends State<PosePage> {
   @override
   void initState() {
     super.initState();
-    // use the global poseController that main() initialized
     _controller = poseController;
     _controller.addListener(_onUpdate);
+    _loadExercises();
   }
 
   void _onUpdate() {
-    // Process frames for rep counting if active
     if (_isCounting && _repCounter != null && _controller.landmarks != null) {
       final frame = PoseFrame.fromPoseLandmarks(
         poseLandmarks: _controller.landmarks!,
@@ -136,24 +115,48 @@ class _PosePageState extends State<PosePage> {
       );
       _repCounter!.processFrame(frame);
     }
-    
-    if (mounted) setState(() {});
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _loadExercises() async {
+    try {
+      final exercises = await exerciseController.getAllExercises();
+
+      _savedExercises = List<Map<String, dynamic>>.from(exercises);
+
+      _exerciseListController.text = _savedExercises.isEmpty
+          ? 'No saved exercises yet.'
+          : _savedExercises
+              .map((e) => 'ID: ${e['id']} | ${e['name']}')
+              .join('\n');
+
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      debugPrint('✗ Error loading exercises: $e');
+      _exerciseListController.text = 'Failed to load exercises.';
+      if (mounted) {
+        setState(() {});
+      }
+    }
   }
 
   @override
   void dispose() {
     _controller.removeListener(_onUpdate);
-    _feedbackController.dispose();
+    _exerciseListController.dispose();
     super.dispose();
   }
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-      
       debugPrint('=== [POSE] Stop recording requested ===');
       setState(() => _isRecording = false);
 
-      // Build a PoseSequence from the frames collected in PoseController
       final sequence = _controller.stopRecording();
       _lastSequence = sequence;
 
@@ -165,21 +168,23 @@ class _PosePageState extends State<PosePage> {
 
       if (sequence.frames.isNotEmpty) {
         debugPrint(
-            '  • First frame timestamp : ${sequence.frames.first.timestamp} ms');
+          '  • First frame timestamp : ${sequence.frames.first.timestamp} ms',
+        );
         debugPrint(
-            '  • Last frame timestamp  : ${sequence.frames.last.timestamp} ms');
+          '  • Last frame timestamp  : ${sequence.frames.last.timestamp} ms',
+        );
       }
 
-      // Ask user: exercise name
       final exerciseName = await _promptForText(
         context: context,
         title: 'Name this exercise',
         hint: 'e.g., Barbell Squat Reference',
       );
 
+      if (!mounted) return;
+
       if (exerciseName == null || exerciseName.trim().isEmpty) {
-        debugPrint(
-            '[POSE] No exercise name provided — sequence not saved to DB.');
+        debugPrint('[POSE] No exercise name provided — sequence not saved to DB.');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Exercise not saved (no name provided).'),
@@ -188,12 +193,13 @@ class _PosePageState extends State<PosePage> {
         return;
       }
 
-      
       final description = await _promptForText(
         context: context,
         title: 'Describe this exercise',
         hint: 'e.g., Baseline reference for my squat form.',
       );
+
+      if (!mounted) return;
 
       await _saveSequenceAsExercise(
         sequence: sequence,
@@ -201,38 +207,37 @@ class _PosePageState extends State<PosePage> {
         description: description?.trim() ?? '',
       );
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Exercise reference saved.')),
       );
     } else {
-      
       debugPrint('=== [POSE] Start recording requested ===');
       _controller.startRecording();
       setState(() => _isRecording = true);
       debugPrint('=== [POSE] Recording started ===');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Recording started')),
       );
     }
   }
 
-  /// "Compare" button - Start/stop rep counting using the recorded sequence
   Future<void> _toggleRepCounting() async {
     if (_isCounting) {
-      // Stop counting
       setState(() => _isCounting = false);
-      
+
       final reps = _repCounter?.repCount ?? 0;
       debugPrint('=== [POSE] Rep counting stopped ===');
       debugPrint('Total reps completed: $reps');
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Rep counting stopped. Total: $reps reps')),
       );
-      
+
       _repCounter = null;
     } else {
-      // Start counting
       if (_lastSequence == null) {
         debugPrint('[POSE] No reference sequence available.');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -254,17 +259,16 @@ class _PosePageState extends State<PosePage> {
 
       debugPrint('=== [POSE] Starting rep counter ===');
       debugPrint('Reference: ${_lastSequence!.frames.length} frames');
-      
+
       _repCounter = RepCounter(referenceSequence: _lastSequence!);
       setState(() => _isCounting = true);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Rep counting started!')),
       );
     }
   }
 
-  /// Save PoseSequence + metadata via ExerciseController
   Future<void> _saveSequenceAsExercise({
     required PoseSequence sequence,
     required String exerciseName,
@@ -289,6 +293,7 @@ class _PosePageState extends State<PosePage> {
 
       if (result['success'] == true) {
         debugPrint('✓ Exercise saved with ID: ${result['exerciseId']}');
+        await _loadExercises();
       } else {
         debugPrint('✗ Failed to save: ${result['error']}');
         throw Exception(result['error']);
@@ -316,7 +321,6 @@ class _PosePageState extends State<PosePage> {
       backgroundColor: _bg,
       body: Stack(
         children: [
-          // Background
           CustomPaint(
             painter: _GridPainter(),
             size: MediaQuery.of(context).size,
@@ -334,12 +338,10 @@ class _PosePageState extends State<PosePage> {
               size: 380,
             ),
           ),
-
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Header Comp.
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -377,8 +379,7 @@ class _PosePageState extends State<PosePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ShaderMask(
-                            shaderCallback: (bounds) =>
-                                const LinearGradient(
+                            shaderCallback: (bounds) => const LinearGradient(
                               colors: [Colors.white, Color(0x66FFFFFF)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -408,8 +409,6 @@ class _PosePageState extends State<PosePage> {
                     ],
                   ),
                 ),
-
-                // Camera Area
                 Expanded(
                   child: Padding(
                     padding:
@@ -435,7 +434,6 @@ class _PosePageState extends State<PosePage> {
                                   landmarks: _controller.landmarks!,
                                   previewSize: previewSize,
                                 ),
-                              // LIVE badge
                               Positioned(
                                 top: 12,
                                 left: 12,
@@ -445,10 +443,8 @@ class _PosePageState extends State<PosePage> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.redAccent
-                                        .withValues(alpha: 0.85),
-                                    borderRadius:
-                                        BorderRadius.circular(999),
+                                    color: Colors.redAccent.withValues(alpha: 0.85),
+                                    borderRadius: BorderRadius.circular(999),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -475,7 +471,6 @@ class _PosePageState extends State<PosePage> {
                                   ),
                                 ),
                               ),
-                              // Rep counter display
                               if (_isCounting)
                                 Positioned(
                                   top: 12,
@@ -535,8 +530,6 @@ class _PosePageState extends State<PosePage> {
                     ),
                   ),
                 ),
-
-                // CONTROLS + FEEDBACK (bottom panel) 
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                   decoration: BoxDecoration(
@@ -553,8 +546,6 @@ class _PosePageState extends State<PosePage> {
                     children: [
                       const _SectionLabel('SESSION CONTROLS'),
                       const SizedBox(height: 10),
-
-                      // RECORD + COMPARE buttons
                       Row(
                         children: [
                           Expanded(
@@ -625,9 +616,8 @@ class _PosePageState extends State<PosePage> {
                             child: SizedBox(
                               height: 50,
                               child: OutlinedButton.icon(
-                                onPressed: _lastSequence == null 
-                                    ? null 
-                                    : _toggleRepCounting,
+                                onPressed:
+                                    _lastSequence == null ? null : _toggleRepCounting,
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
                                     color: _isCounting
@@ -635,14 +625,15 @@ class _PosePageState extends State<PosePage> {
                                         : Colors.white.withValues(alpha: 0.25),
                                   ),
                                   backgroundColor: _isCounting
-                                      ? const Color(0xFFFF641E).withValues(alpha: 0.15)
+                                      ? const Color(0xFFFF641E)
+                                          .withValues(alpha: 0.15)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
                                 icon: Icon(
-                                  _isCounting 
+                                  _isCounting
                                       ? Icons.stop_circle_outlined
                                       : Icons.compare_arrows_rounded,
                                   size: 18,
@@ -670,11 +661,11 @@ class _PosePageState extends State<PosePage> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 16),
-                      const _SectionLabel('FEEDBACK'),
+                      const _SectionLabel('SAVED EXERCISES'),
                       const SizedBox(height: 8),
                       Container(
+                        height: 140,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.03),
                           borderRadius: BorderRadius.circular(14),
@@ -683,15 +674,16 @@ class _PosePageState extends State<PosePage> {
                           ),
                         ),
                         child: TextField(
-                          controller: _feedbackController,
-                          maxLines: 3,
+                          controller: _exerciseListController,
+                          readOnly: true,
+                          maxLines: null,
+                          expands: true,
                           style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xE0FFFFFF),
                           ),
                           decoration: InputDecoration(
-                            hintText:
-                                'Write quick notes about this set (e.g., back rounded, knees tracking in)...',
+                            hintText: 'Saved exercises will appear here...',
                             hintStyle: TextStyle(
                               color: Colors.white.withValues(alpha: 0.26),
                             ),
@@ -714,8 +706,6 @@ class _PosePageState extends State<PosePage> {
     );
   }
 }
-
-
 
 Future<String?> _promptForText({
   required BuildContext context,
@@ -741,8 +731,10 @@ Future<String?> _promptForText({
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle:
-                const TextStyle(color: Color(0x66FFFFFF), fontSize: 14),
+            hintStyle: const TextStyle(
+              color: Color(0x66FFFFFF),
+              fontSize: 14,
+            ),
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Color(0x33FFFFFF)),
             ),
@@ -765,8 +757,6 @@ Future<String?> _promptForText({
     },
   );
 }
-
-
 
 class _SectionLabel extends StatelessWidget {
   final String text;
