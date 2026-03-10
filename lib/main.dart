@@ -5,6 +5,10 @@ import 'package:camera/camera.dart';
 import 'features/pose/widgets/pose_overlay.dart';
 import 'features/pose/pose_controller.dart';
 import 'features/pose/pose_sequence.dart';
+import 'features/pose/pose_frame.dart';
+
+// ML
+import 'features/ml/rep_counter.dart';
 
 // DB setup
 import 'database/database_helper.dart';
@@ -107,6 +111,10 @@ class _PosePageState extends State<PosePage> {
 
   // store last recorded sequence so we can compare / debug it
   PoseSequence? _lastSequence;
+  
+  // Rep counter for live comparison
+  RepCounter? _repCounter;
+  bool _isCounting = false;
 
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
@@ -120,6 +128,15 @@ class _PosePageState extends State<PosePage> {
   }
 
   void _onUpdate() {
+    // Process frames for rep counting if active
+    if (_isCounting && _repCounter != null && _controller.landmarks != null) {
+      final frame = PoseFrame.fromPoseLandmarks(
+        poseLandmarks: _controller.landmarks!,
+        timestamp: DateTime.now().millisecondsSinceEpoch,
+      );
+      _repCounter!.processFrame(frame);
+    }
+    
     if (mounted) setState(() {});
   }
 
@@ -199,87 +216,87 @@ class _PosePageState extends State<PosePage> {
     }
   }
 
-  /// "Compare" button – right now used to debug that our sequence + JSON are valid.
-  ///
-  /// Later this can:
-  ///  1) Load a stored reference sequence from DB
-  ///  2) Capture a new live sequence
-  ///  3) Run a comparison algorithm
-  Future<void> _debugCompare() async {
-    debugPrint('=== [POSE] Compare button pressed ===');
-
-    if (_lastSequence == null) {
-      debugPrint('[POSE] No last sequence available to compare.');
+  /// "Compare" button - Start/stop rep counting using the recorded sequence
+  Future<void> _toggleRepCounting() async {
+    if (_isCounting) {
+      // Stop counting
+      setState(() => _isCounting = false);
+      
+      final reps = _repCounter?.repCount ?? 0;
+      debugPrint('=== [POSE] Rep counting stopped ===');
+      debugPrint('Total reps completed: $reps');
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No recorded sequence yet. Record once first.'),
-        ),
+        SnackBar(content: Text('Rep counting stopped. Total: $reps reps')),
       );
-      return;
+      
+      _repCounter = null;
+    } else {
+      // Start counting
+      if (_lastSequence == null) {
+        debugPrint('[POSE] No reference sequence available.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Record a reference sequence first!'),
+          ),
+        );
+        return;
+      }
+
+      if (_lastSequence!.frames.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Reference sequence has no frames!'),
+          ),
+        );
+        return;
+      }
+
+      debugPrint('=== [POSE] Starting rep counter ===');
+      debugPrint('Reference: ${_lastSequence!.frames.length} frames');
+      
+      _repCounter = RepCounter(referenceSequence: _lastSequence!);
+      setState(() => _isCounting = true);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Rep counting started!')),
+      );
     }
-
-    final seq = _lastSequence!;
-    debugPrint('=== [POSE] Debugging last recorded sequence ===');
-    debugPrint('Sequence summary: ${seq.toString()}');
-    debugPrint('  • Frames   : ${seq.frames.length}');
-    debugPrint('  • Duration : ${seq.durationMs} ms');
-    debugPrint('  • FPS      : ${seq.fps.toStringAsFixed(2)}');
-
-    if (seq.frames.isNotEmpty) {
-      final first = seq.frames.first;
-      final last = seq.frames.last;
-      debugPrint(
-          '  • First frame timestamp : ${first.timestamp} ms, angles: ${first.anglesInDegrees.keys.take(3).toList()}');
-      debugPrint(
-          '  • Last frame timestamp  : ${last.timestamp} ms, angles: ${last.anglesInDegrees.keys.take(3).toList()}');
-    }
-
-    // Also test JSON conversion round-trip length
-    final jsonString = seq.toJsonString();
-    debugPrint('  • JSON length: ${jsonString.length}');
-    debugPrint('  • JSON preview (first 400 chars):');
-    debugPrint(jsonString.length > 400
-        ? jsonString.substring(0, 400)
-        : jsonString);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Compare debug logged to console.'),
-      ),
-    );
   }
 
-  /// Save PoseSequence + metadata via ExerciseController (hook point)
+  /// Save PoseSequence + metadata via ExerciseController
   Future<void> _saveSequenceAsExercise({
     required PoseSequence sequence,
     required String exerciseName,
     required String description,
   }) async {
     final poseReferenceJson = sequence.toJsonString();
-    final feedback = _feedbackController.text.trim();
 
     debugPrint('=== [POSE] Saving Exercise Reference ===');
     debugPrint('Name        : $exerciseName');
     debugPrint('Description : $description');
-    debugPrint('Feedback    : $feedback');
     debugPrint('Frames      : ${sequence.frames.length}');
     debugPrint('Duration    : ${sequence.durationMs} ms');
     debugPrint('FPS         : ${sequence.fps.toStringAsFixed(2)}');
     debugPrint('JSON length : ${poseReferenceJson.length}');
-    debugPrint('JSON preview (first 400 chars):');
-    debugPrint(poseReferenceJson.length > 400
-        ? poseReferenceJson.substring(0, 400)
-        : poseReferenceJson);
 
-    // TODO: plug into your real controller method.
-    // Example (adjust to your actual API & model):
-    //
-    // await exerciseController.createExerciseReference(
-    //   name: exerciseName,
-    //   description: description,
-    //   poseJson: poseReferenceJson,
-    //   feedback: feedback,
-    // );
+    try {
+      final result = await exerciseController.createExercise(
+        name: exerciseName,
+        description: description,
+        referencePoseJson: poseReferenceJson,
+      );
+
+      if (result['success'] == true) {
+        debugPrint('✓ Exercise saved with ID: ${result['exerciseId']}');
+      } else {
+        debugPrint('✗ Failed to save: ${result['error']}');
+        throw Exception(result['error']);
+      }
+    } catch (e) {
+      debugPrint('✗ Error saving exercise: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -458,6 +475,59 @@ class _PosePageState extends State<PosePage> {
                                   ),
                                 ),
                               ),
+                              // Rep counter display
+                              if (_isCounting)
+                                Positioned(
+                                  top: 12,
+                                  right: 12,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFFFF641E),
+                                          Color(0xFFD94E00),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFFFF641E)
+                                              .withValues(alpha: 0.5),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '${_repCounter?.repCount ?? 0}',
+                                          style: const TextStyle(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                            height: 1,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'REPS',
+                                          style: TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white.withValues(alpha: 0.8),
+                                            letterSpacing: 1.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -555,32 +625,44 @@ class _PosePageState extends State<PosePage> {
                             child: SizedBox(
                               height: 50,
                               child: OutlinedButton.icon(
-                                onPressed:
-                                    _lastSequence == null ? null : _debugCompare,
+                                onPressed: _lastSequence == null 
+                                    ? null 
+                                    : _toggleRepCounting,
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
-                                    color: Colors.white.withValues(alpha: 0.25),
+                                    color: _isCounting
+                                        ? const Color(0xFFFF641E)
+                                        : Colors.white.withValues(alpha: 0.25),
                                   ),
+                                  backgroundColor: _isCounting
+                                      ? const Color(0xFFFF641E).withValues(alpha: 0.15)
+                                      : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
                                 icon: Icon(
-                                  Icons.compare_arrows_rounded,
+                                  _isCounting 
+                                      ? Icons.stop_circle_outlined
+                                      : Icons.compare_arrows_rounded,
                                   size: 18,
                                   color: _lastSequence == null
                                       ? Colors.white.withValues(alpha: 0.25)
-                                      : Colors.white.withValues(alpha: 0.85),
+                                      : _isCounting
+                                          ? const Color(0xFFFF641E)
+                                          : Colors.white.withValues(alpha: 0.85),
                                 ),
                                 label: Text(
-                                  'COMPARE',
+                                  _isCounting ? 'STOP' : 'COUNT REPS',
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 0.8,
                                     color: _lastSequence == null
                                         ? Colors.white.withValues(alpha: 0.35)
-                                        : Colors.white,
+                                        : _isCounting
+                                            ? const Color(0xFFFF641E)
+                                            : Colors.white,
                                   ),
                                 ),
                               ),

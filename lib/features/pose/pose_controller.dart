@@ -2,7 +2,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pose_detection/flutter_pose_detection.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 import 'pose_frame.dart';
 import 'pose_sequence.dart';
@@ -79,20 +78,10 @@ class PoseController extends ChangeNotifier {
           _recordingStartMs ??= nowMs;
           final relativeMs = nowMs - _recordingStartMs!;
 
-          // Convert PoseLandmark → Vector3
-          final rawVectors = _landmarks!
-              .map(
-                (lm) => Vector3(
-                  lm.x.toDouble(),
-                  lm.y.toDouble(),
-                  lm.z.toDouble(),
-                ),
-              )
-              .toList();
-
+          // Use the new fromPoseLandmarks constructor
           _recordedFrames.add(
-            PoseFrame(
-              rawLandmarks: rawVectors,
+            PoseFrame.fromPoseLandmarks(
+              poseLandmarks: _landmarks!,
               timestamp: relativeMs,
             ),
           );
