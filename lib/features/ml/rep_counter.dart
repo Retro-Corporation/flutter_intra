@@ -20,6 +20,10 @@ class RepCounter {
   int _repCount = 0;
   int _currentStepIndex = 0;
 
+  // Helps prevent jitter / accidental step jumps
+  int _stableFrameCount = 0;
+  final int _requiredStableFrames = 2;
+
   RepCounter({
     required this.referenceSequence,
     this.similarityThreshold = 0.15,
@@ -27,33 +31,50 @@ class RepCounter {
 
   int get repCount => _repCount;
 
-  /// The percentage of the current rep completed (0.0 to 1.0)
-  double get repProgress => _currentStepIndex / referenceSequence.frames.length;
+  double get repProgress =>
+      referenceSequence.frames.isEmpty ? 0.0 : _currentStepIndex / referenceSequence.frames.length;
 
-  /// Processes a new frame from the live camera feed
   void processFrame(PoseFrame userFrame) {
     if (referenceSequence.frames.isEmpty) return;
 
-    // Get the target pose we are looking for in the reference sequence
-    PoseFrame targetPose = referenceSequence.frames[_currentStepIndex];
+    int bestIndex = _currentStepIndex;
+    double bestSimilarity = 0.0;
 
-    // Check if the user's current pose matches the target within 15%
-    if (MotionSimilarity.isWithinThreshold(
-      userFrame,
-      targetPose,
-      threshold: similarityThreshold,
-    )) {
-      _moveToNextStep();
+    // Find the closest pose step
+    for (int i = _currentStepIndex; i < referenceSequence.frames.length; i++) {
+      double similarity = MotionSimilarity.compareArms(
+        userFrame,
+        referenceSequence.frames[i],
+      );
+
+      if (similarity > bestSimilarity) {
+        bestSimilarity = similarity;
+        bestIndex = i;
+      }
+    }
+
+    // Check if similarity is good enough
+    if (bestSimilarity >= (1.0 - similarityThreshold)) {
+      _stableFrameCount++;
+
+      if (_stableFrameCount >= _requiredStableFrames) {
+        _advanceStep(bestIndex);
+        _stableFrameCount = 0;
+      }
+    } else {
+      _stableFrameCount = 0;
     }
   }
 
-  void _moveToNextStep() {
-    _currentStepIndex++;
+  void _advanceStep(int newIndex) {
+    // Prevent backward jumps
+    if (newIndex < _currentStepIndex) return;
 
-    // If we reached the end of the reference sequence, one rep is complete
+    _currentStepIndex = newIndex + 1;
+
     if (_currentStepIndex >= referenceSequence.frames.length) {
       _repCount++;
-      _currentStepIndex = 0; // Reset for next rep
+      _currentStepIndex = 0;
       print("Rep Completed! Total: $_repCount");
     }
   }
@@ -61,5 +82,6 @@ class RepCounter {
   void reset() {
     _repCount = 0;
     _currentStepIndex = 0;
+    _stableFrameCount = 0;
   }
 }
