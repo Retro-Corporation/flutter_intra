@@ -26,7 +26,7 @@ class RepCounter {
 
   RepCounter({
     required this.referenceSequence,
-    this.similarityThreshold = 0.15,
+    this.similarityThreshold = 0.30,
   });
 
   int get repCount => _repCount;
