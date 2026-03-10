@@ -31,9 +31,11 @@ class RepCounter {
 
   int get repCount => _repCount;
 
+  /// The percentage of the current rep completed (0.0 to 1.0)
   double get repProgress =>
       referenceSequence.frames.isEmpty ? 0.0 : _currentStepIndex / referenceSequence.frames.length;
 
+  // Processes a new frame from the live camera feed
   void processFrame(PoseFrame userFrame) {
     if (referenceSequence.frames.isEmpty) return;
 
