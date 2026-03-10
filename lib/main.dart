@@ -88,13 +88,12 @@ class _PosePageState extends State<PosePage> {
   bool _isRecording = false;
   bool _isCounting = false;
 
-  final TextEditingController _exerciseListController =
-      TextEditingController();
-
   PoseSequence? _lastSequence;
+  PoseSequence? _activeReferenceSequence;
   RepCounter? _repCounter;
 
-  List<Map<String, dynamic>> _savedExercises = [];
+  List<Map<String, Object?>> _savedExercises = [];
+  int? _selectedExerciseId;
 
   static const _lime = Color(0xFFB4FF3C);
   static const _bg = Color(0xFF0D0D0D);
@@ -124,55 +123,72 @@ class _PosePageState extends State<PosePage> {
   Future<void> _loadExercises() async {
     try {
       final exercises = await exerciseController.getAllExercises();
-
-      _savedExercises = List<Map<String, dynamic>>.from(exercises);
-
-      _exerciseListController.text = _savedExercises.isEmpty
-          ? 'No saved exercises yet.'
-          : _savedExercises
-              .map((e) => 'ID: ${e['id']} | ${e['name']}')
-              .join('\n');
-
+      exercises.sort((a, b) {
+        final idA = (a['id'] as int?) ?? 0;
+        final idB = (b['id'] as int?) ?? 0;
+        return idB.compareTo(idA);
+      });
+      _savedExercises = exercises.take(4).toList();
       if (mounted) {
         setState(() {});
       }
     } catch (e) {
-      debugPrint('✗ Error loading exercises: $e');
-      _exerciseListController.text = 'Failed to load exercises.';
-      if (mounted) {
-        setState(() {});
-      }
+      debugPrint('Error loading exercises: $e');
+    }
+  }
+
+  Future<void> _selectExercise(Map<String, Object?> exercise) async {
+    final id = exercise['id'] as int?;
+    final poseJsonDynamic =
+        exercise['referencePoseJson'] ?? exercise['reference_pose_json'];
+    if (poseJsonDynamic is! String) {
+      debugPrint('Missing reference pose json for exercise $id');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load exercise pose data.')),
+      );
+      return;
+    }
+
+    try {
+      final sequence = PoseSequence.fromJsonString(poseJsonDynamic);
+      setState(() {
+        _selectedExerciseId = id;
+        _activeReferenceSequence = sequence;
+        _lastSequence = sequence;
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Exercise ${id ?? ''} selected as reference.',
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error parsing pose json: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to parse exercise pose data.')),
+      );
     }
   }
 
   @override
   void dispose() {
     _controller.removeListener(_onUpdate);
-    _exerciseListController.dispose();
     super.dispose();
   }
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-      debugPrint('=== [POSE] Stop recording requested ===');
       setState(() => _isRecording = false);
 
       final sequence = _controller.stopRecording();
       _lastSequence = sequence;
 
-      debugPrint('=== [POSE] Recording stopped ===');
-      debugPrint('Sequence summary: ${sequence.toString()}');
-      debugPrint('  • Frames   : ${sequence.frames.length}');
-      debugPrint('  • Duration : ${sequence.durationMs} ms');
-      debugPrint('  • FPS      : ${sequence.fps.toStringAsFixed(2)}');
-
       if (sequence.frames.isNotEmpty) {
-        debugPrint(
-          '  • First frame timestamp : ${sequence.frames.first.timestamp} ms',
-        );
-        debugPrint(
-          '  • Last frame timestamp  : ${sequence.frames.last.timestamp} ms',
-        );
+        debugPrint('Recording stopped with ${sequence.frames.length} frames');
       }
 
       final exerciseName = await _promptForText(
@@ -184,7 +200,6 @@ class _PosePageState extends State<PosePage> {
       if (!mounted) return;
 
       if (exerciseName == null || exerciseName.trim().isEmpty) {
-        debugPrint('[POSE] No exercise name provided — sequence not saved to DB.');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Exercise not saved (no name provided).'),
@@ -213,11 +228,9 @@ class _PosePageState extends State<PosePage> {
         const SnackBar(content: Text('Exercise reference saved.')),
       );
     } else {
-      debugPrint('=== [POSE] Start recording requested ===');
       _controller.startRecording();
       setState(() => _isRecording = true);
-      debugPrint('=== [POSE] Recording started ===');
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Recording started')),
       );
@@ -225,44 +238,29 @@ class _PosePageState extends State<PosePage> {
   }
 
   Future<void> _toggleRepCounting() async {
+    if (_activeReferenceSequence == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Select a reference exercise first.')),
+      );
+      return;
+    }
+
     if (_isCounting) {
       setState(() => _isCounting = false);
 
       final reps = _repCounter?.repCount ?? 0;
-      debugPrint('=== [POSE] Rep counting stopped ===');
-      debugPrint('Total reps completed: $reps');
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Rep counting stopped. Total: $reps reps')),
       );
 
       _repCounter = null;
     } else {
-      if (_lastSequence == null) {
-        debugPrint('[POSE] No reference sequence available.');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Record a reference sequence first!'),
-          ),
-        );
-        return;
-      }
-
-      if (_lastSequence!.frames.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Reference sequence has no frames!'),
-          ),
-        );
-        return;
-      }
-
-      debugPrint('=== [POSE] Starting rep counter ===');
-      debugPrint('Reference: ${_lastSequence!.frames.length} frames');
-
-      _repCounter = RepCounter(referenceSequence: _lastSequence!);
+      _repCounter = RepCounter(referenceSequence: _activeReferenceSequence!);
       setState(() => _isCounting = true);
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Rep counting started!')),
       );
@@ -276,14 +274,6 @@ class _PosePageState extends State<PosePage> {
   }) async {
     final poseReferenceJson = sequence.toJsonString();
 
-    debugPrint('=== [POSE] Saving Exercise Reference ===');
-    debugPrint('Name        : $exerciseName');
-    debugPrint('Description : $description');
-    debugPrint('Frames      : ${sequence.frames.length}');
-    debugPrint('Duration    : ${sequence.durationMs} ms');
-    debugPrint('FPS         : ${sequence.fps.toStringAsFixed(2)}');
-    debugPrint('JSON length : ${poseReferenceJson.length}');
-
     try {
       final result = await exerciseController.createExercise(
         name: exerciseName,
@@ -292,14 +282,18 @@ class _PosePageState extends State<PosePage> {
       );
 
       if (result['success'] == true) {
-        debugPrint('✓ Exercise saved with ID: ${result['exerciseId']}');
+        final newId = result['exerciseId'] as int?;
+        setState(() {
+          _selectedExerciseId = newId;
+          _activeReferenceSequence = sequence;
+          _lastSequence = sequence;
+        });
         await _loadExercises();
       } else {
-        debugPrint('✗ Failed to save: ${result['error']}');
         throw Exception(result['error']);
       }
     } catch (e) {
-      debugPrint('✗ Error saving exercise: $e');
+      debugPrint('Error saving exercise: $e');
       rethrow;
     }
   }
@@ -443,7 +437,8 @@ class _PosePageState extends State<PosePage> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.redAccent.withValues(alpha: 0.85),
+                                    color: Colors.redAccent
+                                        .withValues(alpha: 0.85),
                                     borderRadius: BorderRadius.circular(999),
                                   ),
                                   child: Row(
@@ -515,7 +510,8 @@ class _PosePageState extends State<PosePage> {
                                           style: TextStyle(
                                             fontSize: 9,
                                             fontWeight: FontWeight.w700,
-                                            color: Colors.white.withValues(alpha: 0.8),
+                                            color: Colors.white
+                                                .withValues(alpha: 0.8),
                                             letterSpacing: 1.5,
                                           ),
                                         ),
@@ -616,13 +612,15 @@ class _PosePageState extends State<PosePage> {
                             child: SizedBox(
                               height: 50,
                               child: OutlinedButton.icon(
-                                onPressed:
-                                    _lastSequence == null ? null : _toggleRepCounting,
+                                onPressed: _activeReferenceSequence == null
+                                    ? null
+                                    : _toggleRepCounting,
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
                                     color: _isCounting
                                         ? const Color(0xFFFF641E)
-                                        : Colors.white.withValues(alpha: 0.25),
+                                        : Colors.white
+                                            .withValues(alpha: 0.25),
                                   ),
                                   backgroundColor: _isCounting
                                       ? const Color(0xFFFF641E)
@@ -637,11 +635,12 @@ class _PosePageState extends State<PosePage> {
                                       ? Icons.stop_circle_outlined
                                       : Icons.compare_arrows_rounded,
                                   size: 18,
-                                  color: _lastSequence == null
+                                  color: _activeReferenceSequence == null
                                       ? Colors.white.withValues(alpha: 0.25)
                                       : _isCounting
                                           ? const Color(0xFFFF641E)
-                                          : Colors.white.withValues(alpha: 0.85),
+                                          : Colors.white
+                                              .withValues(alpha: 0.85),
                                 ),
                                 label: Text(
                                   _isCounting ? 'STOP' : 'COUNT REPS',
@@ -649,7 +648,7 @@ class _PosePageState extends State<PosePage> {
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 0.8,
-                                    color: _lastSequence == null
+                                    color: _activeReferenceSequence == null
                                         ? Colors.white.withValues(alpha: 0.35)
                                         : _isCounting
                                             ? const Color(0xFFFF641E)
@@ -662,39 +661,36 @@ class _PosePageState extends State<PosePage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      const _SectionLabel('SAVED EXERCISES'),
+                      const _SectionLabel('REFERENCE EXERCISES'),
                       const SizedBox(height: 8),
-                      Container(
-                        height: 140,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.03),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.07),
+                      if (_savedExercises.isEmpty)
+                        Text(
+                          'No saved exercises yet.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withValues(alpha: 0.5),
                           ),
+                        )
+                      else
+                        Row(
+                          children: _savedExercises.map((exercise) {
+                            final id = exercise['id'];
+                            final name = exercise['name'] ?? '';
+                            final selected = id == _selectedExerciseId;
+                            return Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
+                                child: _ExerciseCube(
+                                  title: 'ID: $id',
+                                  subtitle: '$name',
+                                  selected: selected,
+                                  onTap: () => _selectExercise(exercise),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
-                        child: TextField(
-                          controller: _exerciseListController,
-                          readOnly: true,
-                          maxLines: null,
-                          expands: true,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xE0FFFFFF),
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Saved exercises will appear here...',
-                            hintStyle: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.26),
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -772,6 +768,73 @@ class _SectionLabel extends StatelessWidget {
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,
         color: Colors.white.withValues(alpha: 0.35),
+      ),
+    );
+  }
+}
+
+class _ExerciseCube extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ExerciseCube({
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = selected
+        ? const Color(0xFFB4FF3C)
+        : Colors.white.withValues(alpha: 0.15);
+    final bgColor = selected
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.white.withValues(alpha: 0.03);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: bgColor,
+          border: Border.all(color: borderColor, width: 1.2),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: selected
+                    ? const Color(0xFFB4FF3C)
+                    : Colors.white.withValues(alpha: 0.9),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Expanded(
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

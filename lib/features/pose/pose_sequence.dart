@@ -1,14 +1,3 @@
-/**
- * pose_sequence.dart
- * 
- * A pose sequence is a list of pose frames, representing a continuous stream of pose data over time.
- * It contains a list of PoseFrame objects, and the lenght of the sequence in ms.
- * 
- * Designed for single-session playback or analysis.
- * TODO: join with ui to record and display sequences, and to save/load from local storage.
- * (Use JSON serialization for easy storage and retrieval, and exercise class).
- */
-
 import 'dart:convert';
 import 'pose_frame.dart';
 
@@ -29,7 +18,6 @@ class PoseSequence {
     return (frames.length / (durationMs / 1000.0));
   }
 
-  /// Converts the sequence into a Map structure for JSON encoding
   Map<String, dynamic> toMap() {
     return {
       'metadata': {
@@ -41,12 +29,23 @@ class PoseSequence {
     };
   }
 
-  /// Returns the sequence as a JSON string
-  ///
-  /// TODO: If the sequence is large, move to a background Isolate
-  /// to avoid blocking the UI thread during stringification.
   String toJsonString() {
     return jsonEncode(toMap());
+  }
+
+  /// NEW: Convert Map -> PoseSequence
+  factory PoseSequence.fromMap(Map<String, dynamic> map) {
+    final frameList = (map['frames'] as List)
+        .map((f) => PoseFrame.fromJson(Map<String, dynamic>.from(f)))
+        .toList();
+
+    return PoseSequence(frames: frameList);
+  }
+
+  /// NEW: Convert JSON string -> PoseSequence
+  factory PoseSequence.fromJsonString(String jsonString) {
+    final decoded = jsonDecode(jsonString);
+    return PoseSequence.fromMap(decoded);
   }
 
   @override
