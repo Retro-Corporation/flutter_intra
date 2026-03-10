@@ -6,7 +6,7 @@
  * and when it is within 15% joint angle similarity, we move to the next pose in the reference sequence.
  * When we reach the end of the reference sequence, we increment the rep count and start over
  * 
- * TODO: Join with UI layer to display rep count and progress
+ * TODO: Join with UI layer to display rep count and progresss
  */
 
 import '../pose/pose_frame.dart';
