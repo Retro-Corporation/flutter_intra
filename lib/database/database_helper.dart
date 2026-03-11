@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'schema.dart';
@@ -17,7 +18,15 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    final path = join(await getDatabasesPath(), dbName);
+    String path;
+
+    if (kIsWeb) {
+      // Web uses IndexedDB internally
+      path = dbName;
+    } else {
+      final databasesPath = await getDatabasesPath();
+      path = join(databasesPath, dbName);
+    }
 
     return openDatabase(
       path,
@@ -28,13 +37,12 @@ class DatabaseHelper {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    // Create only the tables used in the updated schema
     await db.execute(createUserTable);
     await db.execute(createExerciseTable);
     await db.execute(createSystemMetricsTable);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Handle schema migrations here later (when dbVersion increases)
+    // future schema migrations
   }
 }

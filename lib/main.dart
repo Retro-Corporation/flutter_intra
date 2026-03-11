@@ -23,6 +23,8 @@ import 'core/metrics_tracker.dart';
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
+import 'db_debug.dart';
+
 late List<CameraDescription> cameras;
 
 late AuthService authService;
@@ -39,6 +41,22 @@ Future<void> main() async {
   MetricsTracker.instance.reset();
 
   final db = await DatabaseHelper.instance.database;
+
+  // ---- DEBUG DATABASE ----
+  final tables = await db.rawQuery(
+    "SELECT name FROM sqlite_master WHERE type='table'"
+  );
+  print("DATABASE TABLES:");
+  print(tables);
+
+  final schema = await db.rawQuery("PRAGMA table_info(Exercise)");
+  print("EXERCISE SCHEMA:");
+  print(schema);
+
+  final exercises = await db.query("Exercise");
+  print("EXERCISE TABLE CONTENT:");
+  print(exercises);
+  // ------------------------
 
   final userRepo = UserRepository(db);
   final exerciseRepo = ExerciseRepository(db);

@@ -8,7 +8,6 @@ class ExerciseService {
 
   ExerciseService(this._exercises);
 
-  /// Create a new exercise
   Future<int> createExercise({
     required String exerciseName,
     String? description,
@@ -50,7 +49,6 @@ class ExerciseService {
     return exerciseId;
   }
 
-  /// Delete exercise
   Future<void> deleteExercise({
     required int exerciseId,
   }) async {
@@ -89,7 +87,6 @@ class ExerciseService {
     );
   }
 
-  /// Get all exercises
   Future<List<Map<String, Object?>>> listExercises() async {
     final start = DateTime.now();
 
@@ -105,7 +102,6 @@ class ExerciseService {
     return list;
   }
 
-  /// Get single exercise
   Future<Map<String, Object?>?> getExercise(int exerciseId) async {
     final start = DateTime.now();
 
@@ -119,7 +115,6 @@ class ExerciseService {
     return exercise;
   }
 
-  /// Validate pose JSON
   void _validateReferencePose(String poseJson) {
     final trimmed = poseJson.trim();
 
