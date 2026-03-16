@@ -310,6 +310,111 @@ class CatalogHome extends StatelessWidget {
               ],
             ),
 
+            _divider(),
+
+            // ── BUTTONS ──
+            Text('BUTTONS', style: AppTypography.caption),
+            SizedBox(height: AppGrid.grid12),
+
+            // By type
+            Text('TYPES', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              children: const [
+                AppButton(label: 'Filled', type: ButtonType.filled),
+                AppButton(label: 'Outline', type: ButtonType.outline),
+                AppButton(label: 'Ghost', type: ButtonType.ghost),
+              ],
+            ),
+
+            SizedBox(height: AppGrid.grid24),
+
+            // By color
+            Text('COLORS (FILLED)', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              children: const [
+                AppButton(label: 'Brand', color: AppColors.brand),
+                AppButton(label: 'White', color: AppColors.textPrimary),
+                AppButton(label: 'Error', color: AppColors.error),
+                AppButton(label: 'Info', color: AppColors.info),
+                AppButton(label: 'Success', color: AppColors.success),
+              ],
+            ),
+
+            SizedBox(height: AppGrid.grid16),
+            Text('COLORS (OUTLINE)', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              children: const [
+                AppButton(label: 'Brand', type: ButtonType.outline, color: AppColors.brand),
+                AppButton(label: 'White', type: ButtonType.outline, color: AppColors.textPrimary),
+                AppButton(label: 'Error', type: ButtonType.outline, color: AppColors.error),
+                AppButton(label: 'Info', type: ButtonType.outline, color: AppColors.info),
+                AppButton(label: 'Success', type: ButtonType.outline, color: AppColors.success),
+              ],
+            ),
+
+            SizedBox(height: AppGrid.grid24),
+
+            // By size
+            Text('SIZES', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: const [
+                AppButton(label: 'Small', size: ButtonSize.sm),
+                AppButton(label: 'Medium', size: ButtonSize.md),
+                AppButton(label: 'Large', size: ButtonSize.lg),
+              ],
+            ),
+
+            SizedBox(height: AppGrid.grid24),
+
+            // Content patterns
+            Text('CONTENT PATTERNS', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              children: [
+                const AppButton(label: 'Text only'),
+                AppButton(leadingIcon: AppIcons.add),
+                AppButton(leadingIcon: AppIcons.add, label: 'Leading'),
+                AppButton(label: 'Trailing', trailingIcon: AppIcons.arrowRight),
+              ],
+            ),
+
+            SizedBox(height: AppGrid.grid24),
+
+            // States
+            Text('STATES', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Wrap(
+              spacing: AppGrid.grid8,
+              runSpacing: AppGrid.grid8,
+              children: const [
+                AppButton(label: 'Default'),
+                AppButton(label: 'Disabled', isDisabled: true),
+                AppButton(label: 'Loading', isLoading: true),
+              ],
+            ),
+
+            _divider(),
+
+            // ── BUTTON PLAYGROUND ──
+            Text('BUTTON PLAYGROUND', style: AppTypography.caption),
+            SizedBox(height: AppGrid.grid12),
+            const _ButtonPlayground(),
+
             SizedBox(height: AppGrid.grid60),
           ],
         ),
@@ -587,6 +692,326 @@ class _IconSize extends StatelessWidget {
         SizedBox(height: AppGrid.grid4),
         Text('$label\n${size.toInt()}px', style: AppTypography.overline, textAlign: TextAlign.center),
       ],
+    );
+  }
+}
+
+// ── Button Playground ──
+
+class _ButtonPlayground extends StatefulWidget {
+  const _ButtonPlayground();
+
+  @override
+  State<_ButtonPlayground> createState() => _ButtonPlaygroundState();
+}
+
+class _ButtonPlaygroundState extends State<_ButtonPlayground> {
+  ButtonType _type = ButtonType.filled;
+  ButtonSize _size = ButtonSize.md;
+  int _colorIndex = 0;
+  bool _hasLabel = true;
+  bool _hasLeadingIcon = false;
+  bool _hasTrailingIcon = false;
+  bool _isDisabled = false;
+  bool _isLoading = false;
+
+  // Override controls
+  bool _useRadiusOverride = false;
+  int _radiusIndex = 1; // default sm
+  bool _usePaddingOverride = false;
+  double _paddingValue = 16;
+  bool _useHeightOverride = false;
+  double _heightValue = 44;
+  bool _useWidthOverride = false;
+  double _widthValue = 120;
+
+  static const _radiusOptions = <(String, double)>[
+    ('none (0)', 0),
+    ('sm (8)', 8),
+    ('md (16)', 16),
+    ('lg (24)', 24),
+    ('xl (40)', 40),
+    ('pill', 999),
+  ];
+
+  static const _colorOptions = <(String, Color)>[
+    ('Brand', AppColors.brand),
+    ('White', AppColors.textPrimary),
+    ('Error', AppColors.error),
+    ('Info', AppColors.info),
+    ('Success', AppColors.success),
+    ('Purple', AppColors.purple500),
+    ('Yellow', AppColors.yellow500),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final chipStyle = AppTypography.bodySmall.semiBold;
+
+    return Container(
+      padding: EdgeInsets.all(AppPadding.one),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.surfaceBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Preview
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: AppGrid.grid40),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+            child: Center(
+              child: AppButton(
+                label: _hasLabel ? 'Button' : null,
+                leadingIcon: _hasLeadingIcon ? AppIcons.add : null,
+                trailingIcon: _hasTrailingIcon ? AppIcons.arrowRight : null,
+                type: _type,
+                size: _size,
+                color: _colorOptions[_colorIndex].$2,
+                isDisabled: _isDisabled,
+                isLoading: _isLoading,
+                onPressed: () {},
+                radiusOverride: _useRadiusOverride ? _radiusOptions[_radiusIndex].$2 : null,
+                paddingOverride: _usePaddingOverride ? _paddingValue : null,
+                heightOverride: _useHeightOverride ? _heightValue : null,
+                widthOverride: _useWidthOverride ? _widthValue : null,
+              ),
+            ),
+          ),
+          SizedBox(height: AppGrid.grid16),
+
+          // Type
+          Text('TYPE', style: AppTypography.overline),
+          SizedBox(height: AppGrid.grid8),
+          _buildChipRow(
+            labels: ButtonType.values.map((t) => t.name).toList(),
+            selectedIndex: _type.index,
+            onSelected: (i) => setState(() => _type = ButtonType.values[i]),
+            style: chipStyle,
+          ),
+          SizedBox(height: AppGrid.grid16),
+
+          // Size
+          Text('SIZE', style: AppTypography.overline),
+          SizedBox(height: AppGrid.grid8),
+          _buildChipRow(
+            labels: ButtonSize.values.map((s) => s.name).toList(),
+            selectedIndex: _size.index,
+            onSelected: (i) => setState(() => _size = ButtonSize.values[i]),
+            style: chipStyle,
+          ),
+          SizedBox(height: AppGrid.grid16),
+
+          // Color
+          Text('COLOR', style: AppTypography.overline),
+          SizedBox(height: AppGrid.grid8),
+          Wrap(
+            spacing: AppGrid.grid8,
+            runSpacing: AppGrid.grid8,
+            children: List.generate(_colorOptions.length, (i) {
+              final selected = i == _colorIndex;
+              final option = _colorOptions[i];
+              return GestureDetector(
+                onTap: () => setState(() => _colorIndex = i),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: option.$2,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    border: selected
+                        ? Border.all(color: AppColors.textPrimary, width: 2)
+                        : Border.all(color: AppColors.surfaceBorder),
+                  ),
+                ),
+              );
+            }),
+          ),
+          SizedBox(height: AppGrid.grid4),
+          Text(_colorOptions[_colorIndex].$1, style: AppTypography.caption),
+          SizedBox(height: AppGrid.grid16),
+
+          // Content
+          Text('CONTENT', style: AppTypography.overline),
+          SizedBox(height: AppGrid.grid8),
+          _buildToggle('Label', _hasLabel, (v) => setState(() {
+            _hasLabel = v;
+            if (!_hasLabel && !_hasLeadingIcon && !_hasTrailingIcon) {
+              _hasLabel = true;
+            }
+          })),
+          _buildToggle('Leading Icon', _hasLeadingIcon, (v) => setState(() {
+            _hasLeadingIcon = v;
+            if (!_hasLabel && !_hasLeadingIcon && !_hasTrailingIcon) {
+              _hasLabel = true;
+            }
+          })),
+          _buildToggle('Trailing Icon', _hasTrailingIcon, (v) => setState(() {
+            _hasTrailingIcon = v;
+            if (!_hasLabel && !_hasLeadingIcon && !_hasTrailingIcon) {
+              _hasLabel = true;
+            }
+          })),
+          SizedBox(height: AppGrid.grid16),
+
+          // States
+          Text('STATE', style: AppTypography.overline),
+          SizedBox(height: AppGrid.grid8),
+          _buildToggle('Disabled', _isDisabled, (v) => setState(() => _isDisabled = v)),
+          _buildToggle('Loading', _isLoading, (v) => setState(() => _isLoading = v)),
+          SizedBox(height: AppGrid.grid16),
+
+          // Corner Radius
+          _buildToggle('Override Corner Radius', _useRadiusOverride, (v) => setState(() => _useRadiusOverride = v)),
+          if (_useRadiusOverride) ...[
+            SizedBox(height: AppGrid.grid4),
+            _buildChipRow(
+              labels: _radiusOptions.map((r) => r.$1).toList(),
+              selectedIndex: _radiusIndex,
+              onSelected: (i) => setState(() => _radiusIndex = i),
+              style: chipStyle,
+            ),
+            SizedBox(height: AppGrid.grid8),
+          ],
+
+          // Padding
+          _buildToggle('Override Padding', _usePaddingOverride, (v) => setState(() => _usePaddingOverride = v)),
+          if (_usePaddingOverride) ...[
+            _buildSlider(
+              label: 'Horizontal Padding',
+              value: _paddingValue,
+              min: 0,
+              max: 48,
+              onChanged: (v) => setState(() => _paddingValue = v),
+            ),
+          ],
+
+          // Height
+          _buildToggle('Override Height', _useHeightOverride, (v) => setState(() => _useHeightOverride = v)),
+          if (_useHeightOverride) ...[
+            _buildSlider(
+              label: 'Height',
+              value: _heightValue,
+              min: 24,
+              max: 80,
+              onChanged: (v) => setState(() => _heightValue = v),
+            ),
+          ],
+
+          // Width
+          _buildToggle('Override Width', _useWidthOverride, (v) => setState(() => _useWidthOverride = v)),
+          if (_useWidthOverride) ...[
+            _buildSlider(
+              label: 'Width',
+              value: _widthValue,
+              min: 40,
+              max: 300,
+              onChanged: (v) => setState(() => _widthValue = v),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChipRow({
+    required List<String> labels,
+    required int selectedIndex,
+    required ValueChanged<int> onSelected,
+    required TextStyle style,
+  }) {
+    return Wrap(
+      spacing: AppGrid.grid8,
+      children: List.generate(labels.length, (i) {
+        final selected = i == selectedIndex;
+        return GestureDetector(
+          onTap: () => onSelected(i),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppPadding.threeQuarter,
+              vertical: AppGrid.grid4,
+            ),
+            decoration: BoxDecoration(
+              color: selected ? AppColors.brand : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+              border: Border.all(
+                color: selected ? AppColors.brand : AppColors.surfaceBorder,
+              ),
+            ),
+            child: Text(
+              labels[i].toUpperCase(),
+              style: style.copyWith(
+                color: selected ? AppColors.textInverse : AppColors.textSecondary,
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildSlider({
+    required String label,
+    required double value,
+    required double min,
+    required double max,
+    required ValueChanged<double> onChanged,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppGrid.grid8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text('$label: ${value.round()}px', style: AppTypography.caption),
+          ),
+          Expanded(
+            child: SliderTheme(
+              data: SliderThemeData(
+                activeTrackColor: AppColors.brand,
+                inactiveTrackColor: AppColors.surfaceBorder,
+                thumbColor: AppColors.brand,
+                overlayColor: AppColors.brand.withValues(alpha: 0.2),
+                trackHeight: 2,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+              ),
+              child: Slider(
+                value: value,
+                min: min,
+                max: max,
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToggle(String label, bool value, ValueChanged<bool> onChanged) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppGrid.grid4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 36,
+            height: 24,
+            child: Switch.adaptive(
+              value: value,
+              onChanged: onChanged,
+              activeTrackColor: AppColors.brand,
+            ),
+          ),
+          SizedBox(width: AppGrid.grid8),
+          Text(label, style: AppTypography.bodySmall.regular),
+        ],
+      ),
     );
   }
 }

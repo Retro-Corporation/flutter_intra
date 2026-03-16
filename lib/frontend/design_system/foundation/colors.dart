@@ -43,6 +43,17 @@ class AppColors {
     colors: [red500, red700],
   );
 
+  /// Maps primary palette colors to their 700 (shadow) variant for 3D borders.
+  static final Map<Color, Color> shadow700 = {
+    orange500: orange700,
+    red500: red700,
+    blue500: blue700,
+    green500: green700,
+    yellow500: yellow700,
+    purple500: purple700,
+    textPrimary: grey300,
+  };
+
   // ── Raw palette ──
 
   // Grey

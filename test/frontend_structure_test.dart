@@ -21,7 +21,7 @@ void main() {
       expect(
           File('$base/design_system/foundation/typography.dart').existsSync(),
           isTrue);
-      expect(File('$base/design_system/foundation/spacing.dart').existsSync(),
+      expect(File('$base/design_system/foundation/padding.dart').existsSync(),
           isTrue);
       expect(File('$base/design_system/foundation/theme.dart').existsSync(),
           isTrue);
@@ -62,9 +62,9 @@ void main() {
           .readAsStringSync();
       expect(typography, contains('class AppTypography'));
 
-      final spacing = File('$base/design_system/foundation/spacing.dart')
+      final padding = File('$base/design_system/foundation/padding.dart')
           .readAsStringSync();
-      expect(spacing, contains('class AppSpacing'));
+      expect(padding, contains('class AppPadding'));
 
       final theme =
           File('$base/design_system/foundation/theme.dart').readAsStringSync();
