@@ -9,6 +9,8 @@
 *.ipr
 *.iws
 .idea/
+#   • Claude Code
+.claude/
 #   • VSCode
 .vscode/*
 !.vscode/settings.json

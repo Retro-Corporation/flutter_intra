@@ -8,9 +8,9 @@ export 'foundation/radius.dart';
 export 'foundation/typography.dart';
 export 'foundation/theme.dart';
 
+// Icons
+export 'icons/app_icons.dart';
+export 'icons/icon_sizes.dart';
+
 // Atoms
-export 'atoms/app_button.dart';
-export 'atoms/app_text.dart';
-export 'atoms/app_input.dart';
-export 'atoms/app_badge.dart';
-export 'atoms/app_divider.dart';
+export 'atoms/icon.dart';

@@ -30,13 +30,13 @@ class CatalogHome extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(AppPadding.pagePadding),
           children: [
-            AppText.heading4('Design System'),
+            Text('Design System', style: AppTypography.heading4.bold),
             const SizedBox(height: 4),
-            AppText.overline('CATALOG'),
-            const AppDivider(),
+            Text('CATALOG', style: AppTypography.overline),
+            _divider(),
 
             // ── SEMANTIC COLORS ──
-            AppText.caption('SEMANTIC COLORS'),
+            Text('SEMANTIC COLORS', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _ColorRow('Brand', AppColors.brand),
             const _ColorRow('Brand Light', AppColors.brandLight),
@@ -52,10 +52,10 @@ class CatalogHome extends StatelessWidget {
             const _ColorRow('Success', AppColors.success),
             const _ColorRow('Warning', AppColors.warning),
 
-            const AppDivider(),
+            _divider(),
 
             // ── COLOR PALETTES ──
-            AppText.caption('GREY'),
+            Text('GREY', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('50', AppColors.grey50),
@@ -71,7 +71,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('ORANGE (PRIMARY)'),
+            Text('ORANGE (PRIMARY)', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('50', AppColors.orange50),
@@ -82,7 +82,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('BLUE'),
+            Text('BLUE', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('500', AppColors.blue500),
@@ -91,7 +91,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('RED'),
+            Text('RED', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('500', AppColors.red500),
@@ -100,7 +100,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('GREEN'),
+            Text('GREEN', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('500', AppColors.green500),
@@ -109,7 +109,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('PURPLE'),
+            Text('PURPLE', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('500', AppColors.purple500),
@@ -118,7 +118,7 @@ class CatalogHome extends StatelessWidget {
             ]),
 
             SizedBox(height: AppGrid.grid24),
-            AppText.caption('YELLOW'),
+            Text('YELLOW', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             const _PaletteStrip([
               _PaletteColor('500', AppColors.yellow500),
@@ -126,30 +126,30 @@ class CatalogHome extends StatelessWidget {
               _PaletteColor('900', AppColors.yellow900),
             ]),
 
-            const AppDivider(),
+            _divider(),
 
             // ── GRADIENTS ──
-            AppText.caption('GRADIENTS'),
+            Text('GRADIENTS', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             _GradientSwatch('Brand', AppColors.brandGradient),
             SizedBox(height: AppGrid.grid8),
             _GradientSwatch('Error', AppColors.errorGradient),
 
-            const AppDivider(),
+            _divider(),
 
             // ── TYPOGRAPHY (4-column: Black | Bold | Semi Bold | Regular) ──
-            AppText.caption('TYPOGRAPHY'),
+            Text('TYPOGRAPHY', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid8),
             // Column headers
             Row(
               children: [
-                Expanded(child: AppText.overline('BLACK')),
+                Expanded(child: Text('BLACK', style: AppTypography.overline)),
                 SizedBox(width: AppGrid.grid8),
-                Expanded(child: AppText.overline('BOLD')),
+                Expanded(child: Text('BOLD', style: AppTypography.overline)),
                 SizedBox(width: AppGrid.grid8),
-                Expanded(child: AppText.overline('SEMI BOLD')),
+                Expanded(child: Text('SEMI BOLD', style: AppTypography.overline)),
                 SizedBox(width: AppGrid.grid8),
-                Expanded(child: AppText.overline('REGULAR')),
+                Expanded(child: Text('REGULAR', style: AppTypography.overline)),
               ],
             ),
             SizedBox(height: AppGrid.grid16),
@@ -167,7 +167,7 @@ class CatalogHome extends StatelessWidget {
             _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
 
             SizedBox(height: AppGrid.grid16),
-            AppText.caption('LINKS'),
+            Text('LINKS', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid8),
             Row(
               children: [
@@ -177,10 +177,10 @@ class CatalogHome extends StatelessWidget {
               ],
             ),
 
-            const AppDivider(),
+            _divider(),
 
             // ── SPACING GRID ──
-            AppText.caption('4-POINT GRID (REM-SCALED)'),
+            Text('4-POINT GRID (REM-SCALED)', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             _SpacingRow('grid0', '0rem', AppGrid.grid0),
             _SpacingRow('grid4', '0.25rem', AppGrid.grid4),
@@ -198,10 +198,10 @@ class CatalogHome extends StatelessWidget {
             _SpacingRow('grid160', '10rem', AppGrid.grid160),
             _SpacingRow('grid240', '15rem', AppGrid.grid240),
 
-            const AppDivider(),
+            _divider(),
 
             // ── PADDING ──
-            AppText.caption('PADDING (SEMANTIC SPACING)'),
+            Text('PADDING (SEMANTIC SPACING)', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             _SpacingRow('none', '0rem', AppPadding.none),
             _SpacingRow('quarter', '0.25rem', AppPadding.quarter),
@@ -212,10 +212,10 @@ class CatalogHome extends StatelessWidget {
             _SpacingRow('two', '2rem', AppPadding.two),
             _SpacingRow('three', '3rem', AppPadding.three),
 
-            const AppDivider(),
+            _divider(),
 
             // ── CORNER RADIUS ──
-            AppText.caption('CORNER RADIUS'),
+            Text('CORNER RADIUS', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
             _RadiusRow('none', AppRadius.none),
             _RadiusRow('sm (0.5rem)', AppRadius.sm),
@@ -224,114 +224,91 @@ class CatalogHome extends StatelessWidget {
             _RadiusRow('xl (2.5rem)', AppRadius.xl),
             _RadiusRow('pill', AppRadius.pill),
 
-            const AppDivider(),
+            _divider(),
 
-            // ── BUTTONS ──
-            AppText.caption('BUTTONS'),
+            // ── ICONS ──
+            Text('ICONS (${AppIcons.all.length})', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
 
-            AppButton(
-              label: 'PRIMARY BUTTON',
-              icon: Icons.fiber_manual_record_rounded,
-              onPressed: () {},
-              expanded: true,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            AppButton(
-              label: 'SECONDARY BUTTON',
-              icon: Icons.compare_arrows_rounded,
-              variant: AppButtonVariant.secondary,
-              onPressed: () {},
-              expanded: true,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            AppButton(
-              label: 'DANGER BUTTON',
-              icon: Icons.stop_rounded,
-              variant: AppButtonVariant.danger,
-              onPressed: () {},
-              expanded: true,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            AppButton(
-              label: 'OUTLINE BUTTON',
-              icon: Icons.compare_arrows_rounded,
-              variant: AppButtonVariant.outline,
-              onPressed: () {},
-              expanded: true,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            const AppButton(
-              label: 'DISABLED',
-              icon: Icons.block,
-              expanded: true,
+            // Icon grid
+            Wrap(
+              spacing: AppGrid.grid16,
+              runSpacing: AppGrid.grid16,
+              children: AppIcons.all.entries.map((e) => SizedBox(
+                width: 72,
+                child: Column(
+                  children: [
+                    AppIcon(e.value, size: IconSizes.lg),
+                    SizedBox(height: AppGrid.grid4),
+                    Text(
+                      e.key,
+                      style: AppTypography.overline,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              )).toList(),
             ),
 
-            const AppDivider(),
+            SizedBox(height: AppGrid.grid24),
 
-            // ── BADGES ──
-            AppText.caption('BADGES'),
+            // Filled icon grid
+            Text('FILLED ICONS (${AppIcons.allFilled.length})', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
-            const Wrap(
-              spacing: 8,
-              runSpacing: 8,
+            Wrap(
+              spacing: AppGrid.grid16,
+              runSpacing: AppGrid.grid16,
+              children: AppIcons.allFilled.entries.map((e) => SizedBox(
+                width: 72,
+                child: Column(
+                  children: [
+                    AppIcon(e.value, size: IconSizes.lg),
+                    SizedBox(height: AppGrid.grid4),
+                    Text(
+                      e.key,
+                      style: AppTypography.overline,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              )).toList(),
+            ),
+
+            SizedBox(height: AppGrid.grid24),
+
+            // Color variants
+            Text('COLOR VARIANTS', style: AppTypography.overline),
+            SizedBox(height: AppGrid.grid8),
+            Row(
               children: [
-                AppBadge(label: 'LIVE', variant: AppBadgeVariant.live, showDot: true),
-                AppBadge(label: 'INFO', variant: AppBadgeVariant.info),
-                AppBadge(label: 'SUCCESS', variant: AppBadgeVariant.success),
-                AppBadge(label: 'WARNING', variant: AppBadgeVariant.warning),
+                _IconVariant('White', AppIcons.home, AppColors.textPrimary),
+                _IconVariant('Black', AppIcons.home, AppColors.textInverse),
+                _IconVariant('Disabled', AppIcons.home, AppColors.grey600),
+                _IconVariant('Primary', AppIcons.home, AppColors.brand),
               ],
             ),
 
-            const AppDivider(),
+            SizedBox(height: AppGrid.grid16),
 
-            // ── INPUTS ──
-            AppText.caption('INPUTS'),
-            SizedBox(height: AppGrid.grid12),
-
-            const AppInput(hintText: 'Default input...'),
-            SizedBox(height: AppGrid.grid12),
-
-            const AppInput(
-              hintText: 'Search exercises...',
-              prefixIcon: Icons.search,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            const AppInput(
-              hintText: 'Enter password',
-              prefixIcon: Icons.lock_outline,
-              obscureText: true,
-            ),
-            SizedBox(height: AppGrid.grid12),
-
-            const AppInput(
-              hintText: 'Write quick notes about this set...',
-              maxLines: 3,
-            ),
-
-            const AppDivider(),
-
-            // ── DIVIDER + SPACER ──
-            AppText.caption('DIVIDERS & SPACERS'),
-            SizedBox(height: AppGrid.grid12),
-            AppText.body('Content above divider'),
-            const AppDivider(),
-            AppText.body('Content below divider'),
-            SizedBox(height: AppGrid.grid12),
-            AppText.caption('SPACERS'),
+            // Size variants
+            Text('SIZE VARIANTS', style: AppTypography.overline),
             SizedBox(height: AppGrid.grid8),
-            Container(color: AppColors.grey850, height: 20),
-            AppSpacer.space4(),
-            Container(color: AppColors.grey850, height: 20, child: Center(child: AppText.caption('4px GAP'))),
-            AppSpacer.space12(),
-            Container(color: AppColors.grey850, height: 20, child: Center(child: AppText.caption('12px GAP'))),
-            AppSpacer.space24(),
-            Container(color: AppColors.grey850, height: 20, child: Center(child: AppText.caption('24px GAP'))),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _IconSize('sm', AppIcons.home, IconSizes.sm),
+                SizedBox(width: AppGrid.grid24),
+                _IconSize('md', AppIcons.home, IconSizes.md),
+                SizedBox(width: AppGrid.grid24),
+                _IconSize('lg', AppIcons.home, IconSizes.lg),
+                SizedBox(width: AppGrid.grid24),
+                _IconSize('xl', AppIcons.home, IconSizes.xl),
+              ],
+            ),
 
             SizedBox(height: AppGrid.grid60),
           ],
@@ -339,6 +316,12 @@ class CatalogHome extends StatelessWidget {
       ),
     );
   }
+
+  static Widget _divider() => Divider(
+        color: AppColors.surfaceBorder,
+        thickness: 1,
+        height: AppPadding.sectionGap * 2,
+      );
 }
 
 // ── Catalog helper widgets ──
@@ -364,9 +347,10 @@ class _ColorRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: AppGrid.grid12),
-          Expanded(child: AppText.body(name)),
-          AppText.caption(
+          Expanded(child: Text(name, style: AppTypography.body.regular)),
+          Text(
             '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
+            style: AppTypography.caption,
           ),
         ],
       ),
@@ -512,7 +496,7 @@ class _SpacingRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 80,
-            child: AppText.caption(name),
+            child: Text(name, style: AppTypography.caption),
           ),
           Container(
             width: value.clamp(0, 200),
@@ -523,7 +507,7 @@ class _SpacingRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: AppGrid.grid8),
-          AppText.bodySmall('${value.toInt()}px  ($remValue)'),
+          Text('${value.toInt()}px  ($remValue)', style: AppTypography.bodySmall.regular),
         ],
       ),
     );
@@ -551,10 +535,58 @@ class _RadiusRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: AppGrid.grid16),
-          Expanded(child: AppText.body(name)),
-          AppText.caption('${radius.toInt()}px'),
+          Expanded(child: Text(name, style: AppTypography.body.regular)),
+          Text('${radius.toInt()}px', style: AppTypography.caption),
         ],
       ),
+    );
+  }
+}
+
+class _IconVariant extends StatelessWidget {
+  final String label;
+  final String iconPath;
+  final Color color;
+  const _IconVariant(this.label, this.iconPath, this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: label == 'Black' ? AppColors.grey50 : AppColors.surface,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+            child: Center(
+              child: AppIcon(iconPath, size: IconSizes.lg, color: color),
+            ),
+          ),
+          SizedBox(height: AppGrid.grid4),
+          Text(label, style: AppTypography.overline),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconSize extends StatelessWidget {
+  final String label;
+  final String iconPath;
+  final double size;
+  const _IconSize(this.label, this.iconPath, this.size);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AppIcon(iconPath, size: size),
+        SizedBox(height: AppGrid.grid4),
+        Text('$label\n${size.toInt()}px', style: AppTypography.overline, textAlign: TextAlign.center),
+      ],
     );
   }
 }
