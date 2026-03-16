@@ -2,12 +2,90 @@ import 'package:flutter/material.dart';
 
 /// Design tokens: Color palette
 /// Source of truth — mirrors Figma color tokens.
+/// Hybrid naming: semantic aliases for components + raw 50-900 scale palette.
 class AppColors {
   AppColors._();
 
-  // TODO: Pull from Figma design system
-  static const primary = Color(0xFFB4FF3C);
-  static const background = Color(0xFF0D0D0D);
-  static const surface = Color(0xFF111111);
-  static const error = Color(0xFFFF6B6B);
+  // ── Semantic tokens (use these in components) ──
+
+  // Backgrounds
+  static const background = Color(0xFF0E0E10);
+  static const surface = Color(0xFF19191B);
+  static const surfaceBorder = Color(0xFF4D4D4D);
+
+  // Brand
+  static const brand = orange500;
+  static const brandLight = orange100;
+  static const brandSubtle = orange50;
+  static const brandDark = orange700;
+
+  // Text
+  static const textPrimary = Color(0xFFFFFFFF);
+  static const textSecondary = grey500;
+  static const textInverse = Color(0xFF000000);
+
+  // Semantic
+  static const error = red500;
+  static const info = blue500;
+  static const success = green500;
+  static const warning = yellow500;
+
+  // Gradients
+  static const brandGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [orange500, orange700],
+  );
+
+  static const errorGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [red500, red700],
+  );
+
+  // ── Raw palette ──
+
+  // Grey
+  static const grey50 = Color(0xFFE6E6E6);
+  static const grey100 = Color(0xFFDEDEDE);
+  static const grey200 = Color(0xFFD9D9D9);
+  static const grey300 = Color(0xFFCCCCCC);
+  static const grey500 = Color(0xFF999999);
+  static const grey600 = Color(0xFF808080);
+  static const grey700 = Color(0xFF4D4D4D);
+  static const grey800 = Color(0xFF333333);
+  static const grey850 = Color(0xFF1F1F23);
+  static const grey900 = Color(0xFF1A1A1A);
+
+  // Orange
+  static const orange50 = Color(0xFFFFEADE);
+  static const orange100 = Color(0xFFFF9F63);
+  static const orange500 = Color(0xFFF57800);
+  static const orange700 = Color(0xFFCC6400);
+  static const orange900 = Color(0xFFB85A00);
+
+  // Blue
+  static const blue500 = Color(0xFF0090C2);
+  static const blue700 = Color(0xFF006A8F);
+  static const blue900 = Color(0xFF00445C);
+
+  // Red
+  static const red500 = Color(0xFFFF1420);
+  static const red700 = Color(0xFF8A2428);
+  static const red900 = Color(0xFF61191C);
+
+  // Green
+  static const green500 = Color(0xFF369F23);
+  static const green700 = Color(0xFF297A1A);
+  static const green900 = Color(0xFF1B5011);
+
+  // Purple
+  static const purple500 = Color(0xFFBE57F9);
+  static const purple700 = Color(0xFF9049BB);
+  static const purple900 = Color(0xFF743998);
+
+  // Yellow
+  static const yellow500 = Color(0xFFFFB829);
+  static const yellow700 = Color(0xFFC2B100);
+  static const yellow900 = Color(0xFF8F5F00);
 }
