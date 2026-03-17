@@ -20,413 +20,875 @@ class DesignCatalogApp extends StatelessWidget {
   }
 }
 
-class CatalogHome extends StatelessWidget {
+// ── Section / sub-section definition ──
+
+class _SubSection {
+  final String name;
+  final GlobalKey key;
+  _SubSection(this.name) : key = GlobalKey();
+}
+
+class _Section {
+  final String name;
+  final GlobalKey key;
+  final List<_SubSection> subSections;
+  bool isExpanded;
+
+  _Section(this.name, List<String> subNames, {this.isExpanded = false})
+      : key = GlobalKey(),
+        subSections = subNames.map((n) => _SubSection(n)).toList();
+}
+
+// ── Main catalog ──
+
+class CatalogHome extends StatefulWidget {
   const CatalogHome({super.key});
+
+  @override
+  State<CatalogHome> createState() => _CatalogHomeState();
+}
+
+class _CatalogHomeState extends State<CatalogHome> {
+  final ScrollController _scrollController = ScrollController();
+  bool _navExpanded = false;
+  int _activeSection = 0;
+
+  late final List<_Section> _sections;
+  // Track which nav sections have sub-items expanded
+  late final Map<int, bool> _navSubExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _sections = [
+      _Section('Foundation', [
+        'Semantic Colors',
+        'Color Palettes',
+        'Gradients',
+        'Typography',
+        '4-Point Grid',
+        'Padding',
+        'Corner Radius',
+      ], isExpanded: true),
+      _Section('Atoms', [
+        'Icons',
+        'Buttons',
+        'Button Playground',
+      ]),
+      _Section('Molecules', []),
+      _Section('Organisms', []),
+      _Section('Templates', []),
+    ];
+    _navSubExpanded = {for (var i = 0; i < _sections.length; i++) i: false};
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Determine which section is currently visible
+    for (int i = _sections.length - 1; i >= 0; i--) {
+      final key = _sections[i].key;
+      if (key.currentContext != null) {
+        final box = key.currentContext!.findRenderObject() as RenderBox?;
+        if (box != null) {
+          final pos = box.localToGlobal(Offset.zero);
+          if (pos.dy <= 120) {
+            if (_activeSection != i) {
+              setState(() => _activeSection = i);
+            }
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  void _scrollToSection(int index) {
+    // Auto-expand the section if collapsed
+    if (!_sections[index].isExpanded) {
+      setState(() => _sections[index].isExpanded = true);
+    }
+    // Wait for build, then scroll
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final key = _sections[index].key;
+      if (key.currentContext != null) {
+        Scrollable.ensureVisible(
+          key.currentContext!,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _scrollToSubSection(int sectionIndex, int subIndex) {
+    // Auto-expand parent
+    if (!_sections[sectionIndex].isExpanded) {
+      setState(() => _sections[sectionIndex].isExpanded = true);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final key = _sections[sectionIndex].subSections[subIndex].key;
+      if (key.currentContext != null) {
+        Scrollable.ensureVisible(
+          key.currentContext!,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _expandAll() {
+    setState(() {
+      for (final s in _sections) {
+        s.isExpanded = true;
+      }
+    });
+  }
+
+  void _collapseAll() {
+    setState(() {
+      for (final s in _sections) {
+        s.isExpanded = false;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.all(AppPadding.pagePadding),
+        child: Row(
           children: [
-            Text('Design System', style: AppTypography.heading4.bold),
-            const SizedBox(height: 4),
-            Text('CATALOG', style: AppTypography.overline),
-            _divider(),
+            // ── Left nav panel ──
+            _buildNavPanel(),
 
-            // ── SEMANTIC COLORS ──
-            Text('SEMANTIC COLORS', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _ColorRow('Brand', AppColors.brand),
-            const _ColorRow('Brand Light', AppColors.brandLight),
-            const _ColorRow('Brand Subtle', AppColors.brandSubtle),
-            const _ColorRow('Brand Dark', AppColors.brandDark),
-            const _ColorRow('Background', AppColors.background),
-            const _ColorRow('Surface', AppColors.surface),
-            const _ColorRow('Surface Border', AppColors.surfaceBorder),
-            const _ColorRow('Text Primary', AppColors.textPrimary),
-            const _ColorRow('Text Secondary', AppColors.textSecondary),
-            const _ColorRow('Error', AppColors.error),
-            const _ColorRow('Info', AppColors.info),
-            const _ColorRow('Success', AppColors.success),
-            const _ColorRow('Warning', AppColors.warning),
+            // ── Main content ──
+            Expanded(
+              child: ListView(
+                controller: _scrollController,
+                padding: EdgeInsets.all(AppPadding.pagePadding),
+                children: [
+                  Text('Design System', style: AppTypography.heading4.bold),
+                  const SizedBox(height: 4),
+                  Text('CATALOG', style: AppTypography.overline),
+                  SizedBox(height: AppGrid.grid24),
 
-            _divider(),
+                  // Foundation
+                  _buildCollapsibleSection(0, _buildFoundationContent()),
 
-            // ── COLOR PALETTES ──
-            Text('GREY', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('50', AppColors.grey50),
-              _PaletteColor('100', AppColors.grey100),
-              _PaletteColor('200', AppColors.grey200),
-              _PaletteColor('300', AppColors.grey300),
-              _PaletteColor('500', AppColors.grey500),
-              _PaletteColor('600', AppColors.grey600),
-              _PaletteColor('700', AppColors.grey700),
-              _PaletteColor('800', AppColors.grey800),
-              _PaletteColor('850', AppColors.grey850),
-              _PaletteColor('900', AppColors.grey900),
-            ]),
+                  SizedBox(height: AppGrid.grid16),
 
-            SizedBox(height: AppGrid.grid24),
-            Text('ORANGE (PRIMARY)', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('50', AppColors.orange50),
-              _PaletteColor('100', AppColors.orange100),
-              _PaletteColor('500', AppColors.orange500),
-              _PaletteColor('700', AppColors.orange700),
-              _PaletteColor('900', AppColors.orange900),
-            ]),
+                  // Atoms
+                  _buildCollapsibleSection(1, _buildAtomsContent()),
 
-            SizedBox(height: AppGrid.grid24),
-            Text('BLUE', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('500', AppColors.blue500),
-              _PaletteColor('700', AppColors.blue700),
-              _PaletteColor('900', AppColors.blue900),
-            ]),
+                  SizedBox(height: AppGrid.grid16),
 
-            SizedBox(height: AppGrid.grid24),
-            Text('RED', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('500', AppColors.red500),
-              _PaletteColor('700', AppColors.red700),
-              _PaletteColor('900', AppColors.red900),
-            ]),
-
-            SizedBox(height: AppGrid.grid24),
-            Text('GREEN', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('500', AppColors.green500),
-              _PaletteColor('700', AppColors.green700),
-              _PaletteColor('900', AppColors.green900),
-            ]),
-
-            SizedBox(height: AppGrid.grid24),
-            Text('PURPLE', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('500', AppColors.purple500),
-              _PaletteColor('700', AppColors.purple700),
-              _PaletteColor('900', AppColors.purple900),
-            ]),
-
-            SizedBox(height: AppGrid.grid24),
-            Text('YELLOW', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _PaletteStrip([
-              _PaletteColor('500', AppColors.yellow500),
-              _PaletteColor('700', AppColors.yellow700),
-              _PaletteColor('900', AppColors.yellow900),
-            ]),
-
-            _divider(),
-
-            // ── GRADIENTS ──
-            Text('GRADIENTS', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            _GradientSwatch('Brand', AppColors.brandGradient),
-            SizedBox(height: AppGrid.grid8),
-            _GradientSwatch('Error', AppColors.errorGradient),
-
-            _divider(),
-
-            // ── TYPOGRAPHY (4-column: Black | Bold | Semi Bold | Regular) ──
-            Text('TYPOGRAPHY', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid8),
-            // Column headers
-            Row(
-              children: [
-                Expanded(child: Text('BLACK', style: AppTypography.overline)),
-                SizedBox(width: AppGrid.grid8),
-                Expanded(child: Text('BOLD', style: AppTypography.overline)),
-                SizedBox(width: AppGrid.grid8),
-                Expanded(child: Text('SEMI BOLD', style: AppTypography.overline)),
-                SizedBox(width: AppGrid.grid8),
-                Expanded(child: Text('REGULAR', style: AppTypography.overline)),
-              ],
-            ),
-            SizedBox(height: AppGrid.grid16),
-
-            _TypeRow('Display 1', AppTypography.display1),
-            _TypeRow('Display 2', AppTypography.display2),
-            _TypeRow('Heading 1', AppTypography.heading1),
-            _TypeRow('Heading 2', AppTypography.heading2),
-            _TypeRow('Heading 3', AppTypography.heading3),
-            _TypeRow('Heading 4', AppTypography.heading4),
-            _TypeRow('Heading 5', AppTypography.heading5),
-            _TypeRow('Pro Heading 6', AppTypography.proHeading6),
-            _TypeRow('Body Large (19.2)', AppTypography.bodyLarge),
-            _TypeRow('Body (16)', AppTypography.body),
-            _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
-
-            SizedBox(height: AppGrid.grid16),
-            Text('LINKS', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid8),
-            Row(
-              children: [
-                Expanded(child: Text('Link Large', style: AppTypography.linkLarge.semiBold)),
-                Expanded(child: Text('Link', style: AppTypography.link.semiBold)),
-                Expanded(child: Text('Link Small', style: AppTypography.linkSmall.semiBold)),
-              ],
-            ),
-
-            _divider(),
-
-            // ── SPACING GRID ──
-            Text('4-POINT GRID (REM-SCALED)', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            _SpacingRow('grid0', '0rem', AppGrid.grid0),
-            _SpacingRow('grid4', '0.25rem', AppGrid.grid4),
-            _SpacingRow('grid8', '0.5rem', AppGrid.grid8),
-            _SpacingRow('grid12', '0.75rem', AppGrid.grid12),
-            _SpacingRow('grid16', '1rem', AppGrid.grid16),
-            _SpacingRow('grid20', '1.25rem', AppGrid.grid20),
-            _SpacingRow('grid24', '1.5rem', AppGrid.grid24),
-            _SpacingRow('grid28', '1.75rem', AppGrid.grid28),
-            _SpacingRow('grid32', '2rem', AppGrid.grid32),
-            _SpacingRow('grid36', '2.25rem', AppGrid.grid36),
-            _SpacingRow('grid40', '2.5rem', AppGrid.grid40),
-            _SpacingRow('grid60', '3.75rem', AppGrid.grid60),
-            _SpacingRow('grid100', '6.25rem', AppGrid.grid100),
-            _SpacingRow('grid160', '10rem', AppGrid.grid160),
-            _SpacingRow('grid240', '15rem', AppGrid.grid240),
-
-            _divider(),
-
-            // ── PADDING ──
-            Text('PADDING (SEMANTIC SPACING)', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            _SpacingRow('rem0', '0rem', AppPadding.rem0),
-            _SpacingRow('rem025', '0.25rem', AppPadding.rem025),
-            _SpacingRow('rem05', '0.5rem', AppPadding.rem05),
-            _SpacingRow('rem075', '0.75rem', AppPadding.rem075),
-            _SpacingRow('rem1', '1rem', AppPadding.rem1),
-            _SpacingRow('rem15', '1.5rem', AppPadding.rem15),
-            _SpacingRow('rem2', '2rem', AppPadding.rem2),
-            _SpacingRow('rem3', '3rem', AppPadding.rem3),
-
-            _divider(),
-
-            // ── CORNER RADIUS ──
-            Text('CORNER RADIUS', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            _RadiusRow('none', AppRadius.none),
-            _RadiusRow('sm (0.5rem)', AppRadius.sm),
-            _RadiusRow('md (1rem)', AppRadius.md),
-            _RadiusRow('lg (1.5rem)', AppRadius.lg),
-            _RadiusRow('xl (2.5rem)', AppRadius.xl),
-            _RadiusRow('pill', AppRadius.pill),
-
-            _divider(),
-
-            // ── ICONS ──
-            Text('ICONS (${AppIcons.all.length})', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-
-            // Icon grid
-            Wrap(
-              spacing: AppGrid.grid16,
-              runSpacing: AppGrid.grid16,
-              children: AppIcons.all.entries.map((e) => SizedBox(
-                width: 72,
-                child: Column(
-                  children: [
-                    AppIcon(e.value, size: IconSizes.lg),
-                    SizedBox(height: AppGrid.grid4),
-                    Text(
-                      e.key,
-                      style: AppTypography.overline,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  // Molecules
+                  _buildCollapsibleSection(2, [
+                    SizedBox(height: AppGrid.grid24),
+                    Center(
+                      child: Text(
+                        'Coming soon',
+                        style: AppTypography.body.regular.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              )).toList(),
-            ),
+                    SizedBox(height: AppGrid.grid24),
+                  ]),
 
-            SizedBox(height: AppGrid.grid24),
+                  SizedBox(height: AppGrid.grid16),
 
-            // Filled icon grid
-            Text('FILLED ICONS (${AppIcons.allFilled.length})', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            Wrap(
-              spacing: AppGrid.grid16,
-              runSpacing: AppGrid.grid16,
-              children: AppIcons.allFilled.entries.map((e) => SizedBox(
-                width: 72,
-                child: Column(
-                  children: [
-                    AppIcon(e.value, size: IconSizes.lg),
-                    SizedBox(height: AppGrid.grid4),
-                    Text(
-                      e.key,
-                      style: AppTypography.overline,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  // Organisms
+                  _buildCollapsibleSection(3, [
+                    SizedBox(height: AppGrid.grid24),
+                    Center(
+                      child: Text(
+                        'Coming soon',
+                        style: AppTypography.body.regular.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              )).toList(),
+                    SizedBox(height: AppGrid.grid24),
+                  ]),
+
+                  SizedBox(height: AppGrid.grid16),
+
+                  // Templates
+                  _buildCollapsibleSection(4, [
+                    SizedBox(height: AppGrid.grid24),
+                    Center(
+                      child: Text(
+                        'Coming soon',
+                        style: AppTypography.body.regular.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: AppGrid.grid24),
+                  ]),
+
+                  SizedBox(height: AppGrid.grid60),
+                ],
+              ),
             ),
-
-            SizedBox(height: AppGrid.grid24),
-
-            // Color variants
-            Text('COLOR VARIANTS', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Row(
-              children: [
-                _IconVariant('White', AppIcons.home, AppColors.textPrimary),
-                _IconVariant('Black', AppIcons.home, AppColors.textInverse),
-                _IconVariant('Disabled', AppIcons.home, AppColors.grey600),
-                _IconVariant('Primary', AppIcons.home, AppColors.brand),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid16),
-
-            // Size variants
-            Text('SIZE VARIANTS', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _IconSize('sm', AppIcons.home, IconSizes.sm),
-                SizedBox(width: AppGrid.grid24),
-                _IconSize('md', AppIcons.home, IconSizes.md),
-                SizedBox(width: AppGrid.grid24),
-                _IconSize('lg', AppIcons.home, IconSizes.lg),
-                SizedBox(width: AppGrid.grid24),
-                _IconSize('xl', AppIcons.home, IconSizes.xl),
-              ],
-            ),
-
-            _divider(),
-
-            // ── BUTTONS ──
-            Text('BUTTONS', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-
-            // By type
-            Text('TYPES', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              children: const [
-                AppButton(label: 'Filled', type: ButtonType.filled),
-                AppButton(label: 'Outline', type: ButtonType.outline),
-                AppButton(label: 'Ghost', type: ButtonType.ghost),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid24),
-
-            // By color
-            Text('COLORS (FILLED)', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              children: const [
-                AppButton(label: 'Brand', color: AppColors.brand),
-                AppButton(label: 'White', color: AppColors.textPrimary),
-                AppButton(label: 'Error', color: AppColors.error),
-                AppButton(label: 'Info', color: AppColors.info),
-                AppButton(label: 'Success', color: AppColors.success),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid16),
-            Text('COLORS (OUTLINE)', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              children: const [
-                AppButton(label: 'Brand', type: ButtonType.outline, color: AppColors.brand),
-                AppButton(label: 'White', type: ButtonType.outline, color: AppColors.textPrimary),
-                AppButton(label: 'Error', type: ButtonType.outline, color: AppColors.error),
-                AppButton(label: 'Info', type: ButtonType.outline, color: AppColors.info),
-                AppButton(label: 'Success', type: ButtonType.outline, color: AppColors.success),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid24),
-
-            // By size
-            Text('SIZES', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: const [
-                AppButton(label: 'Small', size: ButtonSize.sm),
-                AppButton(label: 'Medium', size: ButtonSize.md),
-                AppButton(label: 'Large', size: ButtonSize.lg),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid24),
-
-            // Content patterns
-            Text('CONTENT PATTERNS', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              children: [
-                const AppButton(label: 'Text only'),
-                AppButton(leadingIcon: AppIcons.add),
-                AppButton(leadingIcon: AppIcons.add, label: 'Leading'),
-                AppButton(label: 'Trailing', trailingIcon: AppIcons.arrowRight),
-              ],
-            ),
-
-            SizedBox(height: AppGrid.grid24),
-
-            // States
-            Text('STATES', style: AppTypography.overline),
-            SizedBox(height: AppGrid.grid8),
-            Wrap(
-              spacing: AppGrid.grid8,
-              runSpacing: AppGrid.grid8,
-              children: const [
-                AppButton(label: 'Default'),
-                AppButton(label: 'Disabled', isDisabled: true),
-                AppButton(label: 'Loading', isLoading: true),
-              ],
-            ),
-
-            _divider(),
-
-            // ── BUTTON PLAYGROUND ──
-            Text('BUTTON PLAYGROUND', style: AppTypography.caption),
-            SizedBox(height: AppGrid.grid12),
-            const _ButtonPlayground(),
-
-            SizedBox(height: AppGrid.grid60),
           ],
         ),
       ),
     );
   }
 
-  static Widget _divider() => Divider(
+  // ── Nav panel ──
+
+  Widget _buildNavPanel() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      width: _navExpanded ? 220 : 48,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          right: BorderSide(color: AppColors.surfaceBorder, width: 1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Toggle button
+          InkWell(
+            onTap: () => setState(() => _navExpanded = !_navExpanded),
+            child: Container(
+              height: 48,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              alignment: _navExpanded ? Alignment.centerLeft : Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _navExpanded
+                        ? Icons.view_sidebar
+                        : Icons.view_sidebar_outlined,
+                    color: AppColors.textPrimary,
+                    size: 22,
+                  ),
+                  if (_navExpanded) ...[
+                    SizedBox(width: AppGrid.grid8),
+                    Text(
+                      'Sections',
+                      style: AppTypography.bodySmall.bold,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+
+          if (_navExpanded) ...[
+            Divider(color: AppColors.surfaceBorder, height: 1),
+
+            // Expand / Collapse all
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  _NavAction(
+                    label: 'Expand All',
+                    onTap: _expandAll,
+                  ),
+                  SizedBox(width: AppGrid.grid8),
+                  _NavAction(
+                    label: 'Collapse All',
+                    onTap: _collapseAll,
+                  ),
+                ],
+              ),
+            ),
+
+            Divider(color: AppColors.surfaceBorder, height: 1),
+
+            // Section links
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(_sections.length, (i) {
+                    final section = _sections[i];
+                    final isActive = _activeSection == i;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Top-level section link
+                        InkWell(
+                          onTap: () => _scrollToSection(i),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(
+                                  color: isActive
+                                      ? AppColors.brand
+                                      : Colors.transparent,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    section.name,
+                                    style: AppTypography.bodySmall.bold.copyWith(
+                                      color: isActive
+                                          ? AppColors.brand
+                                          : AppColors.textPrimary,
+                                    ),
+                                  ),
+                                ),
+                                if (section.subSections.isNotEmpty)
+                                  GestureDetector(
+                                    onTap: () => setState(() {
+                                      _navSubExpanded[i] =
+                                          !(_navSubExpanded[i] ?? false);
+                                    }),
+                                    child: AnimatedRotation(
+                                      turns:
+                                          (_navSubExpanded[i] ?? false) ? 0.25 : 0,
+                                      duration: const Duration(milliseconds: 200),
+                                      child: Icon(
+                                        Icons.chevron_right,
+                                        size: 16,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Sub-section links
+                        if ((_navSubExpanded[i] ?? false) &&
+                            section.subSections.isNotEmpty)
+                          ...section.subSections.asMap().entries.map((entry) {
+                            return InkWell(
+                              onTap: () => _scrollToSubSection(i, entry.key),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: 24,
+                                  right: 12,
+                                  top: 4,
+                                  bottom: 4,
+                                ),
+                                child: Text(
+                                  entry.value.name,
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                      ],
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ── Collapsible section ──
+
+  Widget _buildCollapsibleSection(int index, List<Widget> children) {
+    final section = _sections[index];
+    return Column(
+      key: section.key,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header ribbon
+        GestureDetector(
+          onTap: () => setState(() => section.isExpanded = !section.isExpanded),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppPadding.rem1,
+              vertical: AppPadding.rem075,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+              border: Border.all(color: AppColors.surfaceBorder),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    section.name.toUpperCase(),
+                    style: AppTypography.heading5.bold,
+                  ),
+                ),
+                AnimatedRotation(
+                  turns: section.isExpanded ? 0.25 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.chevron_right,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Content
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          child: section.isExpanded
+              ? Padding(
+                  padding: EdgeInsets.only(top: AppGrid.grid16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: children,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+
+  // ── Foundation content ──
+
+  List<Widget> _buildFoundationContent() {
+    final subs = _sections[0].subSections;
+    return [
+      // Semantic Colors
+      _subSectionHeader(subs[0]),
+      SizedBox(height: AppGrid.grid12),
+      const _ColorRow('Brand', AppColors.brand),
+      const _ColorRow('Brand Light', AppColors.brandLight),
+      const _ColorRow('Brand Subtle', AppColors.brandSubtle),
+      const _ColorRow('Brand Dark', AppColors.brandDark),
+      const _ColorRow('Background', AppColors.background),
+      const _ColorRow('Surface', AppColors.surface),
+      const _ColorRow('Surface Border', AppColors.surfaceBorder),
+      const _ColorRow('Text Primary', AppColors.textPrimary),
+      const _ColorRow('Text Secondary', AppColors.textSecondary),
+      const _ColorRow('Error', AppColors.error),
+      const _ColorRow('Info', AppColors.info),
+      const _ColorRow('Success', AppColors.success),
+      const _ColorRow('Warning', AppColors.warning),
+
+      _sectionDivider(),
+
+      // Color Palettes
+      _subSectionHeader(subs[1]),
+      SizedBox(height: AppGrid.grid12),
+      Text('GREY', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('50', AppColors.grey50),
+        _PaletteColor('100', AppColors.grey100),
+        _PaletteColor('200', AppColors.grey200),
+        _PaletteColor('300', AppColors.grey300),
+        _PaletteColor('500', AppColors.grey500),
+        _PaletteColor('600', AppColors.grey600),
+        _PaletteColor('700', AppColors.grey700),
+        _PaletteColor('800', AppColors.grey800),
+        _PaletteColor('850', AppColors.grey850),
+        _PaletteColor('900', AppColors.grey900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('ORANGE (PRIMARY)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('50', AppColors.orange50),
+        _PaletteColor('100', AppColors.orange100),
+        _PaletteColor('500', AppColors.orange500),
+        _PaletteColor('700', AppColors.orange700),
+        _PaletteColor('900', AppColors.orange900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('BLUE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('500', AppColors.blue500),
+        _PaletteColor('700', AppColors.blue700),
+        _PaletteColor('900', AppColors.blue900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('RED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('500', AppColors.red500),
+        _PaletteColor('700', AppColors.red700),
+        _PaletteColor('900', AppColors.red900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('GREEN', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('500', AppColors.green500),
+        _PaletteColor('700', AppColors.green700),
+        _PaletteColor('900', AppColors.green900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('PURPLE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('500', AppColors.purple500),
+        _PaletteColor('700', AppColors.purple700),
+        _PaletteColor('900', AppColors.purple900),
+      ]),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('YELLOW', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      const _PaletteStrip([
+        _PaletteColor('500', AppColors.yellow500),
+        _PaletteColor('700', AppColors.yellow700),
+        _PaletteColor('900', AppColors.yellow900),
+      ]),
+
+      _sectionDivider(),
+
+      // Gradients
+      _subSectionHeader(subs[2]),
+      SizedBox(height: AppGrid.grid12),
+      _GradientSwatch('Brand', AppColors.brandGradient),
+      SizedBox(height: AppGrid.grid8),
+      _GradientSwatch('Error', AppColors.errorGradient),
+
+      _sectionDivider(),
+
+      // Typography
+      _subSectionHeader(subs[3]),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Expanded(child: Text('BLACK', style: AppTypography.overline)),
+          SizedBox(width: AppGrid.grid8),
+          Expanded(child: Text('BOLD', style: AppTypography.overline)),
+          SizedBox(width: AppGrid.grid8),
+          Expanded(child: Text('SEMI BOLD', style: AppTypography.overline)),
+          SizedBox(width: AppGrid.grid8),
+          Expanded(child: Text('REGULAR', style: AppTypography.overline)),
+        ],
+      ),
+      SizedBox(height: AppGrid.grid16),
+
+      _TypeRow('Display 1', AppTypography.display1),
+      _TypeRow('Display 2', AppTypography.display2),
+      _TypeRow('Heading 1', AppTypography.heading1),
+      _TypeRow('Heading 2', AppTypography.heading2),
+      _TypeRow('Heading 3', AppTypography.heading3),
+      _TypeRow('Heading 4', AppTypography.heading4),
+      _TypeRow('Heading 5', AppTypography.heading5),
+      _TypeRow('Pro Heading 6', AppTypography.proHeading6),
+      _TypeRow('Body Large (19.2)', AppTypography.bodyLarge),
+      _TypeRow('Body (16)', AppTypography.body),
+      _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
+
+      SizedBox(height: AppGrid.grid16),
+      Text('LINKS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Expanded(child: Text('Link Large', style: AppTypography.linkLarge.semiBold)),
+          Expanded(child: Text('Link', style: AppTypography.link.semiBold)),
+          Expanded(child: Text('Link Small', style: AppTypography.linkSmall.semiBold)),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // 4-Point Grid
+      _subSectionHeader(subs[4]),
+      SizedBox(height: AppGrid.grid12),
+      _SpacingRow('grid0', '0rem', AppGrid.grid0),
+      _SpacingRow('grid4', '0.25rem', AppGrid.grid4),
+      _SpacingRow('grid8', '0.5rem', AppGrid.grid8),
+      _SpacingRow('grid12', '0.75rem', AppGrid.grid12),
+      _SpacingRow('grid16', '1rem', AppGrid.grid16),
+      _SpacingRow('grid20', '1.25rem', AppGrid.grid20),
+      _SpacingRow('grid24', '1.5rem', AppGrid.grid24),
+      _SpacingRow('grid28', '1.75rem', AppGrid.grid28),
+      _SpacingRow('grid32', '2rem', AppGrid.grid32),
+      _SpacingRow('grid36', '2.25rem', AppGrid.grid36),
+      _SpacingRow('grid40', '2.5rem', AppGrid.grid40),
+      _SpacingRow('grid60', '3.75rem', AppGrid.grid60),
+      _SpacingRow('grid100', '6.25rem', AppGrid.grid100),
+      _SpacingRow('grid160', '10rem', AppGrid.grid160),
+      _SpacingRow('grid240', '15rem', AppGrid.grid240),
+
+      _sectionDivider(),
+
+      // Padding
+      _subSectionHeader(subs[5]),
+      SizedBox(height: AppGrid.grid12),
+      _SpacingRow('rem0', '0rem', AppPadding.rem0),
+      _SpacingRow('rem025', '0.25rem', AppPadding.rem025),
+      _SpacingRow('rem05', '0.5rem', AppPadding.rem05),
+      _SpacingRow('rem075', '0.75rem', AppPadding.rem075),
+      _SpacingRow('rem1', '1rem', AppPadding.rem1),
+      _SpacingRow('rem15', '1.5rem', AppPadding.rem15),
+      _SpacingRow('rem2', '2rem', AppPadding.rem2),
+      _SpacingRow('rem3', '3rem', AppPadding.rem3),
+
+      _sectionDivider(),
+
+      // Corner Radius
+      _subSectionHeader(subs[6]),
+      SizedBox(height: AppGrid.grid12),
+      _RadiusRow('none', AppRadius.none),
+      _RadiusRow('sm (0.5rem)', AppRadius.sm),
+      _RadiusRow('md (1rem)', AppRadius.md),
+      _RadiusRow('lg (1.5rem)', AppRadius.lg),
+      _RadiusRow('xl (2.5rem)', AppRadius.xl),
+      _RadiusRow('pill', AppRadius.pill),
+    ];
+  }
+
+  // ── Atoms content ──
+
+  List<Widget> _buildAtomsContent() {
+    final subs = _sections[1].subSections;
+    return [
+      // Icons
+      _subSectionHeader(subs[0]),
+      SizedBox(height: AppGrid.grid12),
+      Text('OUTLINED (${AppIcons.all.length})', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        children: AppIcons.all.entries.map((e) => SizedBox(
+          width: 72,
+          child: Column(
+            children: [
+              AppIcon(e.value, size: IconSizes.lg),
+              SizedBox(height: AppGrid.grid4),
+              Text(
+                e.key,
+                style: AppTypography.overline,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        )).toList(),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('FILLED (${AppIcons.allFilled.length})', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        children: AppIcons.allFilled.entries.map((e) => SizedBox(
+          width: 72,
+          child: Column(
+            children: [
+              AppIcon(e.value, size: IconSizes.lg),
+              SizedBox(height: AppGrid.grid4),
+              Text(
+                e.key,
+                style: AppTypography.overline,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        )).toList(),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('COLOR VARIANTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          _IconVariant('White', AppIcons.home, AppColors.textPrimary),
+          _IconVariant('Black', AppIcons.home, AppColors.textInverse),
+          _IconVariant('Disabled', AppIcons.home, AppColors.grey600),
+          _IconVariant('Primary', AppIcons.home, AppColors.brand),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid16),
+      Text('SIZE VARIANTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _IconSize('sm', AppIcons.home, IconSizes.sm),
+          SizedBox(width: AppGrid.grid24),
+          _IconSize('md', AppIcons.home, IconSizes.md),
+          SizedBox(width: AppGrid.grid24),
+          _IconSize('lg', AppIcons.home, IconSizes.lg),
+          SizedBox(width: AppGrid.grid24),
+          _IconSize('xl', AppIcons.home, IconSizes.xl),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Buttons
+      _subSectionHeader(subs[1]),
+      SizedBox(height: AppGrid.grid12),
+
+      Text('TYPES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppButton(label: 'Filled', type: ButtonType.filled),
+          AppButton(label: 'Outline', type: ButtonType.outline),
+          AppButton(label: 'Ghost', type: ButtonType.ghost),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('COLORS (FILLED)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppButton(label: 'Brand', color: AppColors.brand),
+          AppButton(label: 'White', color: AppColors.textPrimary),
+          AppButton(label: 'Error', color: AppColors.error),
+          AppButton(label: 'Info', color: AppColors.info),
+          AppButton(label: 'Success', color: AppColors.success),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid16),
+      Text('COLORS (OUTLINE)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppButton(label: 'Brand', type: ButtonType.outline, color: AppColors.brand),
+          AppButton(label: 'White', type: ButtonType.outline, color: AppColors.textPrimary),
+          AppButton(label: 'Error', type: ButtonType.outline, color: AppColors.error),
+          AppButton(label: 'Info', type: ButtonType.outline, color: AppColors.info),
+          AppButton(label: 'Success', type: ButtonType.outline, color: AppColors.success),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppButton(label: 'Small', size: ButtonSize.sm),
+          AppButton(label: 'Medium', size: ButtonSize.md),
+          AppButton(label: 'Large', size: ButtonSize.lg),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('CONTENT PATTERNS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: [
+          const AppButton(label: 'Text only'),
+          AppButton(leadingIcon: AppIcons.add),
+          AppButton(leadingIcon: AppIcons.add, label: 'Leading'),
+          AppButton(label: 'Trailing', trailingIcon: AppIcons.arrowRight),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      Text('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppButton(label: 'Default'),
+          AppButton(label: 'Disabled', isDisabled: true),
+          AppButton(label: 'Loading', isLoading: true),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Button Playground
+      _subSectionHeader(subs[2]),
+      SizedBox(height: AppGrid.grid12),
+      const _ButtonPlayground(),
+    ];
+  }
+
+  // ── Helpers ──
+
+  Widget _subSectionHeader(_SubSection sub) {
+    return Container(
+      key: sub.key,
+      child: Text(sub.name.toUpperCase(), style: AppTypography.caption),
+    );
+  }
+
+  static Widget _sectionDivider() => Divider(
         color: AppColors.surfaceBorder,
         thickness: 1,
         height: AppPadding.sectionGap * 2,
       );
+}
+
+// ── Nav action button ──
+
+class _NavAction extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _NavAction({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: AppTypography.caption.copyWith(
+          color: AppColors.brand,
+        ),
+      ),
+    );
+  }
 }
 
 // ── Catalog helper widgets ──
