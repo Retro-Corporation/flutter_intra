@@ -203,14 +203,14 @@ class CatalogHome extends StatelessWidget {
             // ── PADDING ──
             Text('PADDING (SEMANTIC SPACING)', style: AppTypography.caption),
             SizedBox(height: AppGrid.grid12),
-            _SpacingRow('none', '0rem', AppPadding.none),
-            _SpacingRow('quarter', '0.25rem', AppPadding.quarter),
-            _SpacingRow('half', '0.5rem', AppPadding.half),
-            _SpacingRow('3/4', '0.75rem', AppPadding.threeQuarter),
-            _SpacingRow('one', '1rem', AppPadding.one),
-            _SpacingRow('oneAndHalf', '1.5rem', AppPadding.oneAndHalf),
-            _SpacingRow('two', '2rem', AppPadding.two),
-            _SpacingRow('three', '3rem', AppPadding.three),
+            _SpacingRow('rem0', '0rem', AppPadding.rem0),
+            _SpacingRow('rem025', '0.25rem', AppPadding.rem025),
+            _SpacingRow('rem05', '0.5rem', AppPadding.rem05),
+            _SpacingRow('rem075', '0.75rem', AppPadding.rem075),
+            _SpacingRow('rem1', '1rem', AppPadding.rem1),
+            _SpacingRow('rem15', '1.5rem', AppPadding.rem15),
+            _SpacingRow('rem2', '2rem', AppPadding.rem2),
+            _SpacingRow('rem3', '3rem', AppPadding.rem3),
 
             _divider(),
 
@@ -749,7 +749,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
     final chipStyle = AppTypography.bodySmall.semiBold;
 
     return Container(
-      padding: EdgeInsets.all(AppPadding.one),
+      padding: EdgeInsets.all(AppPadding.rem1),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -934,7 +934,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           onTap: () => onSelected(i),
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: AppPadding.threeQuarter,
+              horizontal: AppPadding.rem075,
               vertical: AppGrid.grid4,
             ),
             decoration: BoxDecoration(

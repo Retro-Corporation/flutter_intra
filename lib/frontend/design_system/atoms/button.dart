@@ -35,7 +35,7 @@ class _ButtonSizeConfig {
   static final Map<ButtonSize, _ButtonSizeConfig> _map = {
     ButtonSize.sm: _ButtonSizeConfig(
       height: 2.25.rem,
-      paddingX: AppPadding.threeQuarter,
+      paddingX: AppPadding.rem075,
       typeStyle: AppTypography.bodySmall,
       iconSize: IconSizes.md,
       gap: AppGrid.grid4,
@@ -43,7 +43,7 @@ class _ButtonSizeConfig {
     ),
     ButtonSize.md: _ButtonSizeConfig(
       height: 2.75.rem,
-      paddingX: AppPadding.one,
+      paddingX: AppPadding.rem1,
       typeStyle: AppTypography.body,
       iconSize: IconSizes.md,
       gap: AppGrid.grid8,
@@ -51,7 +51,7 @@ class _ButtonSizeConfig {
     ),
     ButtonSize.lg: _ButtonSizeConfig(
       height: 3.25.rem,
-      paddingX: AppPadding.oneAndHalf,
+      paddingX: AppPadding.rem15,
       typeStyle: AppTypography.bodyLarge,
       iconSize: IconSizes.lg,
       gap: AppGrid.grid8,

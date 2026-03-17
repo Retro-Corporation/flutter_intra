@@ -9,34 +9,34 @@ class AppPadding {
   // ── Rem-scaled padding tokens ──
 
   /// 0rem → 0px
-  static final double none = AppGrid.grid0;
+  static final double rem0 = AppGrid.grid0;
 
   /// 0.25rem → 4px — tight inner spacing
-  static final double quarter = AppGrid.grid4;
+  static final double rem025 = AppGrid.grid4;
 
   /// 0.5rem → 8px — small component padding
-  static final double half = AppGrid.grid8;
+  static final double rem05 = AppGrid.grid8;
 
   /// 0.75rem → 12px — medium component padding
-  static final double threeQuarter = AppGrid.grid12;
+  static final double rem075 = AppGrid.grid12;
 
   /// 1rem → 16px — standard card/component padding
-  static final double one = AppGrid.grid16;
+  static final double rem1 = AppGrid.grid16;
 
   /// 1.5rem → 24px — page padding
-  static final double oneAndHalf = AppGrid.grid24;
+  static final double rem15 = AppGrid.grid24;
 
   /// 2rem → 32px — section padding
-  static final double two = AppGrid.grid32;
+  static final double rem2 = AppGrid.grid32;
 
   /// 3rem → 48px — large section gaps
-  static final double three = 3.rem;
+  static final double rem3 = 3.rem;
 
   // ── Component-specific aliases ──
 
-  static final double pagePadding = oneAndHalf;
-  static final double cardPadding = one;
-  static final double sectionGap = one;
-  static final double inputPaddingH = one;
-  static final double inputPaddingV = threeQuarter;
+  static final double pagePadding = rem15;
+  static final double cardPadding = rem1;
+  static final double sectionGap = rem1;
+  static final double inputPaddingH = rem1;
+  static final double inputPaddingV = rem075;
 }
