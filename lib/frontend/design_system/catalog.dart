@@ -900,6 +900,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           AppButton(label: 'Active', isActive: true),
           AppButton(label: 'Disabled', isDisabled: true),
           AppButton(label: 'Loading', isLoading: true),
+          AppButton(label: 'Outline', type: ButtonType.outline),
+          AppButton(label: 'Outline Active', type: ButtonType.outline, isActive: true),
         ],
       ),
       SizedBox(height: AppGrid.grid24),
@@ -1298,7 +1300,8 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
                 type: _type,
                 size: _size,
                 color: _colorOptions[_colorIndex].$2,
-                isActive: _isActive ? true : null,
+                isActive: _selfToggle ? null : (_isActive ? true : null),
+                selfToggle: _selfToggle,
                 isDisabled: _isDisabled,
                 isLoading: _isLoading,
                 onPressed: () {},
@@ -1388,7 +1391,14 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           // States
           AppText('STATE', style: AppTypography.overline),
           SizedBox(height: AppGrid.grid8),
-          _buildToggle('Active', _isActive, (v) => setState(() => _isActive = v)),
+          _buildToggle('Active', _isActive, (v) => setState(() {
+            _isActive = v;
+            if (v) _selfToggle = false;
+          })),
+          _buildToggle('Self Toggle', _selfToggle, (v) => setState(() {
+            _selfToggle = v;
+            if (v) _isActive = false;
+          })),
           _buildToggle('Disabled', _isDisabled, (v) => setState(() => _isDisabled = v)),
           _buildToggle('Loading', _isLoading, (v) => setState(() => _isLoading = v)),
           SizedBox(height: AppGrid.grid16),

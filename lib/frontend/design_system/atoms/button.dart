@@ -76,6 +76,19 @@ Color _resolve700(Color color) {
   return AppColors.shadow700[color] ?? _darken(color, 0.2);
 }
 
+Color _resolve900(Color color) {
+  final map = <Color, Color>{
+    AppColors.orange500: AppColors.orange900,
+    AppColors.red500:    AppColors.red900,
+    AppColors.blue500:   AppColors.blue900,
+    AppColors.green500:  AppColors.green900,
+    AppColors.yellow500: AppColors.yellow900,
+    AppColors.purple500: AppColors.purple900,
+    AppColors.textPrimary: AppColors.grey700,
+  };
+  return map[color] ?? _darken(color, 0.4);
+}
+
 _ResolvedColors _resolveColors(
   ButtonType type,
   Color color, {
@@ -103,11 +116,20 @@ _ResolvedColors _resolveColors(
         shadow: _resolve700(color),
       );
     case ButtonType.outline:
+      if (active) {
+        return _ResolvedColors(
+          background: AppColors.grey850,
+          foreground: color,
+          border: color,
+          shadow: color,
+        );
+      }
+      final border900 = _resolve900(color);
       return _ResolvedColors(
         background: AppColors.background,
         foreground: color,
-        border: color,
-        shadow: color,
+        border: border900,
+        shadow: border900,
       );
     case ButtonType.ghost:
       return _ResolvedColors(

@@ -8,6 +8,7 @@ void main() {
   Widget buildTestButton({
     ButtonType type = ButtonType.filled,
     ButtonSize size = ButtonSize.md,
+    Color color = AppColors.brand,
     bool? isActive,
     bool selfToggle = false,
     ValueChanged<bool>? onActiveChanged,
@@ -20,6 +21,7 @@ void main() {
             label: 'Test',
             type: type,
             size: size,
+            color: color,
             isActive: isActive,
             selfToggle: selfToggle,
             onActiveChanged: onActiveChanged,
@@ -408,6 +410,201 @@ void main() {
         final bg = (painter as dynamic).backgroundColor as Color;
         // Default filled: brand color background
         expect(bg, AppColors.brand);
+      },
+    );
+  });
+
+  group('Outline color updates', () {
+    testWidgets(
+      'Default outline border uses 900 shade',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        final painter = findPainter(tester);
+        final borderColor = (painter as dynamic).borderColor as Color;
+        // brand (orange500) → orange900
+        expect(borderColor, AppColors.orange900);
+      },
+    );
+
+    testWidgets(
+      'Default outline background is AppColors.background',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        expect(bg, AppColors.background);
+      },
+    );
+
+    testWidgets(
+      'White outline border uses grey700 (not 900)',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          color: AppColors.textPrimary,
+        ));
+
+        final painter = findPainter(tester);
+        final borderColor = (painter as dynamic).borderColor as Color;
+        expect(borderColor, AppColors.grey700);
+      },
+    );
+
+    testWidgets(
+      'Pressed outline background stays AppColors.background',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        expect(bg, AppColors.background);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+  });
+
+  group('Active state (outline)', () {
+    testWidgets(
+      'Active outline background is grey850',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          isActive: true,
+        ));
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        expect(bg, AppColors.grey850);
+      },
+    );
+
+    testWidgets(
+      'Active outline border is 500 (not 900)',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          isActive: true,
+        ));
+
+        final painter = findPainter(tester);
+        final borderColor = (painter as dynamic).borderColor as Color;
+        // Active uses the passed color directly (brand = orange500)
+        expect(borderColor, AppColors.brand);
+      },
+    );
+
+    testWidgets(
+      'Active outline pressed geometry matches default pressed',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          isActive: true,
+        ));
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final painter = findPainter(tester);
+        expect((painter as dynamic).borderBottom, 1.0);
+        expect((painter as dynamic).borderSide, 1.0);
+        expect((painter as dynamic).borderTop, 1.0);
+        expect((painter as dynamic).faceOffset, 3.0);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Active outline background unchanged on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          isActive: true,
+        ));
+
+        final defaultPainter = findPainter(tester);
+        final defaultBg = (defaultPainter as dynamic).backgroundColor as Color;
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final pressedPainter = findPainter(tester);
+        final pressedBg = (pressedPainter as dynamic).backgroundColor as Color;
+
+        expect(pressedBg, defaultBg);
+        expect(pressedBg, AppColors.grey850);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Active outline no layout shift on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          isActive: true,
+        ));
+
+        final beforeBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final beforeSize = beforeBox.size;
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final afterBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final afterSize = afterBox.size;
+
+        expect(afterSize.width, beforeSize.width);
+        expect(afterSize.height, beforeSize.height);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Self-toggle flips outline between default and active colors',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(
+          type: ButtonType.outline,
+          selfToggle: true,
+        ));
+
+        // Before tap: default (background color)
+        final beforePainter = findPainter(tester);
+        final beforeBg = (beforePainter as dynamic).backgroundColor as Color;
+        expect(beforeBg, AppColors.background);
+
+        // Tap to toggle active
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        // After tap: active (grey850)
+        final afterPainter = findPainter(tester);
+        final afterBg = (afterPainter as dynamic).backgroundColor as Color;
+        expect(afterBg, AppColors.grey850);
+
+        // Tap again to toggle back
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        final resetPainter = findPainter(tester);
+        final resetBg = (resetPainter as dynamic).backgroundColor as Color;
+        expect(resetBg, AppColors.background);
       },
     );
   });
