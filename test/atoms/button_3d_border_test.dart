@@ -49,6 +49,31 @@ void main() {
     );
 
     testWidgets(
+      'Filled button background color unchanged on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton());
+
+        // Get default background color
+        final defaultPainter = findPainter(tester);
+        final defaultBg = (defaultPainter as dynamic).backgroundColor as Color;
+
+        // Press
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        // Get pressed background color
+        final pressedPainter = findPainter(tester);
+        final pressedBg = (pressedPainter as dynamic).backgroundColor as Color;
+
+        // Color must be identical — no darkening
+        expect(pressedBg, defaultBg);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
       'Filled button pressed state flips border to top — no layout shift',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestButton());
@@ -95,6 +120,93 @@ void main() {
         expect((painter as dynamic).borderTop, 1.0);
 
         // Clean up
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Outline button does not crash on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        // This previously crashed with negative EdgeInsets (-2.0 bottom padding)
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        // Verify widget still renders — find the label text
+        expect(find.text('Test'), findsOneWidget);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Outline pressed: border=1px, faceOffset=3, faceSideInset=2',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final painter = findPainter(tester);
+        // Border is 1px all around
+        expect((painter as dynamic).borderTop, 1.0);
+        expect((painter as dynamic).borderBottom, 1.0);
+        expect((painter as dynamic).borderSide, 1.0);
+        // Face drops 3px extra beyond the 1px border
+        expect((painter as dynamic).faceOffset, 3.0);
+        // Face horizontal inset stays at default (2px) even though border is 1px
+        expect((painter as dynamic).faceSideInset, 2.0);
+        // Border is always visible for outline
+        expect((painter as dynamic).showBorder, true);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Outline default: borderTop=1, borderBottom=4, borderSide=2, faceOffset=0',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        final painter = findPainter(tester);
+        expect((painter as dynamic).borderTop, 1.0);
+        expect((painter as dynamic).borderBottom, 4.0);
+        expect((painter as dynamic).borderSide, 2.0);
+        expect((painter as dynamic).faceOffset, 0.0);
+        expect((painter as dynamic).faceSideInset, 2.0);
+        expect((painter as dynamic).showBorder, true);
+      },
+    );
+
+    testWidgets(
+      'Outline button widget size unchanged on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
+
+        // Measure size before press
+        final beforeBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final beforeSize = beforeBox.size;
+
+        // Press
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        // Measure size after press
+        final afterBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final afterSize = afterBox.size;
+
+        // Widget size must not change
+        expect(afterSize.width, beforeSize.width);
+        expect(afterSize.height, beforeSize.height);
+
         await gesture.up();
         await tester.pump();
       },

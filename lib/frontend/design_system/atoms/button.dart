@@ -94,14 +94,14 @@ _ResolvedColors _resolveColors(
               ? AppColors.textInverse
               : AppColors.textPrimary;
       return _ResolvedColors(
-        background: pressed ? _darken(color, 0.15) : color,
+        background: color,
         foreground: fg,
         border: Colors.transparent,
         shadow: _resolve700(color),
       );
     case ButtonType.outline:
       return _ResolvedColors(
-        background: pressed ? color.withValues(alpha: 0.1) : AppColors.background,
+        background: AppColors.background,
         foreground: color,
         border: color,
         shadow: color,
@@ -231,26 +231,37 @@ class _AppButtonState extends State<AppButton> {
     final padX = widget.paddingOverride ?? sizeConfig.paddingX;
 
     // 3D border insets — drawn inside the fixed widget box.
-    // On press, the border flips from bottom to top, shifting the face
-    // down while keeping the widget size constant (no layout shift).
-    final double borderTop;
-    final double borderBottom;
-    final double borderSide;
+    //
+    // layoutSide → constant horizontal padding (prevents width jitter)
+    // visual*    → border sizes sent to the painter
+    // faceOffset → extra vertical shift for the face beyond the border
+    //              (used by outline so the face drops down without thickening the border)
+    //
+    // Height is locked via min+max constraints so vertical padding changes
+    // reposition content inside the box without affecting external layout.
+    final double layoutSide;
+    final double visualTop, visualBottom, visualSide;
+    final double faceOffset;
     final bool showBorder;
+
     if (widget.type == ButtonType.filled) {
-      borderTop = _pressed ? 4.0 : 0.0;
-      borderBottom = _pressed ? 0.0 : 4.0;
-      borderSide = 2.0;
+      layoutSide = 2.0;
+      visualTop = _pressed ? 4.0 : 0.0;
+      visualBottom = _pressed ? 0.0 : 4.0;
+      visualSide = 2.0;
+      faceOffset = 0.0;
       showBorder = !_pressed;
     } else if (widget.type == ButtonType.outline) {
-      borderTop = 1.0;
-      borderBottom = _pressed ? 1.0 : 4.0;
-      borderSide = _pressed ? 1.0 : 2.0;
+      layoutSide = 2.0;
+      visualTop = 1.0;
+      visualBottom = _pressed ? 1.0 : 4.0;
+      visualSide = _pressed ? 1.0 : 2.0;
+      faceOffset = _pressed ? 3.0 : 0.0;  // drop face 3px extra on press
       showBorder = true;
     } else {
-      borderTop = 0.0;
-      borderBottom = 0.0;
-      borderSide = 0.0;
+      layoutSide = 0.0;
+      visualTop = 0.0;    visualBottom = 0.0;  visualSide = 0.0;
+      faceOffset = 0.0;
       showBorder = false;
     }
 
@@ -272,22 +283,25 @@ class _AppButtonState extends State<AppButton> {
           backgroundColor: colors.background,
           borderColor: colors.shadow,
           borderRadius: radius,
-          borderTop: borderTop,
-          borderBottom: borderBottom,
-          borderSide: borderSide,
+          borderTop: visualTop,
+          borderBottom: visualBottom,
+          borderSide: visualSide,
+          faceOffset: faceOffset,
+          faceSideInset: layoutSide,
           showBorder: showBorder,
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minHeight: height,
+            maxHeight: height,
             minWidth: width,
           ),
           child: Padding(
             padding: EdgeInsets.only(
-              left: (_iconOnly ? 0 : padX) + borderSide,
-              right: (_iconOnly ? 0 : padX) + borderSide,
-              top: borderTop,
-              bottom: borderBottom,
+              left: (_iconOnly ? 0 : padX) + layoutSide,
+              right: (_iconOnly ? 0 : padX) + layoutSide,
+              top: visualTop + faceOffset,
+              bottom: (visualBottom - faceOffset).clamp(0.0, double.infinity),
             ),
             child: Center(
               widthFactor: 1.0,
@@ -376,6 +390,8 @@ class _ButtonPainter extends CustomPainter {
   final double borderTop;
   final double borderBottom;
   final double borderSide;
+  final double faceOffset;
+  final double faceSideInset;
   final bool showBorder;
 
   _ButtonPainter({
@@ -385,32 +401,43 @@ class _ButtonPainter extends CustomPainter {
     required this.borderTop,
     required this.borderBottom,
     required this.borderSide,
+    required this.faceOffset,
+    required this.faceSideInset,
     required this.showBorder,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 1. Draw outer rounded rect in border color (skipped when pressed on filled)
+    // 1. Draw border ring (only the border area, not the interior).
+    //    Uses drawDRRect to paint the ring between outer and inner rects,
+    //    leaving the gap between border and face transparent.
     if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
       final outerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width, size.height),
+        Rect.fromLTRB(0, faceOffset, size.width, size.height),
         Radius.circular(borderRadius),
       );
+      final borderInnerRadius = (borderRadius - borderSide).clamp(0.0, double.infinity);
+      final borderInnerRRect = RRect.fromRectAndRadius(
+        Rect.fromLTRB(borderSide, faceOffset + borderTop, size.width - borderSide, size.height - borderBottom),
+        Radius.circular(borderInnerRadius),
+      );
       final borderPaint = Paint()..color = borderColor;
-      canvas.drawRRect(outerRRect, borderPaint);
+      canvas.drawDRRect(outerRRect, borderInnerRRect, borderPaint);
     }
 
-    // 2. Draw the button face inset from the border
+    // 2. Draw the button face.
+    //    faceSideInset keeps horizontal position constant regardless of border width.
+    //    faceOffset shifts the face down without thickening the border.
     final faceRect = Rect.fromLTRB(
-      borderSide,
-      borderTop,
-      size.width - borderSide,
+      faceSideInset,
+      borderTop + faceOffset,
+      size.width - faceSideInset,
       size.height - borderBottom,
     );
-    final innerRadius = (borderRadius - borderSide).clamp(0.0, double.infinity);
+    final faceRadius = (borderRadius - faceSideInset).clamp(0.0, double.infinity);
     final faceRRect = RRect.fromRectAndRadius(
       faceRect,
-      Radius.circular(innerRadius),
+      Radius.circular(faceRadius),
     );
     final facePaint = Paint()..color = backgroundColor;
     canvas.drawRRect(faceRRect, facePaint);
@@ -424,5 +451,7 @@ class _ButtonPainter extends CustomPainter {
       borderTop != old.borderTop ||
       borderBottom != old.borderBottom ||
       borderSide != old.borderSide ||
+      faceOffset != old.faceOffset ||
+      faceSideInset != old.faceSideInset ||
       showBorder != old.showBorder;
 }
