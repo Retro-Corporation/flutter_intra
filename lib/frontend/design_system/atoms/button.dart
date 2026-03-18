@@ -229,26 +229,34 @@ class _AppButtonState extends State<AppButton> {
 
     final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
     final padX = widget.paddingOverride ?? sizeConfig.paddingX;
-    final height = widget.heightOverride ?? sizeConfig.height;
-    final width = widget.widthOverride ?? (_iconOnly ? height : 0.0);
 
-    // 3D border insets — shrink on press for "push in" effect
+    // 3D border insets — drawn inside the fixed widget box.
+    // On press, the border flips from bottom to top, shifting the face
+    // down while keeping the widget size constant (no layout shift).
     final double borderTop;
     final double borderBottom;
     final double borderSide;
+    final bool showBorder;
     if (widget.type == ButtonType.filled) {
-      borderTop = _pressed ? 1.0 : 0.0;
-      borderBottom = _pressed ? 1.0 : 4.0;
-      borderSide = _pressed ? 1.0 : 2.0;
+      borderTop = _pressed ? 4.0 : 0.0;
+      borderBottom = _pressed ? 0.0 : 4.0;
+      borderSide = 2.0;
+      showBorder = !_pressed;
     } else if (widget.type == ButtonType.outline) {
       borderTop = 1.0;
       borderBottom = _pressed ? 1.0 : 4.0;
       borderSide = _pressed ? 1.0 : 2.0;
+      showBorder = true;
     } else {
       borderTop = 0.0;
       borderBottom = 0.0;
       borderSide = 0.0;
+      showBorder = false;
     }
+
+    // Widget size is fixed — always the token height. Never changes.
+    final height = widget.heightOverride ?? sizeConfig.height;
+    final width = widget.widthOverride ?? (_iconOnly ? height : 0.0);
 
     return GestureDetector(
       onTapDown: _interactive ? (_) => setState(() => _pressed = true) : null,
@@ -262,11 +270,12 @@ class _AppButtonState extends State<AppButton> {
       child: CustomPaint(
         painter: _ButtonPainter(
           backgroundColor: colors.background,
-          shadowColor: colors.shadow,
+          borderColor: colors.shadow,
           borderRadius: radius,
           borderTop: borderTop,
           borderBottom: borderBottom,
           borderSide: borderSide,
+          showBorder: showBorder,
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -275,8 +284,10 @@ class _AppButtonState extends State<AppButton> {
           ),
           child: Padding(
             padding: EdgeInsets.only(
-              left: (_iconOnly ? 0 : padX),
-              right: (_iconOnly ? 0 : padX),
+              left: (_iconOnly ? 0 : padX) + borderSide,
+              right: (_iconOnly ? 0 : padX) + borderSide,
+              top: borderTop,
+              bottom: borderBottom,
             ),
             child: Center(
               widthFactor: 1.0,
@@ -360,31 +371,33 @@ class _AppButtonState extends State<AppButton> {
 
 class _ButtonPainter extends CustomPainter {
   final Color backgroundColor;
-  final Color shadowColor;
+  final Color borderColor;
   final double borderRadius;
   final double borderTop;
   final double borderBottom;
   final double borderSide;
+  final bool showBorder;
 
   _ButtonPainter({
     required this.backgroundColor,
-    required this.shadowColor,
+    required this.borderColor,
     required this.borderRadius,
     required this.borderTop,
     required this.borderBottom,
     required this.borderSide,
+    required this.showBorder,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 1. Draw outer rounded rect in border color (shadow or accent)
-    if (borderBottom > 0 || borderSide > 0 || borderTop > 0) {
+    // 1. Draw outer rounded rect in border color (skipped when pressed on filled)
+    if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
       final outerRRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(0, 0, size.width, size.height),
         Radius.circular(borderRadius),
       );
-      final shadowPaint = Paint()..color = shadowColor;
-      canvas.drawRRect(outerRRect, shadowPaint);
+      final borderPaint = Paint()..color = borderColor;
+      canvas.drawRRect(outerRRect, borderPaint);
     }
 
     // 2. Draw the button face inset from the border
@@ -406,9 +419,10 @@ class _ButtonPainter extends CustomPainter {
   @override
   bool shouldRepaint(_ButtonPainter old) =>
       backgroundColor != old.backgroundColor ||
-      shadowColor != old.shadowColor ||
+      borderColor != old.borderColor ||
       borderRadius != old.borderRadius ||
       borderTop != old.borderTop ||
       borderBottom != old.borderBottom ||
-      borderSide != old.borderSide;
+      borderSide != old.borderSide ||
+      showBorder != old.showBorder;
 }
