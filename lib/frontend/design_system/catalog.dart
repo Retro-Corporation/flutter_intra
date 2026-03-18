@@ -74,6 +74,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Text',
         'Icons',
         'Buttons',
+        'Checkboxes',
         'Button Playground',
       ]),
       _Section('Molecules', []),
@@ -911,8 +912,78 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Button Playground
+      // Checkboxes
       _subSectionHeader(subs[3]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: [
+          AppCheckbox(selfToggle: true),
+          AppCheckbox(value: CheckboxValue.checked),
+          AppCheckbox(value: CheckboxValue.indeterminate),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.sm),
+          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.md),
+          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.lg),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppCheckbox(value: CheckboxValue.checked, color: AppColors.brand),
+          AppCheckbox(value: CheckboxValue.checked, color: AppColors.error),
+          AppCheckbox(value: CheckboxValue.checked, color: AppColors.success),
+          AppCheckbox(value: CheckboxValue.checked, color: AppColors.info),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('DISABLED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppCheckbox(value: CheckboxValue.unchecked, isDisabled: true),
+          AppCheckbox(value: CheckboxValue.checked, isDisabled: true),
+          AppCheckbox(value: CheckboxValue.indeterminate, isDisabled: true),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          AppCheckbox(selfToggle: true),
+          SizedBox(width: AppGrid.grid8),
+          AppText('Checkbox text', style: AppTypography.body.regular),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Button Playground
+      _subSectionHeader(subs[4]),
       SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
     ];
@@ -1238,6 +1309,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
   bool _hasLeadingIcon = false;
   bool _hasTrailingIcon = false;
   bool _isActive = false;
+  bool _selfToggle = false;
   bool _isDisabled = false;
   bool _isLoading = false;
 

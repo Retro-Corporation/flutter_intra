@@ -51,8 +51,10 @@ class AppIcons {
 
   // ── Status ──
   static const alert = '$_base/alert.svg';
+  static const check = '$_base/check.svg';
   static const checkbox = '$_base/checkbox.svg';
   static const error = '$_base/error.svg';
+  static const minus = '$_base/minus.svg';
   static const info = '$_base/info.svg';
   static const success = '$_base/success.svg';
   static const verified = '$_base/verified.svg';
@@ -188,6 +190,7 @@ class AppIcons {
     'calendar': calendar,
     'camera': camera,
     'chat': chat,
+    'check': check,
     'checkbox': checkbox,
     'close': close,
     'comment': comment,
@@ -215,6 +218,7 @@ class AppIcons {
     'list-view': listView,
     'lock': lock,
     'medal': medal,
+    'minus': minus,
     'more-dots': moreDots,
     'notebook': notebook,
     'notification': notification,

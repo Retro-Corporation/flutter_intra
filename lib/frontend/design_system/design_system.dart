@@ -16,3 +16,4 @@ export 'icons/icon_sizes.dart';
 export 'atoms/text.dart';
 export 'atoms/icon.dart';
 export 'atoms/button.dart';
+export 'atoms/checkbox.dart';
