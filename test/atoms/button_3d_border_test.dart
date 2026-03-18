@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_intra/frontend/design_system/atoms/button.dart';
+import 'package:flutter_intra/frontend/design_system/foundation/colors.dart';
 
 void main() {
   // Helper to wrap widget in MaterialApp for testing
   Widget buildTestButton({
     ButtonType type = ButtonType.filled,
     ButtonSize size = ButtonSize.md,
+    bool? isActive,
+    bool selfToggle = false,
+    ValueChanged<bool>? onActiveChanged,
+    VoidCallback? onPressed,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -15,7 +20,10 @@ void main() {
             label: 'Test',
             type: type,
             size: size,
-            onPressed: () {},
+            isActive: isActive,
+            selfToggle: selfToggle,
+            onActiveChanged: onActiveChanged,
+            onPressed: onPressed ?? () {},
           ),
         ),
       ),
@@ -209,6 +217,197 @@ void main() {
 
         await gesture.up();
         await tester.pump();
+      },
+    );
+  });
+
+  group('Active state (filled)', () {
+    testWidgets(
+      'Active default has same geometry as default filled',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: true));
+
+        final painter = findPainter(tester);
+        expect((painter as dynamic).borderBottom, 4.0);
+        expect((painter as dynamic).borderSide, 2.0);
+        expect((painter as dynamic).borderTop, 0.0);
+        expect((painter as dynamic).showBorder, true);
+      },
+    );
+
+    testWidgets(
+      'Active colors: surface background, brand border color',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: true));
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        final borderColor = (painter as dynamic).borderColor as Color;
+
+        expect(bg, AppColors.surface);
+        expect(borderColor, AppColors.brandDark); // orange700 via _resolve700
+      },
+    );
+
+    testWidgets(
+      'Active pressed has same geometry as default pressed',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: true));
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final painter = findPainter(tester);
+        expect((painter as dynamic).borderTop, 4.0);
+        expect((painter as dynamic).borderBottom, 0.0);
+        expect((painter as dynamic).borderSide, 2.0);
+        expect((painter as dynamic).showBorder, false);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Active background unchanged on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: true));
+
+        final defaultPainter = findPainter(tester);
+        final defaultBg = (defaultPainter as dynamic).backgroundColor as Color;
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final pressedPainter = findPainter(tester);
+        final pressedBg = (pressedPainter as dynamic).backgroundColor as Color;
+
+        expect(pressedBg, defaultBg);
+        expect(pressedBg, AppColors.surface);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Active no layout shift on press',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: true));
+
+        final beforeBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final beforeSize = beforeBox.size;
+
+        final gesture = await tester.press(find.byType(GestureDetector));
+        await tester.pump();
+
+        final afterBox = tester.renderObject<RenderBox>(
+          find.byType(GestureDetector),
+        );
+        final afterSize = afterBox.size;
+
+        expect(afterSize.width, beforeSize.width);
+        expect(afterSize.height, beforeSize.height);
+
+        await gesture.up();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'Self-toggle flips between default and active colors',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(selfToggle: true));
+
+        // Before tap: default colors (brand background)
+        final beforePainter = findPainter(tester);
+        final beforeBg = (beforePainter as dynamic).backgroundColor as Color;
+        expect(beforeBg, AppColors.brand);
+
+        // Tap to toggle active
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        // After tap: active colors (surface background)
+        final afterPainter = findPainter(tester);
+        final afterBg = (afterPainter as dynamic).backgroundColor as Color;
+        expect(afterBg, AppColors.surface);
+
+        // Tap again to toggle back
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        final resetPainter = findPainter(tester);
+        final resetBg = (resetPainter as dynamic).backgroundColor as Color;
+        expect(resetBg, AppColors.brand);
+      },
+    );
+
+    testWidgets(
+      'Self-toggle fires onActiveChanged callback',
+      (WidgetTester tester) async {
+        final values = <bool>[];
+        await tester.pumpWidget(buildTestButton(
+          selfToggle: true,
+          onActiveChanged: (v) => values.add(v),
+        ));
+
+        // First tap → active
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+        expect(values, [true]);
+
+        // Second tap → inactive
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+        expect(values, [true, false]);
+      },
+    );
+
+    testWidgets(
+      'Parent-controlled does not self-toggle',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton(isActive: false));
+
+        // Tap — parent-controlled, so button state doesn't change internally
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        // Still brand (not surface), because isActive is still false
+        expect(bg, AppColors.brand);
+      },
+    );
+
+    testWidgets(
+      'Parent-controlled fires onActiveChanged with toggled value',
+      (WidgetTester tester) async {
+        final values = <bool>[];
+        await tester.pumpWidget(buildTestButton(
+          isActive: false,
+          onActiveChanged: (v) => values.add(v),
+        ));
+
+        await tester.tap(find.byType(GestureDetector));
+        await tester.pump();
+
+        // Should fire with !isActive = true
+        expect(values, [true]);
+      },
+    );
+
+    testWidgets(
+      'Null isActive means no active behavior — default colors',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestButton());
+
+        final painter = findPainter(tester);
+        final bg = (painter as dynamic).backgroundColor as Color;
+        // Default filled: brand color background
+        expect(bg, AppColors.brand);
       },
     );
   });

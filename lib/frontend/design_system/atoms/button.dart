@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/grid.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../foundation/typography.dart';
-import '../icons/icon_sizes.dart';
-import 'icon.dart';
+import '../design_system.dart';
 
 // ── Enums ──
 
@@ -86,9 +80,18 @@ _ResolvedColors _resolveColors(
   ButtonType type,
   Color color, {
   bool pressed = false,
+  bool active = false,
 }) {
   switch (type) {
     case ButtonType.filled:
+      if (active) {
+        return _ResolvedColors(
+          background: AppColors.surface,
+          foreground: color,
+          border: Colors.transparent,
+          shadow: _resolve700(color),
+        );
+      }
       final fg =
           ThemeData.estimateBrightnessForColor(color) == Brightness.light
               ? AppColors.textInverse
@@ -161,6 +164,22 @@ class AppButton extends StatefulWidget {
   /// Disables the button and reduces content opacity.
   final bool isDisabled;
 
+  /// Whether the button is in its active (toggled-on) state.
+  /// - null (default): no active state behavior, button works normally.
+  /// - true/false: parent controls active state externally.
+  /// Cannot be used together with [selfToggle].
+  final bool? isActive;
+
+  /// If true, the button toggles its own active state on tap.
+  /// [onActiveChanged] is still called to notify the parent.
+  /// Cannot be used together with [isActive].
+  final bool selfToggle;
+
+  /// Called when the active state changes.
+  /// For parent-controlled mode, update your state variable here.
+  /// For self-toggle mode, use this to react to changes.
+  final ValueChanged<bool>? onActiveChanged;
+
   /// Called when the button is tapped (ignored when disabled or loading).
   final VoidCallback? onPressed;
 
@@ -186,6 +205,9 @@ class AppButton extends StatefulWidget {
     this.color = AppColors.brand,
     this.isLoading = false,
     this.isDisabled = false,
+    this.isActive,
+    this.selfToggle = false,
+    this.onActiveChanged,
     this.onPressed,
     this.radiusOverride,
     this.paddingOverride,
@@ -194,6 +216,10 @@ class AppButton extends StatefulWidget {
   }) : assert(
          label != null || leadingIcon != null || trailingIcon != null,
          'AppButton requires at least a label or an icon',
+       ),
+       assert(
+         !(selfToggle && isActive != null),
+         'Cannot use both selfToggle and isActive. Use one or the other.',
        );
 
   @override
@@ -202,11 +228,25 @@ class AppButton extends StatefulWidget {
 
 class _AppButtonState extends State<AppButton> {
   bool _pressed = false;
+  bool _selfActive = false;
 
   bool get _interactive => !widget.isDisabled && !widget.isLoading;
+  bool get _active {
+    if (widget.selfToggle) return _selfActive;
+    return widget.isActive ?? false;
+  }
+
   bool get _iconOnly =>
       widget.label == null &&
       (widget.leadingIcon != null || widget.trailingIcon != null);
+
+  @override
+  void didUpdateWidget(covariant AppButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!widget.selfToggle && oldWidget.selfToggle) {
+      _selfActive = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,6 +265,7 @@ class _AppButtonState extends State<AppButton> {
       widget.type,
       widget.color,
       pressed: _pressed,
+      active: _active,
     );
 
     final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
@@ -273,7 +314,15 @@ class _AppButtonState extends State<AppButton> {
       onTapDown: _interactive ? (_) => setState(() => _pressed = true) : null,
       onTapUp: _interactive
           ? (_) {
-              setState(() => _pressed = false);
+              setState(() {
+                _pressed = false;
+                if (widget.selfToggle) {
+                  _selfActive = !_selfActive;
+                  widget.onActiveChanged?.call(_selfActive);
+                } else if (widget.isActive != null) {
+                  widget.onActiveChanged?.call(!widget.isActive!);
+                }
+              });
               widget.onPressed?.call();
             }
           : null,
@@ -333,11 +382,10 @@ class _AppButtonState extends State<AppButton> {
         children.add(SizedBox(width: sizeConfig.gap));
       }
       children.add(
-        Text(
+        AppText(
           widget.label!,
-          style: sizeConfig.typeStyle.semiBold.copyWith(
-            color: colors.foreground,
-          ),
+          style: sizeConfig.typeStyle.semiBold,
+          color: colors.foreground,
         ),
       );
     }
