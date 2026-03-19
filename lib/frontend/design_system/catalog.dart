@@ -75,6 +75,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Icons',
         'Buttons',
         'Checkboxes',
+        'Toggles',
+        'Badges',
+        'Text Fields',
+        'Radios',
         'Button Playground',
       ]),
       _Section('Molecules', []),
@@ -982,8 +986,265 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Button Playground
+      // Toggles
       _subSectionHeader(subs[4]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppToggle(selfToggle: true),
+          AppToggle(value: true),
+          AppToggle(value: false),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppToggle(value: true, size: ToggleSize.sm),
+          AppToggle(value: true, size: ToggleSize.md),
+          AppToggle(value: true, size: ToggleSize.lg),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppToggle(value: true, color: AppColors.brand),
+          AppToggle(value: true, color: AppColors.error),
+          AppToggle(value: true, color: AppColors.success),
+          AppToggle(value: true, color: AppColors.info),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('DISABLED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppToggle(value: false, isDisabled: true),
+          AppToggle(value: true, isDisabled: true),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Badges
+      _subSectionHeader(subs[5]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppBadge(label: 'Text Only'),
+          AppBadge(leadingIcon: AppIcons.star, label: 'Icon + Text'),
+          AppBadge(leadingIcon: AppIcons.crown),
+          AppBadge(avatar: BadgeAvatarInitials('TP'), label: 'Avatar + Text'),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('FILL STYLES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppBadge(label: 'Filled'),
+          AppBadge(label: 'Outline', type: BadgeType.outline),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS (FILLED)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppBadge(label: 'Orange', color: AppColors.orange500),
+          AppBadge(label: 'Blue', color: AppColors.blue500),
+          AppBadge(label: 'Red', color: AppColors.red500),
+          AppBadge(label: 'Green', color: AppColors.green500),
+          AppBadge(label: 'Purple', color: AppColors.purple500),
+          AppBadge(label: 'Yellow', color: AppColors.yellow500),
+          AppBadge(label: 'Grey', color: AppColors.grey500),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS (OUTLINE)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppBadge(label: 'Orange', type: BadgeType.outline, color: AppColors.orange500),
+          AppBadge(label: 'Blue', type: BadgeType.outline, color: AppColors.blue500),
+          AppBadge(label: 'Red', type: BadgeType.outline, color: AppColors.red500),
+          AppBadge(label: 'Green', type: BadgeType.outline, color: AppColors.green500),
+          AppBadge(label: 'Purple', type: BadgeType.outline, color: AppColors.purple500),
+          AppBadge(label: 'Yellow', type: BadgeType.outline, color: AppColors.yellow500),
+          AppBadge(label: 'Grey', type: BadgeType.outline, color: AppColors.grey500),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppBadge(label: 'XS', size: BadgeSize.xs),
+          AppBadge(label: 'Small', size: BadgeSize.sm),
+          AppBadge(label: 'Medium', size: BadgeSize.md),
+          AppBadge(label: 'Large', size: BadgeSize.lg),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('ICON SLOTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppBadge(leadingIcon: AppIcons.star, label: 'Leading'),
+          AppBadge(label: 'Trailing', trailingIcon: AppIcons.close),
+          AppBadge(leadingIcon: AppIcons.star, label: 'Both', trailingIcon: AppIcons.close),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('AVATAR TYPES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppBadge(avatar: BadgeAvatarIcon(AppIcons.crown), label: 'Icon'),
+          AppBadge(avatar: BadgeAvatarInitials('TP'), label: 'Initials'),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Text Fields
+      _subSectionHeader(subs[6]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      AppTextField(hintText: 'Text box...'),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH VALUE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      AppTextField(
+        controller: TextEditingController(text: 'Hello world'),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('PASSWORD', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      AppTextField(hintText: 'Enter password...', obscureText: true),
+
+      _sectionDivider(),
+
+      // Radios
+      _subSectionHeader(subs[7]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppRadio(selfToggle: true),
+          AppRadio(selected: true),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppRadio(selected: true, size: RadioSize.sm),
+          AppRadio(selected: true, size: RadioSize.md),
+          AppRadio(selected: true, size: RadioSize.lg),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppRadio(selected: true, color: AppColors.brand),
+          AppRadio(selected: true, color: AppColors.error),
+          AppRadio(selected: true, color: AppColors.success),
+          AppRadio(selected: true, color: AppColors.info),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('DISABLED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        children: const [
+          AppRadio(selected: false, isDisabled: true),
+          AppRadio(selected: true, isDisabled: true),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          AppRadio(selfToggle: true),
+          SizedBox(width: AppGrid.grid8),
+          AppText('Radio text', style: AppTypography.body.regular),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Button Playground
+      _subSectionHeader(subs[8]),
       SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
     ];
