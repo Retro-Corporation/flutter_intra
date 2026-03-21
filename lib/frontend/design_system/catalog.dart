@@ -77,12 +77,19 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Checkboxes',
         'Toggles',
         'Badges',
+        'Avatars',
         'Text Fields',
         'Radios',
         'Path Buttons',
         'Button Playground',
       ]),
-      _Section('Molecules', []),
+      _Section('Molecules', [
+        'Text Fields',
+        'Password Fields',
+        'Text Areas',
+        'Number Fields',
+        'Search Bar',
+      ]),
       _Section('Organisms', []),
       _Section('Templates', []),
     ];
@@ -198,17 +205,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                   SizedBox(height: AppGrid.grid16),
 
                   // Molecules
-                  _buildCollapsibleSection(2, [
-                    SizedBox(height: AppGrid.grid24),
-                    Center(
-                      child: AppText(
-                        'Coming soon',
-                        style: AppTypography.body.regular,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    SizedBox(height: AppGrid.grid24),
-                  ]),
+                  _buildCollapsibleSection(2, _buildMoleculesContent()),
 
                   SizedBox(height: AppGrid.grid16),
 
@@ -1153,8 +1150,115 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Text Fields
+      // Avatars
       _subSectionHeader(subs[6]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('SIZES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppAvatar(content: AvatarInitials('XS'), size: AvatarSize.xs),
+          AppAvatar(content: AvatarInitials('SM'), size: AvatarSize.sm),
+          AppAvatar(content: AvatarInitials('MD'), size: AvatarSize.md),
+          AppAvatar(content: AvatarInitials('LG'), size: AvatarSize.lg),
+          AppAvatar(content: AvatarInitials('XL'), size: AvatarSize.xl),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('CONTENT TYPES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppAvatar(content: AvatarImage('https://i.pravatar.cc/150?img=3')),
+          AppAvatar(content: AvatarInitials('TP')),
+          AppAvatar(),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('ALL 4 BADGE DOTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppAvatar(
+            content: AvatarInitials('TP'),
+            size: AvatarSize.lg,
+            statusDot: AvatarBadgeDot(color: AppColors.success),
+            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '3'),
+            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '5'),
+            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
+          ),
+          AppAvatar(
+            content: AvatarInitials('TP'),
+            size: AvatarSize.xl,
+            statusDot: AvatarBadgeDot(color: AppColors.success),
+            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '12'),
+            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '8'),
+            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('INDIVIDUAL DOTS', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppAvatar(
+            content: AvatarInitials('ST'),
+            statusDot: AvatarBadgeDot(color: AppColors.success),
+          ),
+          AppAvatar(
+            content: AvatarInitials('NT'),
+            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '9'),
+          ),
+          AppAvatar(
+            content: AvatarInitials('AV'),
+            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '2'),
+          ),
+          AppAvatar(
+            content: AvatarInitials('AD'),
+            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppAvatar(content: AvatarInitials('LD'), isLoading: true),
+          AppAvatar(content: AvatarInitials('DI'), isDisabled: true),
+          AppAvatar(
+            content: AvatarInitials('LD'),
+            size: AvatarSize.lg,
+            isLoading: true,
+          ),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Text Fields
+      _subSectionHeader(subs[7]),
       SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline),
@@ -1176,7 +1280,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[8]),
       SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline),
@@ -1245,7 +1349,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Path Buttons
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline),
@@ -1555,9 +1659,300 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Button Playground
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
+    ];
+  }
+
+  // ── Molecules content ──
+
+  List<Widget> _buildMoleculesContent() {
+    final subs = _sections[2].subSections;
+    return [
+      // ── Text Fields ──
+      _subSectionHeader(subs[0]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Default',
+          hintText: 'Text box...',
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Focused',
+          hintText: 'Text box...',
+          state: FieldState.focused,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Error',
+          hintText: 'Text box...',
+          helperText: 'Something went wrong',
+          state: FieldState.error,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Success',
+          hintText: 'Text box...',
+          helperText: 'Looks good!',
+          state: FieldState.success,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Disabled',
+          hintText: 'Text box...',
+          state: FieldState.disabled,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH HELPER TEXT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Title for text box',
+          hintText: 'Text box...',
+          helperText: 'Helper Text',
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH LEADING ICON', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'With icon',
+          hintText: 'Search items...',
+          leadingIcon: AppIcons.search,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH CHARACTER COUNT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Username',
+          hintText: 'Enter username...',
+          helperText: 'Helper Text',
+          maxLength: 20,
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Password Fields ──
+      _subSectionHeader(subs[1]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+          state: FieldState.focused,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+          state: FieldState.error,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+          state: FieldState.success,
+        ),
+      ),
+      SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+          state: FieldState.disabled,
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Text Areas ──
+      _subSectionHeader(subs[2]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('FIXED HEIGHT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 400,
+        child: AppTextArea(
+          label: 'Description',
+          hintText: 'Enter a description...',
+          helperText: 'Max 200 characters',
+          maxLength: 200,
+          maxLines: 4,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('AUTO-GROW', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 400,
+        child: AppTextArea(
+          label: 'Notes',
+          hintText: 'Start typing...',
+          helperText: 'Grows as you type',
+          autoGrow: true,
+          minLines: 2,
+          maxLines: 8,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('ERROR STATE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 400,
+        child: AppTextArea(
+          label: 'Description',
+          hintText: 'Enter a description...',
+          helperText: 'This field is required',
+          state: FieldState.error,
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Number Fields ──
+      _subSectionHeader(subs[3]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('INSIDE (DEFAULT)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: AppNumberField(
+          label: 'Quantity',
+          hintText: '0',
+          value: 1,
+          min: 0,
+          max: 99,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('OUTSIDE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 280,
+        child: AppNumberField(
+          label: 'Quantity',
+          hintText: '0',
+          value: 1,
+          min: 0,
+          max: 99,
+          stepperLayout: StepperLayout.outside,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH HELPER TEXT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: AppNumberField(
+          label: 'Players',
+          hintText: '0',
+          helperText: 'Min 2, Max 8',
+          value: 2,
+          min: 2,
+          max: 8,
+        ),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('DISABLED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: AppNumberField(
+          label: 'Quantity',
+          hintText: '0',
+          value: 5,
+          state: FieldState.disabled,
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Search Bar ──
+      _subSectionHeader(subs[4]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppSearchBar(hintText: 'Search Bar...'),
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('WITH VALUE', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: AppSearchBar(
+          hintText: 'Search bar',
+          controller: TextEditingController(text: 'Flutter'),
+        ),
+      ),
     ];
   }
 
