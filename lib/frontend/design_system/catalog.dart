@@ -79,6 +79,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Badges',
         'Text Fields',
         'Radios',
+        'Path Buttons',
         'Button Playground',
       ]),
       _Section('Molecules', []),
@@ -1243,8 +1244,318 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Button Playground
+      // Path Buttons
       _subSectionHeader(subs[8]),
+      SizedBox(height: AppGrid.grid12),
+
+      AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.active,
+            icon: AppIcons.crownFilled,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.active,
+            icon: AppIcons.starFilled,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.active,
+            icon: AppIcons.trophyFilled,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COMPLETED (MIXED SEGMENTS)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.crownFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.completed,
+            icon: AppIcons.starFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.completed,
+            icon: AppIcons.trophyFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('LOCKED', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.locked,
+            icon: AppIcons.crownFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.locked,
+            icon: AppIcons.starFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.locked,
+            icon: AppIcons.trophyFilled,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('SEGMENT COUNTS (1–5)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: const [
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.medal,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.medal,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.medal,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.medal,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.medal,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+        ],
+      ),
+
+      SizedBox(height: AppGrid.grid24),
+      AppText('COLORS (CYCLING SHAPES)', style: AppTypography.overline),
+      SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          // Orange — circle, active
+          AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.active,
+            icon: AppIcons.crownFilled,
+            color: AppColors.orange500,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Red — triangle, active
+          AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.active,
+            icon: AppIcons.starFilled,
+            color: AppColors.red500,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Blue — square, active
+          AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.active,
+            icon: AppIcons.trophyFilled,
+            color: AppColors.blue500,
+            segments: const [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.current),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Green — circle, completed
+          const AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.completed,
+            icon: AppIcons.crownFilled,
+            color: AppColors.green500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+            ],
+          ),
+          // Yellow — triangle, completed
+          const AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.completed,
+            icon: AppIcons.starFilled,
+            color: AppColors.yellow500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Purple — square, completed
+          const AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.completed,
+            icon: AppIcons.trophyFilled,
+            color: AppColors.purple500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.completed),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Orange — triangle, locked
+          const AppPathButton(
+            shape: PathButtonShape.triangle,
+            state: PathButtonState.locked,
+            icon: AppIcons.starFilled,
+            color: AppColors.orange500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Red — square, locked
+          const AppPathButton(
+            shape: PathButtonShape.roundedSquare,
+            state: PathButtonState.locked,
+            icon: AppIcons.trophyFilled,
+            color: AppColors.red500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+          // Blue — circle, locked
+          const AppPathButton(
+            shape: PathButtonShape.circle,
+            state: PathButtonState.locked,
+            icon: AppIcons.crownFilled,
+            color: AppColors.blue500,
+            segments: [
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+              PathButtonSegment(status: SegmentStatus.upcoming),
+            ],
+          ),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Button Playground
+      _subSectionHeader(subs[9]),
       SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
     ];
