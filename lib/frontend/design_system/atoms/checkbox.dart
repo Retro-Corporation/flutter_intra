@@ -13,10 +13,7 @@ class _CheckboxSizeConfig {
   final double size;
   final double iconSize;
 
-  const _CheckboxSizeConfig({
-    required this.size,
-    required this.iconSize,
-  });
+  const _CheckboxSizeConfig({required this.size, required this.iconSize});
 
   static final Map<CheckboxSize, _CheckboxSizeConfig> _map = {
     CheckboxSize.sm: const _CheckboxSizeConfig(size: 24, iconSize: 14),
@@ -47,9 +44,7 @@ Color _resolve700(Color color) {
 
 Color _darken(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
-      .toColor();
+  return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
 }
 
 _ResolvedColors _resolveColors(
@@ -160,7 +155,11 @@ class _AppCheckboxState extends State<AppCheckbox> {
   @override
   Widget build(BuildContext context) {
     final sizeConfig = _CheckboxSizeConfig.of(widget.size);
-    final colors = _resolveColors(_currentValue, widget.color, pressed: _pressed);
+    final colors = _resolveColors(
+      _currentValue,
+      widget.color,
+      pressed: _pressed,
+    );
     final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
 
     final isCheckedOrIndeterminate =
@@ -187,7 +186,7 @@ class _AppCheckboxState extends State<AppCheckbox> {
       visualTop = 1.0;
       visualBottom = _pressed ? 1.0 : 4.0;
       visualSide = _pressed ? 1.0 : 2.0;
-      faceOffset = _pressed ? 3.0 : 0.0; // drop face 3px on press
+      faceOffset = _pressed ? 3.0 : 0.0;
       showBorder = true;
     }
 
@@ -204,7 +203,9 @@ class _AppCheckboxState extends State<AppCheckbox> {
                 _toggle();
               }
             : null,
-        onTapCancel: _interactive ? () => setState(() => _pressed = false) : null,
+        onTapCancel: _interactive
+            ? () => setState(() => _pressed = false)
+            : null,
         child: Opacity(
           opacity: contentOpacity,
           child: CustomPaint(
@@ -217,6 +218,9 @@ class _AppCheckboxState extends State<AppCheckbox> {
               borderSide: visualSide,
               faceOffset: faceOffset,
               faceSideInset: layoutSide,
+              borderSideOffset: isCheckedOrIndeterminate
+                  ? 0.0
+                  : (_pressed ? 1.5 : 0.0),
               showBorder: showBorder,
             ),
             child: SizedBox(
@@ -227,7 +231,10 @@ class _AppCheckboxState extends State<AppCheckbox> {
                   left: layoutSide,
                   right: layoutSide,
                   top: visualTop + faceOffset,
-                  bottom: (visualBottom - faceOffset).clamp(0.0, double.infinity),
+                  bottom: (visualBottom - faceOffset).clamp(
+                    0.0,
+                    double.infinity,
+                  ),
                 ),
                 child: Center(
                   child: isCheckedOrIndeterminate
@@ -260,6 +267,7 @@ class _CheckboxPainter extends CustomPainter {
   final double borderSide;
   final double faceOffset;
   final double faceSideInset;
+  final double borderSideOffset;
   final bool showBorder;
 
   _CheckboxPainter({
@@ -271,6 +279,7 @@ class _CheckboxPainter extends CustomPainter {
     required this.borderSide,
     required this.faceOffset,
     required this.faceSideInset,
+    required this.borderSideOffset,
     required this.showBorder,
   });
 
@@ -279,12 +288,25 @@ class _CheckboxPainter extends CustomPainter {
     // 1. Draw border ring
     if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
       final outerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(0, faceOffset, size.width, size.height),
+        Rect.fromLTRB(
+          borderSideOffset,
+          faceOffset,
+          size.width - borderSideOffset,
+          size.height,
+        ),
         Radius.circular(borderRadius),
       );
-      final borderInnerRadius = (borderRadius - borderSide).clamp(0.0, double.infinity);
+      final borderInnerRadius = (borderRadius - borderSide).clamp(
+        0.0,
+        double.infinity,
+      );
       final borderInnerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(borderSide, faceOffset + borderTop, size.width - borderSide, size.height - borderBottom),
+        Rect.fromLTRB(
+          borderSideOffset + borderSide,
+          faceOffset + borderTop,
+          size.width - borderSideOffset - borderSide,
+          size.height - borderBottom,
+        ),
         Radius.circular(borderInnerRadius),
       );
       final borderPaint = Paint()..color = borderColor;
@@ -293,13 +315,19 @@ class _CheckboxPainter extends CustomPainter {
 
     // 2. Draw the checkbox face
     //    faceOffset shifts the face down without thickening the border.
+    final effectiveSideInset = borderSideOffset > 0
+        ? borderSideOffset + borderSide
+        : faceSideInset;
     final faceRect = Rect.fromLTRB(
-      faceSideInset,
+      effectiveSideInset,
       borderTop + faceOffset,
-      size.width - faceSideInset,
+      size.width - effectiveSideInset,
       size.height - borderBottom,
     );
-    final faceRadius = (borderRadius - faceSideInset).clamp(0.0, double.infinity);
+    final faceRadius = (borderRadius - effectiveSideInset).clamp(
+      0.0,
+      double.infinity,
+    );
     final faceRRect = RRect.fromRectAndRadius(
       faceRect,
       Radius.circular(faceRadius),
@@ -318,5 +346,6 @@ class _CheckboxPainter extends CustomPainter {
       borderSide != old.borderSide ||
       faceOffset != old.faceOffset ||
       faceSideInset != old.faceSideInset ||
+      borderSideOffset != old.borderSideOffset ||
       showBorder != old.showBorder;
 }
