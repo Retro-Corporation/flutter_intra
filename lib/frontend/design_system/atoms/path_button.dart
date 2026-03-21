@@ -509,26 +509,37 @@ class _PathButtonPainter extends CustomPainter {
     }
 
     final gapLen = totalLength * _kGapFraction;
-    final segLen = (totalLength - gapLen * segCount) / segCount;
+    final usableLength = totalLength - gapLen * segCount;
 
-    // Start offset: center segments[0] at 12 o'clock
+    // Segment[0] (wellness at 12 o'clock) is 30% smaller than the others.
+    // If N segments: wellness = base * 0.7, others = base.
+    // Total: 0.7*base + (N-1)*base = usableLength → base = usableLength / (N - 0.3)
+    final otherCount = segCount - 1;
+    final base = usableLength / (otherCount + 0.7);
+    final wellnessLen = base * 0.7;
+    final otherLen = base;
+
+    // Start offset: center segments[0] (wellness) at 12 o'clock
     final topOffset = _startOffset(totalLength);
-    final startBase = topOffset - segLen / 2;
+    final startBase = topOffset - wellnessLen / 2;
 
+    var cursor = startBase;
     for (int i = 0; i < segCount; i++) {
-      final start = startBase + i * (segLen + gapLen);
+      final thisLen = i == 0 ? wellnessLen : otherLen;
 
       final segColor = state == PathButtonState.locked
           ? AppColors.grey850
           : _segmentColor(segments[i].status, color);
 
-      final extractedPath = _extractPathWrapped(metric, totalLength, start, segLen);
+      final extractedPath = _extractPathWrapped(metric, totalLength, cursor, thisLen);
       final paint = Paint()
         ..color = segColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = _kRingStroke
         ..strokeCap = StrokeCap.round;
       canvas.drawPath(extractedPath, paint);
+
+      cursor += thisLen + gapLen;
     }
   }
 
