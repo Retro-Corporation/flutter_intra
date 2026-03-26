@@ -43,7 +43,9 @@ class AppColors {
     colors: [red500, red700],
   );
 
-  /// Maps primary palette colors to their 700 (shadow) variant for 3D borders.
+  /// Maps primary palette colors to their 700 (shadow) variant.
+  /// Used as the border/shadow color in the 3D press effect — a slightly
+  /// darker shade that sits behind the face to create depth.
   static final Map<Color, Color> shadow700 = {
     orange500: orange700,
     red500: red700,
@@ -51,7 +53,22 @@ class AppColors {
     green500: green700,
     yellow500: yellow700,
     purple500: purple700,
+    grey500: grey700,
     textPrimary: grey300,
+  };
+
+  /// Maps primary palette colors to their 900 (deep shadow) variant.
+  /// Used as the border color for outline-style 3D components where the
+  /// border needs stronger contrast against the dark background.
+  static final Map<Color, Color> shadow900 = {
+    orange500: orange900,
+    red500: red900,
+    blue500: blue900,
+    green500: green900,
+    yellow500: yellow900,
+    purple500: purple900,
+    grey500: grey900,
+    textPrimary: grey700,
   };
 
   // ── Raw palette ──
