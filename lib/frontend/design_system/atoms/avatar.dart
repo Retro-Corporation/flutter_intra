@@ -134,7 +134,7 @@ class _AppAvatarState extends State<AppAvatar> {
     );
 
     if (widget.isDisabled) {
-      avatar = Opacity(opacity: 0.4, child: avatar);
+      avatar = Opacity(opacity: AppOpacity.disabled, child: avatar);
     }
 
     return Semantics(

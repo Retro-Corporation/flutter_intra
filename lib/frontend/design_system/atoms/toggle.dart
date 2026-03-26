@@ -203,7 +203,7 @@ class _AppToggleState extends State<AppToggle>
       isOn: _currentValue,
       color: widget.color,
     );
-    final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     // Thumb 3D border — static, never changes
     const double thumbBorderTop = 1.0;
