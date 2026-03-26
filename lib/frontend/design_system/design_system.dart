@@ -25,6 +25,8 @@ export 'atoms/avatar.dart';
 export 'atoms/badge.dart';
 export 'atoms/text_field.dart';
 export 'atoms/radio.dart';
+export 'atoms/path_button_geometry.dart';
+export 'atoms/path_button_renderer.dart';
 export 'atoms/path_button.dart';
 
 // Molecules
