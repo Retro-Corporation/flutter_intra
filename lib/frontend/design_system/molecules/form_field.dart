@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../atoms/text.dart';
+import '../foundation/padding.dart';
+import '../foundation/typography.dart';
+import 'field_state.dart';
 
 /// Base molecule that wraps any input widget with a label, helper text,
 /// and optional character count. Used by all text-field molecule variants

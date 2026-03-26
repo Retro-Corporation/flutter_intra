@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../foundation/colors.dart';
+import '../foundation/color_utils.dart';
+import '../foundation/grid.dart';
+import '../foundation/padding.dart';
+import '../foundation/radius.dart';
+import '../foundation/typography.dart';
+import '../icons/icon_sizes.dart';
+import 'icon.dart';
+import 'text.dart';
 
 // ── Enums ──
 

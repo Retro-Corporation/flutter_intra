@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../foundation/colors.dart';
 
 /// Visual state for form-field molecules.
 enum FieldState {

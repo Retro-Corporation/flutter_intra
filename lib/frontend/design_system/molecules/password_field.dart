@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../atoms/icon.dart';
+import '../atoms/text_field.dart';
+import '../foundation/colors.dart';
+import '../foundation/padding.dart';
+import '../icons/app_icons.dart';
+import '../icons/icon_sizes.dart';
+import 'field_state.dart';
+import 'form_field.dart';
 
 /// Molecule: password field with visibility toggle, label, helper text,
 /// and character count.

@@ -2,7 +2,9 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../foundation/colors.dart';
+import '../foundation/color_utils.dart';
+import 'path_button_geometry.dart';
 
 // ── PathButtonRenderer ──
 

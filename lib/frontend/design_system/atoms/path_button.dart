@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import '../design_system.dart';
+import '../foundation/colors.dart';
+import '../icons/icon_sizes.dart';
+import 'icon.dart';
+import 'path_button_geometry.dart';
+import 'path_button_renderer.dart';
 
 // ── Animation constants ──
 
