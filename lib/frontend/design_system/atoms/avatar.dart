@@ -97,9 +97,6 @@ class AppAvatar extends StatefulWidget {
   /// Reduces opacity to 0.4 when true.
   final bool isDisabled;
 
-  /// Optional tap callback. When provided, enables press feedback.
-  final VoidCallback? onTap;
-
   const AppAvatar({
     super.key,
     this.content,
@@ -107,7 +104,6 @@ class AppAvatar extends StatefulWidget {
     this.size = AvatarSize.md,
     this.isLoading = false,
     this.isDisabled = false,
-    this.onTap,
   });
 
   @override
@@ -115,16 +111,11 @@ class AppAvatar extends StatefulWidget {
 }
 
 class _AppAvatarState extends State<AppAvatar> {
-  bool _pressed = false;
   bool _imageError = false;
-
-  bool get _interactive =>
-      !widget.isDisabled && !widget.isLoading && widget.onTap != null;
 
   @override
   void didUpdateWidget(covariant AppAvatar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Reset image error when content changes.
     if (widget.content != oldWidget.content) {
       _imageError = false;
     }
@@ -142,29 +133,10 @@ class _AppAvatarState extends State<AppAvatar> {
           : _buildCircle(config),
     );
 
-    // Press feedback
-    if (_interactive) {
-      avatar = GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          widget.onTap?.call();
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 100),
-          opacity: _pressed ? 0.7 : 1.0,
-          child: avatar,
-        ),
-      );
-    }
-
-    // Disabled state
     if (widget.isDisabled) {
       avatar = Opacity(opacity: 0.4, child: avatar);
     }
 
-    // Semantics
     return Semantics(
       image: true,
       label: _semanticLabel,
