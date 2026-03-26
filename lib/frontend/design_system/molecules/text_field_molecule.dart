@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import '../atoms/icon.dart';
 import '../atoms/text_field.dart';
+import '../foundation/colors.dart';
+import '../foundation/padding.dart';
+import '../icons/app_icons.dart';
+import '../icons/icon_sizes.dart';
+import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
 
@@ -44,41 +50,40 @@ class AppTextFieldMolecule extends StatefulWidget {
   State<AppTextFieldMolecule> createState() => _AppTextFieldMoleculeState();
 }
 
-class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
+    with ControllerOwnerMixin {
   int _currentLength = 0;
+  bool _hasText = false;
 
   // Validator-driven state
   FieldState? _validatorState;
   String? _validatorMessage;
 
   @override
+  TextEditingController? get externalController => widget.controller;
+
+  @override
+  void onTextChanged() {
+    final text = controller.text;
+    setState(() {
+      _currentLength = text.length;
+      _hasText = text.isNotEmpty;
+    });
+    _runValidator(text);
+  }
+
+  @override
   void initState() {
     super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    _currentLength = _controller.text.length;
-    _controller.addListener(_onTextChanged);
+    initController();
+    _currentLength = controller.text.length;
+    _hasText = controller.text.isNotEmpty;
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
+    disposeController();
     super.dispose();
-  }
-
-  void _onTextChanged() {
-    final text = _controller.text;
-    setState(() {
-      _currentLength = text.length;
-    });
-    _runValidator(text);
   }
 
   void _runValidator(String text) {
@@ -98,6 +103,11 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule> {
     });
   }
 
+  void _clear() {
+    controller.clear();
+    widget.onChanged?.call('');
+  }
+
   @override
   Widget build(BuildContext context) {
     // Parent-set state takes priority unless it's defaultState and validator
@@ -110,6 +120,22 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule> {
     final borderColor = FieldStateColors.border(effectiveState);
     final isDisabled = effectiveState == FieldState.disabled;
 
+    // Clear icon — shown when text is present.
+    Widget? suffix;
+    if (_hasText) {
+      suffix = GestureDetector(
+        onTap: _clear,
+        child: Padding(
+          padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
+          child: AppIcon(
+            AppIcons.close,
+            size: IconSizes.md,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      );
+    }
+
     return AppFormField(
       label: widget.label,
       helperText: effectiveHelper,
@@ -117,7 +143,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule> {
       maxLength: widget.maxLength,
       currentLength: _currentLength,
       child: AppTextField(
-        controller: _controller,
+        controller: controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
@@ -130,6 +156,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule> {
         textColor: FieldStateColors.text(effectiveState),
         hintColor: FieldStateColors.hint(effectiveState),
         enabled: !isDisabled,
+        suffixWidget: suffix,
       ),
     );
   }

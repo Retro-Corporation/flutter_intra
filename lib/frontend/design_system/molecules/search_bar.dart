@@ -6,6 +6,7 @@ import '../foundation/padding.dart';
 import '../foundation/radius.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
+import 'controller_owner_mixin.dart';
 
 /// Molecule: pill-shaped search bar. Shows a search icon by default, and
 /// swaps to a clear (close) icon when text is present so the user can
@@ -30,40 +31,36 @@ class AppSearchBar extends StatefulWidget {
   State<AppSearchBar> createState() => _AppSearchBarState();
 }
 
-class _AppSearchBarState extends State<AppSearchBar> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _AppSearchBarState extends State<AppSearchBar>
+    with ControllerOwnerMixin {
   bool _hasText = false;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    _hasText = _controller.text.isNotEmpty;
-    _controller.addListener(_onTextChanged);
-  }
+  TextEditingController? get externalController => widget.controller;
 
   @override
-  void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTextChanged() {
-    final hasText = _controller.text.isNotEmpty;
+  void onTextChanged() {
+    final hasText = controller.text.isNotEmpty;
     if (hasText != _hasText) {
       setState(() => _hasText = hasText);
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    initController();
+    _hasText = controller.text.isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    disposeController();
+    super.dispose();
+  }
+
   void _clear() {
-    _controller.clear();
+    controller.clear();
     widget.onChanged?.call('');
   }
 
@@ -92,14 +89,13 @@ class _AppSearchBarState extends State<AppSearchBar> {
           );
 
     return AppTextField(
-      controller: _controller,
+      controller: controller,
       focusNode: widget.focusNode,
       hintText: widget.hintText ?? 'Search...',
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
       borderRadius: AppRadius.pill,
       suffixWidget: suffixIcon,
-      showClearIcon: false,
     );
   }
 }

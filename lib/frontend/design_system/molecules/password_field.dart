@@ -5,6 +5,7 @@ import '../foundation/colors.dart';
 import '../foundation/padding.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
+import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
 
@@ -51,9 +52,8 @@ class AppPasswordField extends StatefulWidget {
   State<AppPasswordField> createState() => _AppPasswordFieldState();
 }
 
-class _AppPasswordFieldState extends State<AppPasswordField> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _AppPasswordFieldState extends State<AppPasswordField>
+    with ControllerOwnerMixin {
   bool _obscured = true;
   int _currentLength = 0;
 
@@ -61,31 +61,28 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
   String? _validatorMessage;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    _currentLength = _controller.text.length;
-    _controller.addListener(_onTextChanged);
-  }
+  TextEditingController? get externalController => widget.controller;
 
   @override
-  void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTextChanged() {
-    final text = _controller.text;
+  void onTextChanged() {
+    final text = controller.text;
     setState(() {
       _currentLength = text.length;
     });
     _runValidator(text);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initController();
+    _currentLength = controller.text.length;
+  }
+
+  @override
+  void dispose() {
+    disposeController();
+    super.dispose();
   }
 
   void _runValidator(String text) {
@@ -135,7 +132,7 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
       maxLength: widget.maxLength,
       currentLength: _currentLength,
       child: AppTextField(
-        controller: _controller,
+        controller: controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
@@ -147,7 +144,6 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
         hintColor: FieldStateColors.hint(effectiveState),
         enabled: !isDisabled,
         suffixWidget: eyeIcon,
-        showClearIcon: false,
       ),
     );
   }

@@ -53,6 +53,11 @@ class _CatalogHomeState extends State<CatalogHome> {
   bool _navExpanded = false;
   int _activeSection = 0;
 
+  // Controllers for bare AppTextField showcases.
+  final _textFieldDefault = TextEditingController();
+  final _textFieldValue = TextEditingController(text: 'Hello world');
+  final _textFieldPassword = TextEditingController();
+
   late final List<_Section> _sections;
   // Track which nav sections have sub-items expanded
   late final Map<int, bool> _navSubExpanded;
@@ -101,6 +106,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _textFieldDefault.dispose();
+    _textFieldValue.dispose();
+    _textFieldPassword.dispose();
     super.dispose();
   }
 
@@ -1195,19 +1203,17 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('DEFAULT', style: AppTypography.overline),
       SizedBox(height: AppGrid.grid8),
-      AppTextField(hintText: 'Text box...'),
+      AppTextField(controller: _textFieldDefault, hintText: 'Text box...'),
 
       SizedBox(height: AppGrid.grid24),
       AppText('WITH VALUE', style: AppTypography.overline),
       SizedBox(height: AppGrid.grid8),
-      AppTextField(
-        controller: TextEditingController(text: 'Hello world'),
-      ),
+      AppTextField(controller: _textFieldValue),
 
       SizedBox(height: AppGrid.grid24),
       AppText('PASSWORD', style: AppTypography.overline),
       SizedBox(height: AppGrid.grid8),
-      AppTextField(hintText: 'Enter password...', obscureText: true),
+      AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
 
       _sectionDivider(),
 

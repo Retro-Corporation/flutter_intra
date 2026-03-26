@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../atoms/text_field.dart';
+import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
 
@@ -51,40 +52,36 @@ class AppTextArea extends StatefulWidget {
   State<AppTextArea> createState() => _AppTextAreaState();
 }
 
-class _AppTextAreaState extends State<AppTextArea> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _AppTextAreaState extends State<AppTextArea>
+    with ControllerOwnerMixin {
   int _currentLength = 0;
 
   FieldState? _validatorState;
   String? _validatorMessage;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    _currentLength = _controller.text.length;
-    _controller.addListener(_onTextChanged);
-  }
+  TextEditingController? get externalController => widget.controller;
 
   @override
-  void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTextChanged() {
-    final text = _controller.text;
+  void onTextChanged() {
+    final text = controller.text;
     setState(() {
       _currentLength = text.length;
     });
     _runValidator(text);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initController();
+    _currentLength = controller.text.length;
+  }
+
+  @override
+  void dispose() {
+    disposeController();
+    super.dispose();
   }
 
   void _runValidator(String text) {
@@ -121,7 +118,7 @@ class _AppTextAreaState extends State<AppTextArea> {
       maxLength: widget.maxLength,
       currentLength: _currentLength,
       child: AppTextField(
-        controller: _controller,
+        controller: controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
@@ -133,7 +130,6 @@ class _AppTextAreaState extends State<AppTextArea> {
         textColor: FieldStateColors.text(effectiveState),
         hintColor: FieldStateColors.hint(effectiveState),
         enabled: !isDisabled,
-        showClearIcon: false,
       ),
     );
   }

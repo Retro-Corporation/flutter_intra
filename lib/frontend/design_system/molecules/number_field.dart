@@ -8,6 +8,7 @@ import '../foundation/padding.dart';
 import '../foundation/radius.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
+import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
 
@@ -67,40 +68,34 @@ class AppNumberField extends StatefulWidget {
   State<AppNumberField> createState() => _AppNumberFieldState();
 }
 
-class _AppNumberFieldState extends State<AppNumberField> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _AppNumberFieldState extends State<AppNumberField>
+    with ControllerOwnerMixin {
   int _currentLength = 0;
+
+  @override
+  TextEditingController? get externalController => widget.controller;
+
+  @override
+  void onTextChanged() {
+    setState(() {
+      _currentLength = controller.text.length;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController(
-        text: widget.value?.toString() ?? '',
-      );
-      _ownsController = true;
-    }
-    _currentLength = _controller.text.length;
-    _controller.addListener(_onTextChanged);
+    initController(initialText: widget.value?.toString() ?? '');
+    _currentLength = controller.text.length;
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
+    disposeController();
     super.dispose();
   }
 
-  void _onTextChanged() {
-    setState(() {
-      _currentLength = _controller.text.length;
-    });
-  }
-
-  int? get _currentValue => int.tryParse(_controller.text);
+  int? get _currentValue => int.tryParse(controller.text);
 
   void _increment() {
     final current = _currentValue ?? widget.min ?? 0;
@@ -117,9 +112,9 @@ class _AppNumberFieldState extends State<AppNumberField> {
   }
 
   void _setValue(int v) {
-    _controller.text = v.toString();
-    _controller.selection = TextSelection.collapsed(
-      offset: _controller.text.length,
+    controller.text = v.toString();
+    controller.selection = TextSelection.collapsed(
+      offset: controller.text.length,
     );
     widget.onChanged?.call(v);
   }
@@ -189,7 +184,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
       maxLength: widget.maxLength,
       currentLength: _currentLength,
       child: AppTextField(
-        controller: _controller,
+        controller: controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         keyboardType: TextInputType.number,
@@ -201,7 +196,6 @@ class _AppNumberFieldState extends State<AppNumberField> {
         hintColor: FieldStateColors.hint(widget.state),
         enabled: !isDisabled,
         suffixWidget: stepperButtons,
-        showClearIcon: false,
       ),
     );
   }
@@ -237,7 +231,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
         children: [
           Expanded(
             child: AppTextField(
-              controller: _controller,
+              controller: controller,
               focusNode: widget.focusNode,
               hintText: widget.hintText,
               keyboardType: TextInputType.number,
@@ -250,7 +244,6 @@ class _AppNumberFieldState extends State<AppNumberField> {
               textColor: FieldStateColors.text(widget.state),
               hintColor: FieldStateColors.hint(widget.state),
               enabled: !isDisabled,
-              showClearIcon: false,
             ),
           ),
           SizedBox(width: AppPadding.rem025),
@@ -276,7 +269,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
 /// A +/- button that shows a subtle brightness flash on press.
 ///
 /// Used by both inside and outside stepper layouts. The tap target is sized
-/// to at least 44×44 px for comfortable tapping.
+/// to at least 44x44 px for comfortable tapping.
 class _StepperPressButton extends StatefulWidget {
   final String icon;
   final VoidCallback? onTap;
