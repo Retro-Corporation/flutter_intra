@@ -22,89 +22,49 @@ class AvatarInitials extends AvatarContent {
   const AvatarInitials(this.initials);
 }
 
-// ── Badge dot configuration ──
-
-/// Configuration for a single badge dot overlay on the avatar.
-///
-/// Each dot can be a plain colored circle or display short text (a number, "+").
-class AvatarBadgeDot {
-  /// Dot background color. Parent decides semantics.
-  final Color color;
-
-  /// Optional text inside the dot: a number, "+", or short string.
-  /// When null, dot is a plain colored circle.
-  final String? text;
-
-  const AvatarBadgeDot({
-    required this.color,
-    this.text,
-  });
-}
-
 // ── Size configuration ──
 
 class _AvatarSizeConfig {
   final double diameter;
-  final double dotSize;
-  final double dotFontSize;
-  final double dotBorderWidth;
   final double iconSize;
+  final double initialsFontSize;
 
   const _AvatarSizeConfig({
     required this.diameter,
-    required this.dotSize,
-    required this.dotFontSize,
-    required this.dotBorderWidth,
     required this.iconSize,
+    required this.initialsFontSize,
   });
-
-  /// Initials font size scales proportionally to diameter.
-  double get initialsFontSize => diameter * 0.38;
 
   static final Map<AvatarSize, _AvatarSizeConfig> _map = {
     AvatarSize.xs: _AvatarSizeConfig(
-      diameter: AppGrid.grid24,   // 24
-      dotSize: 8,
-      dotFontSize: 6,
-      dotBorderWidth: 2,
-      iconSize: IconSizes.sm,     // 8
+      diameter: AppGrid.grid24,
+      iconSize: IconSizes.sm,
+      initialsFontSize: AppTypography.overline.fontSize!,
     ),
     AvatarSize.sm: _AvatarSizeConfig(
-      diameter: AppGrid.grid32,   // 32
-      dotSize: 10,
-      dotFontSize: 7,
-      dotBorderWidth: 2,
-      iconSize: IconSizes.md,     // 16
+      diameter: AppGrid.grid32,
+      iconSize: IconSizes.md,
+      initialsFontSize: AppTypography.caption.fontSize!,
     ),
     AvatarSize.md: _AvatarSizeConfig(
-      diameter: 3.rem,            // 48
-      dotSize: 14,
-      dotFontSize: 9,
-      dotBorderWidth: 2,
-      iconSize: IconSizes.lg,     // 24
+      diameter: 3.rem,
+      iconSize: IconSizes.lg,
+      initialsFontSize: AppTypography.body.fontSize,
     ),
     AvatarSize.lg: _AvatarSizeConfig(
-      diameter: AppGrid.grid60,   // 60
-      dotSize: 18,
-      dotFontSize: 11,
-      dotBorderWidth: 2,
-      iconSize: IconSizes.lg,     // 24
+      diameter: AppGrid.grid60,
+      iconSize: IconSizes.lg,
+      initialsFontSize: AppTypography.proHeading6.fontSize,
     ),
     AvatarSize.xl: _AvatarSizeConfig(
-      diameter: AppGrid.grid100,  // 100
-      dotSize: 24,
-      dotFontSize: 14,
-      dotBorderWidth: 2,
-      iconSize: IconSizes.xl,     // 32
+      diameter: AppGrid.grid100,
+      iconSize: IconSizes.xl,
+      initialsFontSize: AppTypography.heading3.fontSize,
     ),
   };
 
   static _AvatarSizeConfig of(AvatarSize size) => _map[size]!;
 }
-
-// ── Dot position helper ──
-
-enum _DotPosition { topLeft, topRight, bottomLeft, bottomRight }
 
 // ── AppAvatar ──
 
@@ -137,23 +97,6 @@ class AppAvatar extends StatefulWidget {
   /// Reduces opacity to 0.4 when true.
   final bool isDisabled;
 
-  /// Top-left badge: online status indicator.
-  final AvatarBadgeDot? statusDot;
-
-  /// Top-right badge: notification count.
-  final AvatarBadgeDot? notificationDot;
-
-  /// Bottom-left badge: achievement / rank level.
-  final AvatarBadgeDot? achievementDot;
-
-  /// Bottom-right badge: add user / action.
-  final AvatarBadgeDot? actionDot;
-
-  /// Background color used for the dot separation border.
-  /// Should match the surface the avatar sits on.
-  /// Defaults to [AppColors.background].
-  final Color borderColor;
-
   /// Optional tap callback. When provided, enables press feedback.
   final VoidCallback? onTap;
 
@@ -164,11 +107,6 @@ class AppAvatar extends StatefulWidget {
     this.size = AvatarSize.md,
     this.isLoading = false,
     this.isDisabled = false,
-    this.statusDot,
-    this.notificationDot,
-    this.achievementDot,
-    this.actionDot,
-    this.borderColor = AppColors.background,
     this.onTap,
   });
 
@@ -199,25 +137,9 @@ class _AppAvatarState extends State<AppAvatar> {
     Widget avatar = SizedBox(
       width: config.diameter,
       height: config.diameter,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Avatar circle
-          widget.isLoading
-              ? _buildShimmer(config)
-              : _buildCircle(config),
-
-          // Badge dots
-          if (widget.statusDot != null)
-            _buildDot(widget.statusDot!, _DotPosition.topLeft, config),
-          if (widget.notificationDot != null)
-            _buildDot(widget.notificationDot!, _DotPosition.topRight, config),
-          if (widget.achievementDot != null)
-            _buildDot(widget.achievementDot!, _DotPosition.bottomLeft, config),
-          if (widget.actionDot != null)
-            _buildDot(widget.actionDot!, _DotPosition.bottomRight, config),
-        ],
-      ),
+      child: widget.isLoading
+          ? _buildShimmer(config)
+          : _buildCircle(config),
     );
 
     // Press feedback
@@ -340,7 +262,7 @@ class _AppAvatarState extends State<AppAvatar> {
   Widget _buildShimmer(_AvatarSizeConfig config) {
     return Shimmer.fromColors(
       baseColor: AppColors.surface,
-      highlightColor: const Color(0xFF2A2A2C),
+      highlightColor: AppColors.surface,
       child: Container(
         width: config.diameter,
         height: config.diameter,
@@ -352,102 +274,4 @@ class _AppAvatarState extends State<AppAvatar> {
     );
   }
 
-  // ── Badge dots ──
-
-  Widget _buildDot(
-    AvatarBadgeDot dot,
-    _DotPosition position,
-    _AvatarSizeConfig config,
-  ) {
-    final diameter = config.diameter;
-    final dotSize = config.dotSize;
-
-    // TL, TR, BL get a white outer ring; BR does not.
-    final hasOuterRing = position != _DotPosition.bottomRight;
-    const outerRingWidth = 2.0;
-
-    // Total size including the outer ring (if present).
-    final totalSize = hasOuterRing ? dotSize + (outerRingWidth * 2) : dotSize;
-
-    // Place dot center on the avatar circle edge at a 45° diagonal.
-    // The radius of the avatar is diameter/2. At 45°, the point on the circle
-    // edge is at (r - r*cos(45°), r - r*sin(45°)) from the top-left corner.
-    // cos(45°) ≈ 0.707, so the offset from the edge is r*(1-0.707) = r*0.293.
-    // We subtract half the total size to center the dot on that point.
-    final offset = (diameter / 2) * 0.293 - (totalSize / 2);
-
-    double? top, bottom, left, right;
-
-    switch (position) {
-      case _DotPosition.topLeft:
-        top = offset;
-        left = offset;
-      case _DotPosition.topRight:
-        top = offset;
-        right = offset;
-      case _DotPosition.bottomLeft:
-        bottom = offset;
-        left = offset;
-      case _DotPosition.bottomRight:
-        bottom = offset;
-        right = offset;
-    }
-
-    // Determine text color for contrast against the dot color.
-    final textColor =
-        ThemeData.estimateBrightnessForColor(dot.color) == Brightness.light
-            ? AppColors.textInverse
-            : AppColors.textPrimary;
-
-    // Inner colored dot with text.
-    Widget dotWidget = Container(
-      width: dotSize,
-      height: dotSize,
-      decoration: BoxDecoration(
-        color: dot.color,
-        shape: BoxShape.circle,
-      ),
-      child: dot.text != null
-          ? Center(
-              child: Text(
-                dot.text!,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: config.dotFontSize,
-                  fontWeight: FontWeight.w700,
-                  color: textColor,
-                  height: 1,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-            )
-          : null,
-    );
-
-    // Wrap TL, TR, BL with a white outer ring.
-    if (hasOuterRing) {
-      dotWidget = Container(
-        width: totalSize,
-        height: totalSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.textPrimary,
-            width: outerRingWidth,
-          ),
-        ),
-        child: Center(child: dotWidget),
-      );
-    }
-
-    return Positioned(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-      child: dotWidget,
-    );
-  }
 }

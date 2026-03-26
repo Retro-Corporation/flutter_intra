@@ -1184,60 +1184,6 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('ALL 4 BADGE DOTS', style: AppTypography.overline),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
-          AppAvatar(
-            content: AvatarInitials('TP'),
-            size: AvatarSize.lg,
-            statusDot: AvatarBadgeDot(color: AppColors.success),
-            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '3'),
-            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '5'),
-            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
-          ),
-          AppAvatar(
-            content: AvatarInitials('TP'),
-            size: AvatarSize.xl,
-            statusDot: AvatarBadgeDot(color: AppColors.success),
-            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '12'),
-            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '8'),
-            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
-          ),
-        ],
-      ),
-
-      SizedBox(height: AppGrid.grid24),
-      AppText('INDIVIDUAL DOTS', style: AppTypography.overline),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
-          AppAvatar(
-            content: AvatarInitials('ST'),
-            statusDot: AvatarBadgeDot(color: AppColors.success),
-          ),
-          AppAvatar(
-            content: AvatarInitials('NT'),
-            notificationDot: AvatarBadgeDot(color: AppColors.error, text: '9'),
-          ),
-          AppAvatar(
-            content: AvatarInitials('AV'),
-            achievementDot: AvatarBadgeDot(color: AppColors.info, text: '2'),
-          ),
-          AppAvatar(
-            content: AvatarInitials('AD'),
-            actionDot: AvatarBadgeDot(color: AppColors.brand, text: '+'),
-          ),
-        ],
-      ),
-
-      SizedBox(height: AppGrid.grid24),
       AppText('STATES', style: AppTypography.overline),
       SizedBox(height: AppGrid.grid8),
       Wrap(

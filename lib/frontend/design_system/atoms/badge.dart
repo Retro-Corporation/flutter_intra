@@ -100,7 +100,7 @@ class _ResolvedColors {
 }
 
 /// Dark grey border for outline badges.
-const _outlineBorderColor = Color(0xFF333333);
+const _outlineBorderColor = AppColors.grey800;
 
 Color _resolve700(Color color) {
   return AppColors.shadow700[color] ?? _darken(color, 0.2);
