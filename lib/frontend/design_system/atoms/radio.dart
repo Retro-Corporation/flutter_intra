@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -119,26 +120,7 @@ class _AppRadioState extends State<AppRadio> {
     final sizeConfig = _RadioSizeConfig.of(widget.size);
     final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
 
-    // ── 3D border geometry ──
-    // Rest (unselected & selected): top=1, bottom=4, sides=2
-    // Pressed: border=1 all around, face drops 3px
-    final double layoutSide = 2.0;
-    final double visualTop;
-    final double visualBottom;
-    final double visualSide;
-    final double faceOffset;
-
-    if (_pressed) {
-      visualTop = 1.0;
-      visualBottom = 1.0;
-      visualSide = 1.0;
-      faceOffset = 3.0;
-    } else {
-      visualTop = 1.0;
-      visualBottom = 4.0;
-      visualSide = 2.0;
-      faceOffset = 0.0;
-    }
+    final geo = PressGeometry.outline(pressed: _pressed);
 
     // ── Colors ──
     final Color backgroundColor;
@@ -152,8 +134,8 @@ class _AppRadioState extends State<AppRadio> {
       borderColor = AppColors.textPrimary;
     }
 
-    final totalWidth = sizeConfig.size + (layoutSide * 2);
-    final totalHeight = sizeConfig.size + 4.0; // 4px for 3D depth
+    final totalWidth = sizeConfig.size + (geo.layoutSide * 2);
+    final totalHeight = sizeConfig.size + PressGeometry.depth;
 
     return Semantics(
       checked: _isSelected,
@@ -172,11 +154,11 @@ class _AppRadioState extends State<AppRadio> {
             painter: _RadioPainter(
               backgroundColor: backgroundColor,
               borderColor: borderColor,
-              borderTop: visualTop,
-              borderBottom: visualBottom,
-              borderSide: visualSide,
-              faceOffset: faceOffset,
-              faceSideInset: visualSide,
+              borderTop: geo.visualTop,
+              borderBottom: geo.visualBottom,
+              borderSide: geo.visualSide,
+              faceOffset: geo.faceOffset,
+              faceSideInset: geo.visualSide,
               showDot: _isSelected,
               dotColor: AppColors.textPrimary,
               dotSize: sizeConfig.dotSize,

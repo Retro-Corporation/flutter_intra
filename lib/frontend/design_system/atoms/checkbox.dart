@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -166,32 +167,12 @@ class _AppCheckboxState extends State<AppCheckbox> {
         _currentValue == CheckboxValue.checked ||
         _currentValue == CheckboxValue.indeterminate;
 
-    // 3D border geometry — matches AppButton pattern
-    final double layoutSide = 2.0;
-    final double visualTop;
-    final double visualBottom;
-    final double visualSide;
-    final double faceOffset;
-    final bool showBorder;
+    final geo = isCheckedOrIndeterminate
+        ? PressGeometry.filled(pressed: _pressed)
+        : PressGeometry.outline(pressed: _pressed);
 
-    if (isCheckedOrIndeterminate) {
-      // Filled style — like AppButton filled
-      visualTop = _pressed ? 4.0 : 0.0;
-      visualBottom = _pressed ? 0.0 : 4.0;
-      visualSide = 2.0;
-      faceOffset = 0.0;
-      showBorder = !_pressed;
-    } else {
-      // Outline style — like AppButton outline
-      visualTop = 1.0;
-      visualBottom = _pressed ? 1.0 : 4.0;
-      visualSide = _pressed ? 1.0 : 2.0;
-      faceOffset = _pressed ? 3.0 : 0.0;
-      showBorder = true;
-    }
-
-    final totalWidth = sizeConfig.size + (layoutSide * 2);
-    final totalHeight = sizeConfig.size + 4.0; // 4px for 3D depth
+    final totalWidth = sizeConfig.size + (geo.layoutSide * 2);
+    final totalHeight = sizeConfig.size + PressGeometry.depth;
 
     return Semantics(
       checked: _currentValue == CheckboxValue.checked,
@@ -213,25 +194,25 @@ class _AppCheckboxState extends State<AppCheckbox> {
               backgroundColor: colors.background,
               borderColor: colors.border,
               borderRadius: AppRadius.sm,
-              borderTop: visualTop,
-              borderBottom: visualBottom,
-              borderSide: visualSide,
-              faceOffset: faceOffset,
-              faceSideInset: layoutSide,
+              borderTop: geo.visualTop,
+              borderBottom: geo.visualBottom,
+              borderSide: geo.visualSide,
+              faceOffset: geo.faceOffset,
+              faceSideInset: geo.layoutSide,
               borderSideOffset: isCheckedOrIndeterminate
                   ? 0.0
                   : (_pressed ? 1.5 : 0.0),
-              showBorder: showBorder,
+              showBorder: geo.showBorder,
             ),
             child: SizedBox(
               width: totalWidth,
               height: totalHeight,
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: layoutSide,
-                  right: layoutSide,
-                  top: visualTop + faceOffset,
-                  bottom: (visualBottom - faceOffset).clamp(
+                  left: geo.layoutSide,
+                  right: geo.layoutSide,
+                  top: geo.visualTop + geo.faceOffset,
+                  bottom: (geo.visualBottom - geo.faceOffset).clamp(
                     0.0,
                     double.infinity,
                   ),

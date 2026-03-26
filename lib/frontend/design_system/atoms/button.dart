@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -293,39 +294,13 @@ class _AppButtonState extends State<AppButton> {
     final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
     final padX = widget.paddingOverride ?? sizeConfig.paddingX;
 
-    // 3D border insets — drawn inside the fixed widget box.
-    //
-    // layoutSide → constant horizontal padding (prevents width jitter)
-    // visual*    → border sizes sent to the painter
-    // faceOffset → extra vertical shift for the face beyond the border
-    //              (used by outline so the face drops down without thickening the border)
-    //
-    // Height is locked via min+max constraints so vertical padding changes
-    // reposition content inside the box without affecting external layout.
-    final double layoutSide;
-    final double visualTop, visualBottom, visualSide;
-    final double faceOffset;
-    final bool showBorder;
-
+    final PressGeometry geo;
     if (widget.type == ButtonType.filled) {
-      layoutSide = 2.0;
-      visualTop = _pressed ? 4.0 : 0.0;
-      visualBottom = _pressed ? 0.0 : 4.0;
-      visualSide = 2.0;
-      faceOffset = 0.0;
-      showBorder = !_pressed;
+      geo = PressGeometry.filled(pressed: _pressed);
     } else if (widget.type == ButtonType.outline) {
-      layoutSide = 2.0;
-      visualTop = 1.0;
-      visualBottom = _pressed ? 1.0 : 4.0;
-      visualSide = _pressed ? 1.0 : 2.0;
-      faceOffset = _pressed ? 3.0 : 0.0;  // drop face 3px extra on press
-      showBorder = true;
+      geo = PressGeometry.outline(pressed: _pressed);
     } else {
-      layoutSide = 0.0;
-      visualTop = 0.0;    visualBottom = 0.0;  visualSide = 0.0;
-      faceOffset = 0.0;
-      showBorder = false;
+      geo = PressGeometry.ghost();
     }
 
     // Widget size is fixed — always the token height. Never changes.
@@ -354,12 +329,12 @@ class _AppButtonState extends State<AppButton> {
           backgroundColor: colors.background,
           borderColor: colors.shadow,
           borderRadius: radius,
-          borderTop: visualTop,
-          borderBottom: visualBottom,
-          borderSide: visualSide,
-          faceOffset: faceOffset,
-          faceSideInset: layoutSide,
-          showBorder: showBorder,
+          borderTop: geo.visualTop,
+          borderBottom: geo.visualBottom,
+          borderSide: geo.visualSide,
+          faceOffset: geo.faceOffset,
+          faceSideInset: geo.layoutSide,
+          showBorder: geo.showBorder,
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -369,10 +344,10 @@ class _AppButtonState extends State<AppButton> {
           ),
           child: Padding(
             padding: EdgeInsets.only(
-              left: (_iconOnly ? 0 : padX) + layoutSide,
-              right: (_iconOnly ? 0 : padX) + layoutSide,
-              top: visualTop + faceOffset,
-              bottom: (visualBottom - faceOffset).clamp(0.0, double.infinity),
+              left: (_iconOnly ? 0 : padX) + geo.layoutSide,
+              right: (_iconOnly ? 0 : padX) + geo.layoutSide,
+              top: geo.visualTop + geo.faceOffset,
+              bottom: (geo.visualBottom - geo.faceOffset).clamp(0.0, double.infinity),
             ),
             child: Center(
               widthFactor: 1.0,
