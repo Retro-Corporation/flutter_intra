@@ -7,7 +7,6 @@ void main() {
     String? label,
     String? leadingIcon,
     String? trailingIcon,
-    BadgeAvatar? avatar,
     BadgeType type = BadgeType.filled,
     BadgeSize size = BadgeSize.md,
     Color color = AppColors.brand,
@@ -20,7 +19,6 @@ void main() {
             label: label,
             leadingIcon: leadingIcon,
             trailingIcon: trailingIcon,
-            avatar: avatar,
             type: type,
             size: size,
             color: color,
@@ -72,18 +70,6 @@ void main() {
       },
     );
 
-    testWidgets(
-      'Avatar+text badge renders ClipOval and AppText',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestBadge(
-          avatar: const BadgeAvatarInitials('TP'),
-          label: 'Tavon',
-        ));
-
-        expect(find.byType(ClipOval), findsOneWidget);
-        expect(find.byType(AppText), findsOneWidget);
-      },
-    );
   });
 
   group('AppBadge sizing', () {
@@ -203,7 +189,7 @@ void main() {
         expect(decoration.color, Colors.transparent);
 
         final border = decoration.border as Border;
-        expect(border.top.color, const Color(0xFF333333));
+        expect(border.top.color, AppColors.grey800);
       },
     );
   });
@@ -252,47 +238,7 @@ void main() {
     );
   });
 
-  group('AppBadge avatar & composition', () {
-    testWidgets(
-      'BadgeAvatarInitials renders uppercase text in ClipOval',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestBadge(
-          avatar: const BadgeAvatarInitials('ab'),
-        ));
-
-        expect(find.byType(ClipOval), findsOneWidget);
-        expect(find.text('AB'), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'BadgeAvatarIcon renders AppIcon inside ClipOval',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestBadge(
-          avatar: const BadgeAvatarIcon(AppIcons.star),
-        ));
-
-        expect(find.byType(ClipOval), findsOneWidget);
-        expect(find.byType(AppIcon), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'Avatar + leadingIcon + label renders all three',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestBadge(
-          avatar: const BadgeAvatarInitials('TP'),
-          leadingIcon: AppIcons.star,
-          label: 'Test',
-        ));
-
-        expect(find.byType(ClipOval), findsOneWidget);
-        // AppIcon from leadingIcon + possibly one from avatar icon (but here avatar is initials)
-        expect(find.byType(AppIcon), findsOneWidget);
-        expect(find.byType(AppText), findsOneWidget);
-      },
-    );
-
+  group('AppBadge composition', () {
     testWidgets(
       'Trailing icon x-position is greater than label x-position',
       (WidgetTester tester) async {
@@ -302,7 +248,6 @@ void main() {
         ));
 
         final textPos = tester.getTopLeft(find.byType(AppText));
-        // There are potentially multiple AppIcon finders; get the trailing one
         final iconPos = tester.getTopLeft(find.byType(AppIcon));
         expect(iconPos.dx, greaterThan(textPos.dx));
       },

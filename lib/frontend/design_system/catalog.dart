@@ -1057,7 +1057,6 @@ class _CatalogHomeState extends State<CatalogHome> {
           AppBadge(label: 'Text Only'),
           AppBadge(leadingIcon: AppIcons.star, label: 'Icon + Text'),
           AppBadge(leadingIcon: AppIcons.crown),
-          AppBadge(avatar: BadgeAvatarInitials('TP'), label: 'Avatar + Text'),
         ],
       ),
 
@@ -1132,19 +1131,6 @@ class _CatalogHomeState extends State<CatalogHome> {
           AppBadge(leadingIcon: AppIcons.star, label: 'Leading'),
           AppBadge(label: 'Trailing', trailingIcon: AppIcons.close),
           AppBadge(leadingIcon: AppIcons.star, label: 'Both', trailingIcon: AppIcons.close),
-        ],
-      ),
-
-      SizedBox(height: AppGrid.grid24),
-      AppText('AVATAR TYPES', style: AppTypography.overline),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
-          AppBadge(avatar: BadgeAvatarIcon(AppIcons.crown), label: 'Icon'),
-          AppBadge(avatar: BadgeAvatarInitials('TP'), label: 'Initials'),
         ],
       ),
 
