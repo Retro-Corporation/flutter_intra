@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'color_utils.dart';
 import 'three_d_press_geometry.dart';
 
 // ── Enums ──
@@ -73,22 +74,6 @@ class _ResolvedColors {
   });
 }
 
-Color _resolve700(Color color) {
-  return AppColors.shadow700[color] ?? _darken(color, 0.2);
-}
-
-Color _resolve900(Color color) {
-  final map = <Color, Color>{
-    AppColors.orange500: AppColors.orange900,
-    AppColors.red500:    AppColors.red900,
-    AppColors.blue500:   AppColors.blue900,
-    AppColors.green500:  AppColors.green900,
-    AppColors.yellow500: AppColors.yellow900,
-    AppColors.purple500: AppColors.purple900,
-    AppColors.textPrimary: AppColors.grey700,
-  };
-  return map[color] ?? _darken(color, 0.4);
-}
 
 _ResolvedColors _resolveColors(
   ButtonType type,
@@ -103,7 +88,7 @@ _ResolvedColors _resolveColors(
           background: AppColors.surface,
           foreground: color,
           border: Colors.transparent,
-          shadow: _resolve700(color),
+          shadow: resolve700(color),
         );
       }
       final fg =
@@ -114,7 +99,7 @@ _ResolvedColors _resolveColors(
         background: color,
         foreground: fg,
         border: Colors.transparent,
-        shadow: _resolve700(color),
+        shadow: resolve700(color),
       );
     case ButtonType.outline:
       if (active) {
@@ -125,7 +110,7 @@ _ResolvedColors _resolveColors(
           shadow: color,
         );
       }
-      final border900 = _resolve900(color);
+      final border900 = resolve900(color);
       return _ResolvedColors(
         background: AppColors.background,
         foreground: color,
@@ -142,12 +127,6 @@ _ResolvedColors _resolveColors(
   }
 }
 
-Color _darken(Color color, double amount) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
-      .toColor();
-}
 
 // ── AppButton ──
 

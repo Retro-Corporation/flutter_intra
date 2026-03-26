@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'color_utils.dart';
 import 'three_d_press_geometry.dart';
 
 // ── Enums ──
@@ -28,16 +29,6 @@ class _RadioSizeConfig {
 
 // ── Color resolution ──
 
-Color _resolve700(Color color) {
-  return AppColors.shadow700[color] ?? _darken(color, 0.2);
-}
-
-Color _darken(Color color, double amount) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
-      .toColor();
-}
 
 // ── AppRadio ──
 
@@ -128,7 +119,7 @@ class _AppRadioState extends State<AppRadio> {
 
     if (_isSelected) {
       backgroundColor = widget.color;
-      borderColor = _resolve700(widget.color);
+      borderColor = resolve700(widget.color);
     } else {
       backgroundColor = Colors.transparent;
       borderColor = AppColors.textPrimary;

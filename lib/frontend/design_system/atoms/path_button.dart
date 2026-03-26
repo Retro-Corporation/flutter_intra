@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'color_utils.dart';
 
 // ── Enums ──
 
@@ -95,31 +96,6 @@ double _outerSizeFor(PathButtonShape shape) {
   return _faceSizeFor(shape) + (_kRingGap + _kRingStroke) * 2;
 }
 
-// ── Color helpers ──
-
-Color _resolve700(Color color) {
-  return AppColors.shadow700[color] ?? _darken(color, 0.2);
-}
-
-Color _resolve900(Color color) {
-  final map = <Color, Color>{
-    AppColors.orange500: AppColors.orange900,
-    AppColors.red500: AppColors.red900,
-    AppColors.blue500: AppColors.blue900,
-    AppColors.green500: AppColors.green900,
-    AppColors.yellow500: AppColors.yellow900,
-    AppColors.purple500: AppColors.purple900,
-    AppColors.textPrimary: AppColors.grey700,
-  };
-  return map[color] ?? _darken(color, 0.4);
-}
-
-Color _darken(Color color, double amount) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
-      .toColor();
-}
 
 Color _segmentColor(SegmentStatus status, Color accentColor) {
   switch (status) {
@@ -342,8 +318,8 @@ class _PathButtonPainter extends CustomPainter {
 
     final faceHalf = faceSize / 2;
     final shadowColor = state == PathButtonState.locked
-        ? _resolve900(color)
-        : _resolve700(color);
+        ? resolve900(color)
+        : resolve700(color);
 
     // ── 1. Draw 3D shadow (behind main face) ──
     if (!pressed) {

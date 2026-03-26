@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import 'color_utils.dart';
 import 'three_d_press_geometry.dart';
 
 // ── Enums ──
@@ -39,14 +40,6 @@ class _ResolvedColors {
   });
 }
 
-Color _resolve700(Color color) {
-  return AppColors.shadow700[color] ?? _darken(color, 0.2);
-}
-
-Color _darken(Color color, double amount) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
-}
 
 _ResolvedColors _resolveColors(
   CheckboxValue value,
@@ -59,7 +52,7 @@ _ResolvedColors _resolveColors(
   if (isCheckedOrIndeterminate) {
     return _ResolvedColors(
       background: color,
-      border: _resolve700(color),
+      border: resolve700(color),
       icon: AppColors.textPrimary,
     );
   }
