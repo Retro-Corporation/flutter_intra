@@ -10,25 +10,20 @@ import 'icon.dart';
 
 /// Atom: text field with configurable borders, icons, and multiline support.
 ///
+/// Receive-only — requires a [controller] from the molecule or template above.
+/// Never creates, owns, or disposes a controller or focus node.
+///
 /// Visual defaults:
 /// - Default border: [AppColors.surfaceBorder]
 /// - Focused border: [AppColors.brand]
-///
-/// Shows a clear (close) icon when text is present (unless [showClearIcon]
-/// is false or a custom [suffixWidget] is provided).
-///
-/// Manages its own [TextEditingController] and [FocusNode] by default,
-/// but accepts optional external overrides.
-class AppTextField extends StatefulWidget {
+class AppTextField extends StatelessWidget {
+  final TextEditingController controller;
   final String? hintText;
-  final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
   final bool obscureText;
-
-  // ── New props for molecule composition ──
 
   /// Override the default (unfocused) border color.
   final Color? borderColor;
@@ -51,12 +46,8 @@ class AppTextField extends StatefulWidget {
   /// Color for the leading icon.
   final Color? leadingIconColor;
 
-  /// Custom suffix widget (replaces the default clear icon).
+  /// Custom suffix widget (e.g. clear icon, visibility toggle).
   final Widget? suffixWidget;
-
-  /// Whether to show the built-in clear icon. Ignored when [suffixWidget]
-  /// is provided. Defaults to true.
-  final bool showClearIcon;
 
   /// Number of lines for the input. Set > 1 for multiline.
   final int maxLines;
@@ -75,8 +66,8 @@ class AppTextField extends StatefulWidget {
 
   const AppTextField({
     super.key,
+    required this.controller,
     this.hintText,
-    this.controller,
     this.focusNode,
     this.onChanged,
     this.onSubmitted,
@@ -90,7 +81,6 @@ class AppTextField extends StatefulWidget {
     this.leadingIcon,
     this.leadingIconColor,
     this.suffixWidget,
-    this.showClearIcon = true,
     this.maxLines = 1,
     this.minLines,
     this.borderRadius,
@@ -99,60 +89,10 @@ class AppTextField extends StatefulWidget {
   });
 
   @override
-  State<AppTextField> createState() => _AppTextFieldState();
-}
-
-class _AppTextFieldState extends State<AppTextField> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-  bool _ownsController = false;
-  bool _ownsFocusNode = false;
-  bool _hasText = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    if (widget.focusNode != null) {
-      _focusNode = widget.focusNode!;
-    } else {
-      _focusNode = FocusNode();
-      _ownsFocusNode = true;
-    }
-    _hasText = _controller.text.isNotEmpty;
-    _controller.addListener(_onTextChanged);
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_onTextChanged);
-    if (_ownsController) _controller.dispose();
-    if (_ownsFocusNode) _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _onTextChanged() {
-    final hasText = _controller.text.isNotEmpty;
-    if (hasText != _hasText) {
-      setState(() => _hasText = hasText);
-    }
-  }
-
-  void _clear() {
-    _controller.clear();
-    widget.onChanged?.call('');
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final radius = widget.borderRadius ?? AppRadius.sm;
-    final bColor = widget.borderColor ?? AppColors.surfaceBorder;
-    final fColor = widget.focusedBorderColor ?? AppColors.brand;
+    final radius = borderRadius ?? AppRadius.sm;
+    final bColor = borderColor ?? AppColors.surfaceBorder;
+    final fColor = focusedBorderColor ?? AppColors.brand;
 
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius),
@@ -170,56 +110,38 @@ class _AppTextFieldState extends State<AppTextField> {
     );
 
     final textStyle = AppTypography.body.regular.copyWith(
-      color: widget.textColor,
+      color: textColor,
     );
 
     final hintStyle = AppTypography.body.regular.copyWith(
-      color: widget.hintColor ?? AppColors.textSecondary,
+      color: hintColor ?? AppColors.textSecondary,
     );
-
-    // Resolve suffix: custom widget > clear icon > nothing
-    Widget? suffix;
-    if (widget.suffixWidget != null) {
-      suffix = widget.suffixWidget;
-    } else if (widget.showClearIcon && _hasText) {
-      suffix = GestureDetector(
-        onTap: _clear,
-        child: Padding(
-          padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
-          child: AppIcon(
-            AppIcons.close,
-            size: IconSizes.md,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      );
-    }
 
     // Resolve prefix (leading icon)
     Widget? prefix;
-    if (widget.leadingIcon != null) {
+    if (leadingIcon != null) {
       prefix = Padding(
         padding: EdgeInsets.only(left: AppPadding.inputPaddingH),
         child: AppIcon(
-          widget.leadingIcon!,
+          leadingIcon!,
           size: IconSizes.md,
-          color: widget.leadingIconColor ?? AppColors.textSecondary,
+          color: leadingIconColor ?? AppColors.textSecondary,
         ),
       );
     }
 
     return TextField(
-      controller: _controller,
-      focusNode: _focusNode,
-      onChanged: widget.onChanged,
-      onSubmitted: widget.onSubmitted,
-      keyboardType: widget.keyboardType,
-      obscureText: widget.obscureText,
-      enabled: widget.enabled,
-      maxLines: widget.maxLines,
-      minLines: widget.minLines,
-      maxLength: widget.maxLength,
-      inputFormatters: widget.inputFormatters,
+      controller: controller,
+      focusNode: focusNode,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      enabled: enabled,
+      maxLines: maxLines,
+      minLines: minLines,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
       style: textStyle,
       cursorColor: AppColors.brand,
       // Hide the built-in counter — molecules render their own.
@@ -229,7 +151,7 @@ class _AppTextFieldState extends State<AppTextField> {
               required maxLength}) =>
           null,
       decoration: InputDecoration(
-        hintText: widget.hintText,
+        hintText: hintText,
         hintStyle: hintStyle,
         filled: true,
         fillColor: AppColors.surface,
@@ -243,7 +165,7 @@ class _AppTextFieldState extends State<AppTextField> {
         ),
         prefixIcon: prefix,
         prefixIconConstraints: const BoxConstraints(),
-        suffixIcon: suffix,
+        suffixIcon: suffixWidget,
         suffixIconConstraints: const BoxConstraints(),
       ),
     );
