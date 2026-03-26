@@ -7,6 +7,9 @@ export 'foundation/padding.dart';
 export 'foundation/radius.dart';
 export 'foundation/typography.dart';
 export 'foundation/theme.dart';
+export 'foundation/opacity.dart';
+export 'foundation/color_utils.dart';
+export 'foundation/three_d_press_geometry.dart';
 
 // Icons
 export 'icons/app_icons.dart';

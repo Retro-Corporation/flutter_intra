@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'color_utils.dart';
-import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -154,7 +152,7 @@ class _AppCheckboxState extends State<AppCheckbox> {
       widget.color,
       pressed: _pressed,
     );
-    final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     final isCheckedOrIndeterminate =
         _currentValue == CheckboxValue.checked ||

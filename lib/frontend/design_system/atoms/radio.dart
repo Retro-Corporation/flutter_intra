@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'color_utils.dart';
-import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -109,7 +107,7 @@ class _AppRadioState extends State<AppRadio> {
   @override
   Widget build(BuildContext context) {
     final sizeConfig = _RadioSizeConfig.of(widget.size);
-    final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     final geo = PressGeometry.outline(pressed: _pressed);
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'color_utils.dart';
 
 // ── Enums ──
 

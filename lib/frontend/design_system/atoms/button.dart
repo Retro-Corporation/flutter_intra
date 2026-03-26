@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'color_utils.dart';
-import 'three_d_press_geometry.dart';
 
 // ── Enums ──
 
@@ -119,7 +117,7 @@ _ResolvedColors _resolveColors(
       );
     case ButtonType.ghost:
       return _ResolvedColors(
-        background: pressed ? color.withValues(alpha: 0.1) : Colors.transparent,
+        background: pressed ? color.withValues(alpha: AppOpacity.ghostPressed) : Colors.transparent,
         foreground: color,
         border: Colors.transparent,
         shadow: Colors.transparent,
@@ -343,7 +341,7 @@ class _AppButtonState extends State<AppButton> {
     _ButtonSizeConfig sizeConfig,
     _ResolvedColors colors,
   ) {
-    final contentOpacity = widget.isDisabled ? 0.4 : 1.0;
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     final children = <Widget>[];
 
