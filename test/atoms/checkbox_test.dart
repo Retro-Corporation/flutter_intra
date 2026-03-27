@@ -4,22 +4,24 @@ import 'package:flutter_intra/frontend/design_system/design_system.dart';
 
 void main() {
   Widget buildTestCheckbox({
-    CheckboxValue? value,
+    bool? selected,
     bool selfToggle = false,
-    ValueChanged<CheckboxValue>? onChanged,
+    ValueChanged<bool>? onChanged,
     CheckboxSize size = CheckboxSize.md,
     Color color = AppColors.brand,
+    bool isIndeterminate = false,
     bool isDisabled = false,
   }) {
     return MaterialApp(
       home: Scaffold(
         body: Center(
           child: AppCheckbox(
-            value: value,
+            selected: selected,
             selfToggle: selfToggle,
             onChanged: onChanged,
             size: size,
             color: color,
+            isIndeterminate: isIndeterminate,
             isDisabled: isDisabled,
           ),
         ),
@@ -50,7 +52,7 @@ void main() {
     testWidgets(
       'Checked state shows check icon via AppIcon',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.checked));
+        await tester.pumpWidget(buildTestCheckbox(selected: true));
 
         final iconFinder = find.byType(AppIcon);
         expect(iconFinder, findsOneWidget);
@@ -63,7 +65,7 @@ void main() {
     testWidgets(
       'Indeterminate state shows minus icon via AppIcon',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.indeterminate));
+        await tester.pumpWidget(buildTestCheckbox(isIndeterminate: true));
 
         final iconFinder = find.byType(AppIcon);
         expect(iconFinder, findsOneWidget);
@@ -78,7 +80,7 @@ void main() {
     testWidgets(
       'Tap toggles state in selfToggle mode',
       (WidgetTester tester) async {
-        final values = <CheckboxValue>[];
+        final values = <bool>[];
         await tester.pumpWidget(buildTestCheckbox(
           selfToggle: true,
           onChanged: (v) => values.add(v),
@@ -91,21 +93,21 @@ void main() {
         await tester.tap(find.byType(GestureDetector));
         await tester.pump();
         expect(find.byType(AppIcon), findsOneWidget);
-        expect(values, [CheckboxValue.checked]);
+        expect(values, [true]);
 
         // Second tap → unchecked
         await tester.tap(find.byType(GestureDetector));
         await tester.pump();
         expect(find.byType(AppIcon), findsNothing);
-        expect(values, [CheckboxValue.checked, CheckboxValue.unchecked]);
+        expect(values, [true, false]);
       },
     );
 
     testWidgets(
-      'Parent-controlled mode respects value prop',
+      'Parent-controlled mode respects selected prop',
       (WidgetTester tester) async {
         // Start unchecked
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.unchecked));
+        await tester.pumpWidget(buildTestCheckbox(selected: false));
         expect(find.byType(AppIcon), findsNothing);
 
         // Tap — state should NOT change (parent-controlled)
@@ -113,8 +115,8 @@ void main() {
         await tester.pump();
         expect(find.byType(AppIcon), findsNothing);
 
-        // Rebuild with checked value — now it shows the icon
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.checked));
+        // Rebuild with selected: true — now it shows the icon
+        await tester.pumpWidget(buildTestCheckbox(selected: true));
         expect(find.byType(AppIcon), findsOneWidget);
       },
     );
@@ -122,7 +124,7 @@ void main() {
     testWidgets(
       'Disabled checkbox does not respond to taps',
       (WidgetTester tester) async {
-        final values = <CheckboxValue>[];
+        final values = <bool>[];
         await tester.pumpWidget(buildTestCheckbox(
           selfToggle: true,
           isDisabled: true,
@@ -173,7 +175,7 @@ void main() {
       (WidgetTester tester) async {
         // Checked with brand color
         await tester.pumpWidget(buildTestCheckbox(
-          value: CheckboxValue.checked,
+          selected: true,
           color: AppColors.brand,
         ));
         var painter = findPainter(tester);
@@ -181,7 +183,7 @@ void main() {
 
         // Checked with error color
         await tester.pumpWidget(buildTestCheckbox(
-          value: CheckboxValue.checked,
+          selected: true,
           color: AppColors.error,
         ));
         await tester.pump();
@@ -194,7 +196,7 @@ void main() {
       'Unchecked state has transparent background regardless of color',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestCheckbox(
-          value: CheckboxValue.unchecked,
+          selected: false,
           color: AppColors.error,
         ));
         final painter = findPainter(tester);
@@ -207,7 +209,7 @@ void main() {
     testWidgets(
       'Checked default has 4px bottom border (3D depth)',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.checked));
+        await tester.pumpWidget(buildTestCheckbox(selected: true));
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderBottom, 4.0);
@@ -219,7 +221,7 @@ void main() {
     testWidgets(
       'Checked pressed flips border to top — no layout shift',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.checked));
+        await tester.pumpWidget(buildTestCheckbox(selected: true));
 
         // Measure size before press
         final beforeBox = tester.renderObject<RenderBox>(
@@ -251,7 +253,7 @@ void main() {
     testWidgets(
       'Unchecked pressed: 1px border all around (flat)',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestCheckbox(value: CheckboxValue.unchecked));
+        await tester.pumpWidget(buildTestCheckbox(selected: false));
 
         final gesture = await tester.press(find.byType(GestureDetector));
         await tester.pump();

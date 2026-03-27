@@ -933,8 +933,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         runSpacing: AppGrid.grid8,
         children: [
           AppCheckbox(selfToggle: true),
-          AppCheckbox(value: CheckboxValue.checked),
-          AppCheckbox(value: CheckboxValue.indeterminate),
+          AppCheckbox(selected: true),
+          AppCheckbox(isIndeterminate: true),
         ],
       ),
 
@@ -946,9 +946,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.sm),
-          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.md),
-          AppCheckbox(value: CheckboxValue.checked, size: CheckboxSize.lg),
+          AppCheckbox(selected: true, size: CheckboxSize.sm),
+          AppCheckbox(selected: true, size: CheckboxSize.md),
+          AppCheckbox(selected: true, size: CheckboxSize.lg),
         ],
       ),
 
@@ -959,10 +959,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         children: const [
-          AppCheckbox(value: CheckboxValue.checked, color: AppColors.brand),
-          AppCheckbox(value: CheckboxValue.checked, color: AppColors.error),
-          AppCheckbox(value: CheckboxValue.checked, color: AppColors.success),
-          AppCheckbox(value: CheckboxValue.checked, color: AppColors.info),
+          AppCheckbox(selected: true, color: AppColors.brand),
+          AppCheckbox(selected: true, color: AppColors.error),
+          AppCheckbox(selected: true, color: AppColors.success),
+          AppCheckbox(selected: true, color: AppColors.info),
         ],
       ),
 
@@ -973,9 +973,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         children: const [
-          AppCheckbox(value: CheckboxValue.unchecked, isDisabled: true),
-          AppCheckbox(value: CheckboxValue.checked, isDisabled: true),
-          AppCheckbox(value: CheckboxValue.indeterminate, isDisabled: true),
+          AppCheckbox(selected: false, isDisabled: true),
+          AppCheckbox(selected: true, isDisabled: true),
+          AppCheckbox(isIndeterminate: true, isDisabled: true),
         ],
       ),
 
