@@ -59,4 +59,22 @@ class PressGeometry {
       showBorder: false,
     );
   }
+
+  /// Static style: fixed 3D border ring, no press interaction.
+  /// Used by components with a 3D look that don't respond to press
+  /// (e.g. toggle thumb).
+  factory PressGeometry.static({
+    required double top,
+    required double side,
+    required double bottom,
+  }) {
+    return PressGeometry._(
+      visualTop: top,
+      visualBottom: bottom,
+      visualSide: side,
+      faceOffset: 0.0,
+      layoutSide: side,
+      showBorder: true,
+    );
+  }
 }

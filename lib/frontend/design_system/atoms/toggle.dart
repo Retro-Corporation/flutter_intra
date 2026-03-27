@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/opacity.dart';
+import '../foundation/three_d_press_geometry.dart';
 import '../foundation/radius.dart';
 
 // ── Enums ──
@@ -208,12 +209,10 @@ class _AppToggleState extends State<AppToggle>
     final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     // Thumb 3D border — static, never changes
-    const double thumbBorderTop = 1.0;
-    const double thumbBorderSide = 2.0;
-    const double thumbBorderBottom = 4.0;
+    final thumbGeo = PressGeometry.static(top: 1.0, side: 2.0, bottom: 4.0);
 
     final totalWidth = sizeConfig.trackWidth;
-    final totalHeight = sizeConfig.thumbSize + thumbBorderTop + thumbBorderBottom;
+    final totalHeight = sizeConfig.thumbSize + thumbGeo.visualTop + thumbGeo.visualBottom;
 
     return Semantics(
       toggled: _currentValue,
@@ -236,9 +235,9 @@ class _AppToggleState extends State<AppToggle>
                   trackHeight: sizeConfig.trackHeight,
                   thumbSize: sizeConfig.thumbSize,
                   thumbRadius: AppRadius.sm,
-                  thumbBorderTop: thumbBorderTop,
-                  thumbBorderSide: thumbBorderSide,
-                  thumbBorderBottom: thumbBorderBottom,
+                  thumbBorderTop: thumbGeo.visualTop,
+                  thumbBorderSide: thumbGeo.visualSide,
+                  thumbBorderBottom: thumbGeo.visualBottom,
                 ),
                 child: SizedBox(
                   width: totalWidth,
