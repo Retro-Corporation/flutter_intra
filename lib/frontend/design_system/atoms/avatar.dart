@@ -33,39 +33,39 @@ class AvatarInitials extends AvatarContent {
 class _AvatarSizeConfig {
   final double diameter;
   final double iconSize;
-  final double initialsFontSize;
+  final TypeStyle initialsType;
 
   const _AvatarSizeConfig({
     required this.diameter,
     required this.iconSize,
-    required this.initialsFontSize,
+    required this.initialsType,
   });
 
   static final Map<AvatarSize, _AvatarSizeConfig> _map = {
     AvatarSize.xs: _AvatarSizeConfig(
       diameter: AppGrid.grid24,
       iconSize: IconSizes.sm,
-      initialsFontSize: AppTypography.overline.fontSize!,
+      initialsType: AppTypography.overline,
     ),
     AvatarSize.sm: _AvatarSizeConfig(
       diameter: AppGrid.grid32,
       iconSize: IconSizes.md,
-      initialsFontSize: AppTypography.caption.fontSize!,
+      initialsType: AppTypography.caption,
     ),
     AvatarSize.md: _AvatarSizeConfig(
       diameter: 3.rem,
       iconSize: IconSizes.lg,
-      initialsFontSize: AppTypography.body.fontSize,
+      initialsType: AppTypography.body,
     ),
     AvatarSize.lg: _AvatarSizeConfig(
       diameter: AppGrid.grid60,
       iconSize: IconSizes.lg,
-      initialsFontSize: AppTypography.proHeading6.fontSize,
+      initialsType: AppTypography.proHeading6,
     ),
     AvatarSize.xl: _AvatarSizeConfig(
       diameter: AppGrid.grid100,
       iconSize: IconSizes.xl,
-      initialsFontSize: AppTypography.heading3.fontSize,
+      initialsType: AppTypography.heading3,
     ),
   };
 
@@ -211,12 +211,7 @@ class _AppAvatarState extends State<AppAvatar> {
       child: Center(
         child: Text(
           initials.toUpperCase(),
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: config.initialsFontSize,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-          ),
+          style: config.initialsType.bold,
         ),
       ),
     );
