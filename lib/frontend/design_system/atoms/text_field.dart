@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../foundation/colors.dart';
 import '../foundation/padding.dart';
 import '../foundation/radius.dart';
+import '../foundation/stroke.dart';
 import '../foundation/typography.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
@@ -96,17 +97,17 @@ class AppTextField extends StatelessWidget {
 
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius),
-      borderSide: BorderSide(color: bColor, width: 1),
+      borderSide: BorderSide(color: bColor, width: AppStroke.xs),
     );
 
     final focusedBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius),
-      borderSide: BorderSide(color: fColor, width: 1),
+      borderSide: BorderSide(color: fColor, width: AppStroke.xs),
     );
 
     final disabledBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius),
-      borderSide: BorderSide(color: bColor, width: 1),
+      borderSide: BorderSide(color: bColor, width: AppStroke.xs),
     );
 
     final textStyle = AppTypography.body.regular.copyWith(

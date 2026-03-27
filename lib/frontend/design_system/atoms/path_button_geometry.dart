@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
+import '../foundation/stroke.dart';
 
 // ── Enums ──
 
@@ -25,9 +26,6 @@ class PathButtonSegment {
 }
 
 // ── Shape geometry constants ──
-
-/// Ring segment stroke width.
-const double kRingStroke = 6.0;
 
 /// Gap between ring inner edge and face outer edge.
 const double kRingGap = 8.0;
@@ -74,7 +72,7 @@ double faceSizeFor(PathButtonShape shape) {
 
 /// Returns the total outer size (face + ring gap + ring stroke on each side).
 double outerSizeFor(PathButtonShape shape) {
-  return faceSizeFor(shape) + (kRingGap + kRingStroke) * 2;
+  return faceSizeFor(shape) + (kRingGap + AppStroke.ring) * 2;
 }
 
 // ── Segment color resolution ──

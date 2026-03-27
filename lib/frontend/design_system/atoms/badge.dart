@@ -4,6 +4,7 @@ import '../foundation/color_utils.dart';
 import '../foundation/grid.dart';
 import '../foundation/padding.dart';
 import '../foundation/radius.dart';
+import '../foundation/stroke.dart';
 import '../foundation/typography.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
@@ -187,7 +188,7 @@ class AppBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: colors.border, width: 1.5),
+        border: Border.all(color: colors.border, width: AppStroke.sm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

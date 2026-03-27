@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/color_utils.dart';
+import '../foundation/stroke.dart';
 import 'path_button_geometry.dart';
 
 // ── PathButtonRenderer ──
@@ -164,7 +165,7 @@ class PathButtonRenderer extends CustomPainter {
         ? kRingGap / math.cos(math.pi / 6) + 4.0
         : kRingGap;
 
-    final ringHalf = (faceSize / 2) + effectiveGap + (kRingStroke / 2) + (pulseExpansion * pulseExpand);
+    final ringHalf = (faceSize / 2) + effectiveGap + (AppStroke.ring / 2) + (pulseExpansion * pulseExpand);
 
     final ringCornerRadius = shape == PathButtonShape.triangle
         ? kTriangleRingRadius
@@ -185,7 +186,7 @@ class PathButtonRenderer extends CustomPainter {
       final paint = Paint()
         ..color = segColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = kRingStroke
+        ..strokeWidth = AppStroke.ring
         ..strokeCap = StrokeCap.round;
       canvas.drawPath(ringPath, paint);
       return;
@@ -215,7 +216,7 @@ class PathButtonRenderer extends CustomPainter {
       final paint = Paint()
         ..color = segColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = kRingStroke
+        ..strokeWidth = AppStroke.ring
         ..strokeCap = StrokeCap.round;
       canvas.drawPath(extractedPath, paint);
 

@@ -5,6 +5,7 @@ import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
 import '../foundation/padding.dart';
 import '../foundation/radius.dart';
+import '../foundation/stroke.dart';
 import '../foundation/three_d_press_geometry.dart';
 import '../foundation/typography.dart';
 import '../icons/icon_sizes.dart';
@@ -392,7 +393,7 @@ class _AppButtonState extends State<AppButton>
             width: sizeConfig.iconSize,
             height: sizeConfig.iconSize,
             child: CircularProgressIndicator.adaptive(
-              strokeWidth: 2,
+              strokeWidth: AppStroke.md,
               valueColor: AlwaysStoppedAnimation<Color>(colors.foreground),
             ),
           ),

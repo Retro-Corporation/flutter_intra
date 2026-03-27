@@ -6,6 +6,7 @@ import '../foundation/colors.dart';
 import '../foundation/grid.dart';
 import '../foundation/padding.dart';
 import '../foundation/radius.dart';
+import '../foundation/stroke.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
 import 'controller_owner_mixin.dart';
@@ -158,7 +159,7 @@ class _AppNumberFieldState extends State<AppNumberField>
           color: iconColor,
         ),
         Container(
-          width: 1,
+          width: AppStroke.xs,
           height: 2.75.rem,
           color: AppColors.surfaceBorder,
         ),
@@ -210,7 +211,7 @@ class _AppNumberFieldState extends State<AppNumberField>
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          border: Border.all(color: borderColor, width: 1),
+          border: Border.all(color: borderColor, width: AppStroke.xs),
         ),
       );
     }

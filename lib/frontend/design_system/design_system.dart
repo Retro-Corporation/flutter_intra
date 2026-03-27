@@ -8,6 +8,7 @@ export 'foundation/radius.dart';
 export 'foundation/typography.dart';
 export 'foundation/theme.dart';
 export 'foundation/opacity.dart';
+export 'foundation/stroke.dart';
 export 'foundation/color_utils.dart';
 export 'foundation/three_d_press_geometry.dart';
 

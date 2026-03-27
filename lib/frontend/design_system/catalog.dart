@@ -74,6 +74,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         '4-Point Grid',
         'Padding',
         'Corner Radius',
+        'Stroke Widths',
       ], isExpanded: true),
       _Section('Atoms', [
         'Text',
@@ -265,7 +266,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(
-          right: BorderSide(color: AppColors.surfaceBorder, width: 1),
+          right: BorderSide(color: AppColors.surfaceBorder, width: AppStroke.xs),
         ),
       ),
       child: Column(
@@ -351,7 +352,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                                   color: isActive
                                       ? AppColors.brand
                                       : Colors.transparent,
-                                  width: 3,
+                                  width: AppStroke.lg,
                                 ),
                               ),
                             ),
@@ -441,7 +442,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(AppRadius.sm),
-              border: Border.all(color: AppColors.surfaceBorder),
+              border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
             ),
             child: Row(
               children: [
@@ -677,6 +678,19 @@ class _CatalogHomeState extends State<CatalogHome> {
       _RadiusRow('lg (1.5rem)', AppRadius.lg),
       _RadiusRow('xl (2.5rem)', AppRadius.xl),
       _RadiusRow('pill', AppRadius.pill),
+
+      _sectionDivider(),
+
+      // Stroke Widths
+      _subSectionHeader(subs[7]),
+      SizedBox(height: AppGrid.grid12),
+      _StrokeRow('xs', AppStroke.xs),
+      _StrokeRow('sm', AppStroke.sm),
+      _StrokeRow('md', AppStroke.md),
+      _StrokeRow('lg', AppStroke.lg),
+      _StrokeRow('xl', AppStroke.xl),
+      _StrokeRow('xxl', AppStroke.xxl),
+      _StrokeRow('ring', AppStroke.ring),
     ];
   }
 
@@ -1948,7 +1962,7 @@ class _ColorRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(AppRadius.sm),
-              border: Border.all(color: AppColors.surfaceBorder),
+              border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
             ),
           ),
           SizedBox(width: AppGrid.grid12),
@@ -2135,13 +2149,42 @@ class _RadiusRow extends StatelessWidget {
             height: 64,
             decoration: BoxDecoration(
               color: AppColors.surface,
-              border: Border.all(color: AppColors.brand, width: 2),
+              border: Border.all(color: AppColors.brand, width: AppStroke.md),
               borderRadius: BorderRadius.circular(radius.clamp(0, 32)),
             ),
           ),
           SizedBox(width: AppGrid.grid16),
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
           AppText('${radius.toInt()}px', style: AppTypography.caption.bold),
+        ],
+      ),
+    );
+  }
+}
+
+class _StrokeRow extends StatelessWidget {
+  final String name;
+  final double width;
+  const _StrokeRow(this.name, this.width);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppGrid.grid12),
+      child: Row(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              border: Border.all(color: AppColors.brand, width: width),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
+          ),
+          SizedBox(width: AppGrid.grid16),
+          Expanded(child: AppText(name, style: AppTypography.body.regular)),
+          AppText('${width % 1 == 0 ? width.toInt() : width}px', style: AppTypography.caption.bold),
         ],
       ),
     );
@@ -2255,7 +2298,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.surfaceBorder),
+        border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2330,8 +2373,8 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
                     color: option.$2,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                     border: selected
-                        ? Border.all(color: AppColors.textPrimary, width: 2)
-                        : Border.all(color: AppColors.surfaceBorder),
+                        ? Border.all(color: AppColors.textPrimary, width: AppStroke.md)
+                        : Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
                   ),
                 ),
               );
@@ -2454,6 +2497,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
               borderRadius: BorderRadius.circular(AppRadius.sm),
               border: Border.all(
                 color: selected ? AppColors.brand : AppColors.surfaceBorder,
+                width: AppStroke.xs,
               ),
             ),
             child: AppText(
