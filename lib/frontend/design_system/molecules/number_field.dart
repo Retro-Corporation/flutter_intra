@@ -70,23 +70,18 @@ class AppNumberField extends StatefulWidget {
 
 class _AppNumberFieldState extends State<AppNumberField>
     with ControllerOwnerMixin {
-  int _currentLength = 0;
-
   @override
   TextEditingController? get externalController => widget.controller;
 
   @override
   void onTextChanged() {
-    setState(() {
-      _currentLength = controller.text.length;
-    });
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     initController(initialText: widget.value?.toString() ?? '');
-    _currentLength = controller.text.length;
   }
 
   @override
@@ -183,8 +178,6 @@ class _AppNumberFieldState extends State<AppNumberField>
       label: widget.label,
       helperText: widget.helperText,
       state: widget.state,
-      maxLength: widget.maxLength,
-      currentLength: _currentLength,
       child: AppTextField(
         controller: controller,
         focusNode: widget.focusNode,
@@ -226,8 +219,6 @@ class _AppNumberFieldState extends State<AppNumberField>
       label: widget.label,
       helperText: widget.helperText,
       state: widget.state,
-      maxLength: widget.maxLength,
-      currentLength: _currentLength,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

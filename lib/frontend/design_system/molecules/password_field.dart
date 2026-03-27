@@ -56,7 +56,6 @@ class AppPasswordField extends StatefulWidget {
 class _AppPasswordFieldState extends State<AppPasswordField>
     with ControllerOwnerMixin, ValidatorMixin {
   bool _obscured = true;
-  int _currentLength = 0;
 
   @override
   TextEditingController? get externalController => widget.controller;
@@ -72,18 +71,14 @@ class _AppPasswordFieldState extends State<AppPasswordField>
 
   @override
   void onTextChanged() {
-    final text = controller.text;
-    setState(() {
-      _currentLength = text.length;
-    });
-    runValidator(text);
+    setState(() {});
+    runValidator(controller.text);
   }
 
   @override
   void initState() {
     super.initState();
     initController();
-    _currentLength = controller.text.length;
   }
 
   @override
@@ -116,7 +111,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
       state: effectiveState,
       minLength: widget.minLength,
       maxLength: widget.maxLength,
-      currentLength: _currentLength,
+      currentLength: currentLength,
       child: AppTextField(
         controller: controller,
         focusNode: widget.focusNode,

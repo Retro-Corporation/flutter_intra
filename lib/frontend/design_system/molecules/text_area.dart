@@ -55,8 +55,6 @@ class AppTextArea extends StatefulWidget {
 
 class _AppTextAreaState extends State<AppTextArea>
     with ControllerOwnerMixin, ValidatorMixin {
-  int _currentLength = 0;
-
   @override
   TextEditingController? get externalController => widget.controller;
 
@@ -71,18 +69,14 @@ class _AppTextAreaState extends State<AppTextArea>
 
   @override
   void onTextChanged() {
-    final text = controller.text;
-    setState(() {
-      _currentLength = text.length;
-    });
-    runValidator(text);
+    setState(() {});
+    runValidator(controller.text);
   }
 
   @override
   void initState() {
     super.initState();
     initController();
-    _currentLength = controller.text.length;
   }
 
   @override
@@ -102,7 +96,7 @@ class _AppTextAreaState extends State<AppTextArea>
       helperText: effectiveHelper,
       state: effectiveState,
       maxLength: widget.maxLength,
-      currentLength: _currentLength,
+      currentLength: currentLength,
       child: AppTextField(
         controller: controller,
         focusNode: widget.focusNode,

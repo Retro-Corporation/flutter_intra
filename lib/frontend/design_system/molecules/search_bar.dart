@@ -33,24 +33,18 @@ class AppSearchBar extends StatefulWidget {
 
 class _AppSearchBarState extends State<AppSearchBar>
     with ControllerOwnerMixin {
-  bool _hasText = false;
-
   @override
   TextEditingController? get externalController => widget.controller;
 
   @override
   void onTextChanged() {
-    final hasText = controller.text.isNotEmpty;
-    if (hasText != _hasText) {
-      setState(() => _hasText = hasText);
-    }
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     initController();
-    _hasText = controller.text.isNotEmpty;
   }
 
   @override
@@ -67,7 +61,7 @@ class _AppSearchBarState extends State<AppSearchBar>
   @override
   Widget build(BuildContext context) {
     // When text is present, show clear icon; otherwise show search icon.
-    final suffixIcon = _hasText
+    final suffixIcon = hasText
         ? GestureDetector(
             onTap: _clear,
             child: Padding(

@@ -53,9 +53,6 @@ class AppTextFieldMolecule extends StatefulWidget {
 
 class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     with ControllerOwnerMixin, ValidatorMixin {
-  int _currentLength = 0;
-  bool _hasText = false;
-
   @override
   TextEditingController? get externalController => widget.controller;
 
@@ -70,20 +67,14 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
 
   @override
   void onTextChanged() {
-    final text = controller.text;
-    setState(() {
-      _currentLength = text.length;
-      _hasText = text.isNotEmpty;
-    });
-    runValidator(text);
+    setState(() {});
+    runValidator(controller.text);
   }
 
   @override
   void initState() {
     super.initState();
     initController();
-    _currentLength = controller.text.length;
-    _hasText = controller.text.isNotEmpty;
   }
 
   @override
@@ -105,7 +96,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
 
     // Clear icon — shown when text is present.
     Widget? suffix;
-    if (_hasText) {
+    if (hasText) {
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
@@ -124,7 +115,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       helperText: effectiveHelper,
       state: effectiveState,
       maxLength: widget.maxLength,
-      currentLength: _currentLength,
+      currentLength: currentLength,
       child: AppTextField(
         controller: controller,
         focusNode: widget.focusNode,
