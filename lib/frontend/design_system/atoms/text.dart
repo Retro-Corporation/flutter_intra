@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// Usage:
 /// ```dart
 /// AppText('Hello', style: AppTypography.body.regular)
-/// AppText('LABEL', style: AppTypography.caption)
+/// AppText('LABEL', style: AppTypography.caption.bold)
 /// AppText('Muted', style: AppTypography.body.regular, color: AppColors.textSecondary)
 /// ```
 class AppText extends StatelessWidget {

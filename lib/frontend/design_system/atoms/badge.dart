@@ -36,7 +36,7 @@ class _BadgeSizeConfig {
     BadgeSize.xs: _BadgeSizeConfig(
       height: 1.25.rem,
       paddingX: AppPadding.rem025,
-      textStyle: AppTypography.caption,
+      textStyle: AppTypography.caption.bold,
       iconSize: IconSizes.sm,
       gap: AppGrid.grid4,
     ),

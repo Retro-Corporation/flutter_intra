@@ -199,7 +199,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                 children: [
                   AppText('Design System', style: AppTypography.heading4.bold),
                   const SizedBox(height: 4),
-                  AppText('CATALOG', style: AppTypography.overline),
+                  AppText('CATALOG', style: AppTypography.overline.semiBold),
                   SizedBox(height: AppGrid.grid24),
 
                   // Foundation
@@ -403,7 +403,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                                 ),
                                 child: AppText(
                                   entry.value.name,
-                                  style: AppTypography.caption,
+                                  style: AppTypography.caption.bold,
                                   color: AppColors.textSecondary,
                                 ),
                               ),
@@ -510,7 +510,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       // Color Palettes
       _subSectionHeader(subs[1]),
       SizedBox(height: AppGrid.grid12),
-      AppText('GREY', style: AppTypography.overline),
+      AppText('GREY', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('50', AppColors.grey50),
@@ -526,7 +526,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('ORANGE (PRIMARY)', style: AppTypography.overline),
+      AppText('ORANGE (PRIMARY)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('50', AppColors.orange50),
@@ -537,7 +537,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('BLUE', style: AppTypography.overline),
+      AppText('BLUE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.blue500),
@@ -546,7 +546,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('RED', style: AppTypography.overline),
+      AppText('RED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.red500),
@@ -555,7 +555,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('GREEN', style: AppTypography.overline),
+      AppText('GREEN', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.green500),
@@ -564,7 +564,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('PURPLE', style: AppTypography.overline),
+      AppText('PURPLE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.purple500),
@@ -573,7 +573,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ]),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('YELLOW', style: AppTypography.overline),
+      AppText('YELLOW', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.yellow500),
@@ -597,13 +597,13 @@ class _CatalogHomeState extends State<CatalogHome> {
       SizedBox(height: AppGrid.grid8),
       Row(
         children: [
-          Expanded(child: AppText('BLACK', style: AppTypography.overline)),
+          Expanded(child: AppText('BLACK', style: AppTypography.overline.semiBold)),
           SizedBox(width: AppGrid.grid8),
-          Expanded(child: AppText('BOLD', style: AppTypography.overline)),
+          Expanded(child: AppText('BOLD', style: AppTypography.overline.semiBold)),
           SizedBox(width: AppGrid.grid8),
-          Expanded(child: AppText('SEMI BOLD', style: AppTypography.overline)),
+          Expanded(child: AppText('SEMI BOLD', style: AppTypography.overline.semiBold)),
           SizedBox(width: AppGrid.grid8),
-          Expanded(child: AppText('REGULAR', style: AppTypography.overline)),
+          Expanded(child: AppText('REGULAR', style: AppTypography.overline.semiBold)),
         ],
       ),
       SizedBox(height: AppGrid.grid16),
@@ -621,7 +621,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
 
       SizedBox(height: AppGrid.grid16),
-      AppText('LINKS', style: AppTypography.overline),
+      AppText('LINKS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Row(
         children: [
@@ -689,7 +689,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[0]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('COLOR OVERRIDES', style: AppTypography.overline),
+      AppText('COLOR OVERRIDES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       AppText('Primary (default)', style: AppTypography.body.regular),
       SizedBox(height: AppGrid.grid4),
@@ -705,7 +705,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       SizedBox(height: AppGrid.grid24),
 
-      AppText('TRUNCATION', style: AppTypography.overline),
+      AppText('TRUNCATION', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 200,
@@ -719,7 +719,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       SizedBox(height: AppGrid.grid24),
 
-      AppText('ALIGNMENT', style: AppTypography.overline),
+      AppText('ALIGNMENT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: double.infinity,
@@ -738,18 +738,17 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       SizedBox(height: AppGrid.grid24),
 
-      AppText('UTILITY STYLES', style: AppTypography.overline),
+      AppText('UTILITY STYLES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
-      AppText('CAPTION STYLE', style: AppTypography.caption),
-      SizedBox(height: AppGrid.grid4),
-      AppText('OVERLINE STYLE', style: AppTypography.overline),
+      _TypeRow('Caption (11)', AppTypography.caption),
+      _TypeRow('Overline (10)', AppTypography.overline),
 
       _sectionDivider(),
 
       // Icons
       _subSectionHeader(subs[1]),
       SizedBox(height: AppGrid.grid12),
-      AppText('OUTLINED (${AppIcons.all.length})', style: AppTypography.overline),
+      AppText('OUTLINED (${AppIcons.all.length})', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -762,7 +761,7 @@ class _CatalogHomeState extends State<CatalogHome> {
               SizedBox(height: AppGrid.grid4),
               AppText(
                 e.key,
-                style: AppTypography.overline,
+                style: AppTypography.overline.semiBold,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -773,7 +772,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('FILLED (${AppIcons.allFilled.length})', style: AppTypography.overline),
+      AppText('FILLED (${AppIcons.allFilled.length})', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -786,7 +785,7 @@ class _CatalogHomeState extends State<CatalogHome> {
               SizedBox(height: AppGrid.grid4),
               AppText(
                 e.key,
-                style: AppTypography.overline,
+                style: AppTypography.overline.semiBold,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -797,7 +796,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLOR VARIANTS', style: AppTypography.overline),
+      AppText('COLOR VARIANTS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Row(
         children: [
@@ -809,7 +808,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid16),
-      AppText('SIZE VARIANTS', style: AppTypography.overline),
+      AppText('SIZE VARIANTS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -830,7 +829,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[2]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('TYPES', style: AppTypography.overline),
+      AppText('TYPES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -843,7 +842,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (FILLED)', style: AppTypography.overline),
+      AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -858,7 +857,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid16),
-      AppText('COLORS (OUTLINE)', style: AppTypography.overline),
+      AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -873,7 +872,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -887,7 +886,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('CONTENT PATTERNS', style: AppTypography.overline),
+      AppText('CONTENT PATTERNS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -901,7 +900,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -916,7 +915,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
       SizedBox(height: AppGrid.grid24),
-      AppText('TOGGLE DEMO', style: AppTypography.overline),
+      AppText('TOGGLE DEMO', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       AppButton(label: 'Toggle Me', selfToggle: true),
 
@@ -926,7 +925,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[3]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -939,7 +938,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -953,7 +952,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS', style: AppTypography.overline),
+      AppText('COLORS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -967,7 +966,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('DISABLED', style: AppTypography.overline),
+      AppText('DISABLED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -980,7 +979,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline),
+      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Row(
         children: [
@@ -996,7 +995,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[4]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1010,7 +1009,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1024,7 +1023,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS', style: AppTypography.overline),
+      AppText('COLORS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1038,7 +1037,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('DISABLED', style: AppTypography.overline),
+      AppText('DISABLED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1055,7 +1054,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[5]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('VARIANTS', style: AppTypography.overline),
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1069,7 +1068,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('FILL STYLES', style: AppTypography.overline),
+      AppText('FILL STYLES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1081,7 +1080,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (FILLED)', style: AppTypography.overline),
+      AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1098,7 +1097,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (OUTLINE)', style: AppTypography.overline),
+      AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1115,7 +1114,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1130,7 +1129,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('ICON SLOTS', style: AppTypography.overline),
+      AppText('ICON SLOTS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid8,
@@ -1148,7 +1147,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[6]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1164,7 +1163,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('CONTENT TYPES', style: AppTypography.overline),
+      AppText('CONTENT TYPES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1178,7 +1177,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1201,17 +1200,17 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[7]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('DEFAULT', style: AppTypography.overline),
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldDefault, hintText: 'Text box...'),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH VALUE', style: AppTypography.overline),
+      AppText('WITH VALUE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldValue),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('PASSWORD', style: AppTypography.overline),
+      AppText('PASSWORD', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
 
@@ -1221,7 +1220,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[8]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1234,7 +1233,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1248,7 +1247,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS', style: AppTypography.overline),
+      AppText('COLORS', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1262,7 +1261,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('DISABLED', style: AppTypography.overline),
+      AppText('DISABLED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1274,7 +1273,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline),
+      AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Row(
         children: [
@@ -1290,7 +1289,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[9]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline),
+      AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1334,7 +1333,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COMPLETED (MIXED SEGMENTS)', style: AppTypography.overline),
+      AppText('COMPLETED (MIXED SEGMENTS)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1375,7 +1374,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('LOCKED', style: AppTypography.overline),
+      AppText('LOCKED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1416,7 +1415,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('SEGMENT COUNTS (1–5)', style: AppTypography.overline),
+      AppText('SEGMENT COUNTS (1–5)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1477,7 +1476,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (CYCLING SHAPES)', style: AppTypography.overline),
+      AppText('COLORS (CYCLING SHAPES)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
@@ -1612,7 +1611,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[0]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1661,7 +1660,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH HELPER TEXT', style: AppTypography.overline),
+      AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1673,7 +1672,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH LEADING ICON', style: AppTypography.overline),
+      AppText('WITH LEADING ICON', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1685,7 +1684,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH CHARACTER COUNT', style: AppTypography.overline),
+      AppText('WITH CHARACTER COUNT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1703,7 +1702,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[1]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('STATES', style: AppTypography.overline),
+      AppText('STATES', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1765,7 +1764,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[2]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('FIXED HEIGHT', style: AppTypography.overline),
+      AppText('FIXED HEIGHT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 400,
@@ -1779,7 +1778,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('AUTO-GROW', style: AppTypography.overline),
+      AppText('AUTO-GROW', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 400,
@@ -1794,7 +1793,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('ERROR STATE', style: AppTypography.overline),
+      AppText('ERROR STATE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 400,
@@ -1812,7 +1811,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[3]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('INSIDE (DEFAULT)', style: AppTypography.overline),
+      AppText('INSIDE (DEFAULT)', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 200,
@@ -1826,7 +1825,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('OUTSIDE', style: AppTypography.overline),
+      AppText('OUTSIDE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 280,
@@ -1841,7 +1840,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH HELPER TEXT', style: AppTypography.overline),
+      AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 200,
@@ -1856,7 +1855,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('DISABLED', style: AppTypography.overline),
+      AppText('DISABLED', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 200,
@@ -1874,7 +1873,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[4]),
       SizedBox(height: AppGrid.grid12),
 
-      AppText('DEFAULT', style: AppTypography.overline),
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1882,7 +1881,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       SizedBox(height: AppGrid.grid24),
-      AppText('WITH VALUE', style: AppTypography.overline),
+      AppText('WITH VALUE', style: AppTypography.overline.semiBold),
       SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -1899,7 +1898,7 @@ class _CatalogHomeState extends State<CatalogHome> {
   Widget _subSectionHeader(_SubSection sub) {
     return Container(
       key: sub.key,
-      child: AppText(sub.name.toUpperCase(), style: AppTypography.caption),
+      child: AppText(sub.name.toUpperCase(), style: AppTypography.caption.bold),
     );
   }
 
@@ -1923,7 +1922,7 @@ class _NavAction extends StatelessWidget {
       onTap: onTap,
       child: AppText(
         label,
-        style: AppTypography.caption,
+        style: AppTypography.caption.bold,
         color: AppColors.brand,
       ),
     );
@@ -1956,7 +1955,7 @@ class _ColorRow extends StatelessWidget {
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
           AppText(
             '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
-            style: AppTypography.caption,
+            style: AppTypography.caption.bold,
           ),
         ],
       ),
@@ -1995,7 +1994,7 @@ class _PaletteStrip extends StatelessWidget {
                     child: AppText(
                       c.label,
                       textAlign: TextAlign.center,
-                      style: AppTypography.overline,
+                      style: AppTypography.overline.semiBold,
                     ),
                   ))
               .toList(),
@@ -2019,7 +2018,7 @@ class _TypeRow extends StatelessWidget {
         children: [
           AppText(
             '${typeStyle.fontSize.toStringAsFixed(1)}px  •  ${(typeStyle.fontSize / AppScale.root).toStringAsFixed(2)}rem',
-            style: AppTypography.overline,
+            style: AppTypography.overline.semiBold,
           ),
           SizedBox(height: AppGrid.grid4),
           Row(
@@ -2102,7 +2101,7 @@ class _SpacingRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 80,
-            child: AppText(name, style: AppTypography.caption),
+            child: AppText(name, style: AppTypography.caption.bold),
           ),
           Container(
             width: value.clamp(0, 200),
@@ -2142,7 +2141,7 @@ class _RadiusRow extends StatelessWidget {
           ),
           SizedBox(width: AppGrid.grid16),
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
-          AppText('${radius.toInt()}px', style: AppTypography.caption),
+          AppText('${radius.toInt()}px', style: AppTypography.caption.bold),
         ],
       ),
     );
@@ -2172,7 +2171,7 @@ class _IconVariant extends StatelessWidget {
             ),
           ),
           SizedBox(height: AppGrid.grid4),
-          AppText(label, style: AppTypography.overline),
+          AppText(label, style: AppTypography.overline.semiBold),
         ],
       ),
     );
@@ -2191,7 +2190,7 @@ class _IconSize extends StatelessWidget {
       children: [
         AppIcon(iconPath, size: size),
         SizedBox(height: AppGrid.grid4),
-        AppText('$label\n${size.toInt()}px', style: AppTypography.overline, textAlign: TextAlign.center),
+        AppText('$label\n${size.toInt()}px', style: AppTypography.overline.semiBold, textAlign: TextAlign.center),
       ],
     );
   }
@@ -2292,7 +2291,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           SizedBox(height: AppGrid.grid16),
 
           // Type
-          AppText('TYPE', style: AppTypography.overline),
+          AppText('TYPE', style: AppTypography.overline.semiBold),
           SizedBox(height: AppGrid.grid8),
           _buildChipRow(
             labels: ButtonType.values.map((t) => t.name).toList(),
@@ -2303,7 +2302,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           SizedBox(height: AppGrid.grid16),
 
           // Size
-          AppText('SIZE', style: AppTypography.overline),
+          AppText('SIZE', style: AppTypography.overline.semiBold),
           SizedBox(height: AppGrid.grid8),
           _buildChipRow(
             labels: ButtonSize.values.map((s) => s.name).toList(),
@@ -2314,7 +2313,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           SizedBox(height: AppGrid.grid16),
 
           // Color
-          AppText('COLOR', style: AppTypography.overline),
+          AppText('COLOR', style: AppTypography.overline.semiBold),
           SizedBox(height: AppGrid.grid8),
           Wrap(
             spacing: AppGrid.grid8,
@@ -2339,11 +2338,11 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
             }),
           ),
           SizedBox(height: AppGrid.grid4),
-          AppText(_colorOptions[_colorIndex].$1, style: AppTypography.caption),
+          AppText(_colorOptions[_colorIndex].$1, style: AppTypography.caption.bold),
           SizedBox(height: AppGrid.grid16),
 
           // Content
-          AppText('CONTENT', style: AppTypography.overline),
+          AppText('CONTENT', style: AppTypography.overline.semiBold),
           SizedBox(height: AppGrid.grid8),
           _buildToggle('Label', _hasLabel, (v) => setState(() {
             _hasLabel = v;
@@ -2366,7 +2365,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           SizedBox(height: AppGrid.grid16),
 
           // States
-          AppText('STATE', style: AppTypography.overline),
+          AppText('STATE', style: AppTypography.overline.semiBold),
           SizedBox(height: AppGrid.grid8),
           _buildToggle('Active', _isActive, (v) => setState(() {
             _isActive = v;
@@ -2481,7 +2480,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
         children: [
           SizedBox(
             width: 100,
-            child: AppText('$label: ${value.round()}px', style: AppTypography.caption),
+            child: AppText('$label: ${value.round()}px', style: AppTypography.caption.bold),
           ),
           Expanded(
             child: SliderTheme(

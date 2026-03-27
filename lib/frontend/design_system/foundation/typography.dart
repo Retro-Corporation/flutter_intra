@@ -154,19 +154,15 @@ class AppTypography {
   // ── Utility styles (outside main scale) ──
 
   /// 0.69rem → ~11px — section labels, badges
-  static final caption = TextStyle(
-    fontFamily: 'Inter',
+  static final caption = TypeStyle(
     fontSize: 0.69.rem,
-    fontWeight: FontWeight.w700,
     letterSpacing: 1.2,
     color: AppColors.textSecondary,
   );
 
   /// 0.625rem → 10px — overlines, subtle labels
-  static final overline = TextStyle(
-    fontFamily: 'Inter',
+  static final overline = TypeStyle(
     fontSize: 0.625.rem,
-    fontWeight: FontWeight.w600,
     letterSpacing: 2.0,
     color: AppColors.grey600,
   );
