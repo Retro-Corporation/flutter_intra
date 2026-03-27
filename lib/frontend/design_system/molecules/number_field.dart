@@ -141,17 +141,19 @@ class _AppNumberFieldState extends State<AppNumberField>
   Widget build(BuildContext context) {
     final effectiveState = widget.state;
     final borderColor = FieldStateColors.border(effectiveState);
+    final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
+    final focusedColor = isDefault ? null : borderColor;
     final iconColor =
         isDisabled ? AppColors.grey600 : AppColors.textSecondary;
 
     if (widget.stepperLayout == StepperLayout.outside) {
-      return _buildOutsideLayout(borderColor, isDisabled, iconColor);
+      return _buildOutsideLayout(borderColor, focusedColor, isDisabled, iconColor);
     }
-    return _buildInsideLayout(borderColor, isDisabled, iconColor);
+    return _buildInsideLayout(borderColor, focusedColor, isDisabled, iconColor);
   }
 
-  Widget _buildInsideLayout(Color borderColor, bool isDisabled, Color iconColor) {
+  Widget _buildInsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
     final stepperButtons = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -191,7 +193,7 @@ class _AppNumberFieldState extends State<AppNumberField>
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d-]'))],
         maxLength: widget.maxLength,
         borderColor: borderColor,
-        focusedBorderColor: borderColor,
+        focusedBorderColor: focusedColor,
         textColor: FieldStateColors.text(widget.state),
         hintColor: FieldStateColors.hint(widget.state),
         enabled: !isDisabled,
@@ -200,7 +202,7 @@ class _AppNumberFieldState extends State<AppNumberField>
     );
   }
 
-  Widget _buildOutsideLayout(Color borderColor, bool isDisabled, Color iconColor) {
+  Widget _buildOutsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
     // Outside buttons are rendered as separate containers next to the field.
     Widget outsideButton({
       required String icon,
@@ -240,7 +242,7 @@ class _AppNumberFieldState extends State<AppNumberField>
               ],
               maxLength: widget.maxLength,
               borderColor: borderColor,
-              focusedBorderColor: borderColor,
+              focusedBorderColor: focusedColor,
               textColor: FieldStateColors.text(widget.state),
               hintColor: FieldStateColors.hint(widget.state),
               enabled: !isDisabled,

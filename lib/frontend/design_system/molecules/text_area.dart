@@ -94,6 +94,7 @@ class _AppTextAreaState extends State<AppTextArea>
   @override
   Widget build(BuildContext context) {
     final borderColor = FieldStateColors.border(effectiveState);
+    final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
 
     return AppFormField(
@@ -111,7 +112,7 @@ class _AppTextAreaState extends State<AppTextArea>
         maxLines: widget.maxLines,
         minLines: widget.autoGrow ? widget.minLines : widget.maxLines,
         borderColor: borderColor,
-        focusedBorderColor: borderColor,
+        focusedBorderColor: isDefault ? null : borderColor,
         textColor: FieldStateColors.text(effectiveState),
         hintColor: FieldStateColors.hint(effectiveState),
         enabled: !isDisabled,

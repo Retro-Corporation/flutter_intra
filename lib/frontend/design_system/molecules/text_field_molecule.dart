@@ -100,6 +100,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
   @override
   Widget build(BuildContext context) {
     final borderColor = FieldStateColors.border(effectiveState);
+    final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
 
     // Clear icon — shown when text is present.
@@ -134,7 +135,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
         maxLength: widget.maxLength,
         leadingIcon: widget.leadingIcon,
         borderColor: borderColor,
-        focusedBorderColor: borderColor,
+        focusedBorderColor: isDefault ? null : borderColor,
         textColor: FieldStateColors.text(effectiveState),
         hintColor: FieldStateColors.hint(effectiveState),
         enabled: !isDisabled,
