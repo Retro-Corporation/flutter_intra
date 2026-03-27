@@ -3,6 +3,7 @@ import '../atoms/text_field.dart';
 import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
+import 'validator_mixin.dart';
 
 /// Molecule: multiline text area with label, helper text, and optional
 /// auto-grow.
@@ -53,14 +54,20 @@ class AppTextArea extends StatefulWidget {
 }
 
 class _AppTextAreaState extends State<AppTextArea>
-    with ControllerOwnerMixin {
+    with ControllerOwnerMixin, ValidatorMixin {
   int _currentLength = 0;
-
-  FieldState? _validatorState;
-  String? _validatorMessage;
 
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  String? Function(String)? get widgetValidator => widget.validator;
+
+  @override
+  FieldState get widgetState => widget.state;
+
+  @override
+  String? get widgetHelperText => widget.helperText;
 
   @override
   void onTextChanged() {
@@ -68,7 +75,7 @@ class _AppTextAreaState extends State<AppTextArea>
     setState(() {
       _currentLength = text.length;
     });
-    _runValidator(text);
+    runValidator(text);
   }
 
   @override
@@ -84,30 +91,8 @@ class _AppTextAreaState extends State<AppTextArea>
     super.dispose();
   }
 
-  void _runValidator(String text) {
-    if (widget.validator == null) return;
-    final result = widget.validator!(text);
-    setState(() {
-      if (text.isEmpty) {
-        _validatorState = null;
-        _validatorMessage = null;
-      } else if (result != null) {
-        _validatorState = FieldState.error;
-        _validatorMessage = result;
-      } else {
-        _validatorState = FieldState.success;
-        _validatorMessage = null;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final effectiveState = widget.state != FieldState.defaultState
-        ? widget.state
-        : (_validatorState ?? widget.state);
-
-    final effectiveHelper = _validatorMessage ?? widget.helperText;
     final borderColor = FieldStateColors.border(effectiveState);
     final isDisabled = effectiveState == FieldState.disabled;
 

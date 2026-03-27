@@ -8,6 +8,7 @@ import '../icons/icon_sizes.dart';
 import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
+import 'validator_mixin.dart';
 
 /// Molecule: password field with visibility toggle, label, helper text,
 /// and character count.
@@ -53,15 +54,21 @@ class AppPasswordField extends StatefulWidget {
 }
 
 class _AppPasswordFieldState extends State<AppPasswordField>
-    with ControllerOwnerMixin {
+    with ControllerOwnerMixin, ValidatorMixin {
   bool _obscured = true;
   int _currentLength = 0;
 
-  FieldState? _validatorState;
-  String? _validatorMessage;
-
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  String? Function(String)? get widgetValidator => widget.validator;
+
+  @override
+  FieldState get widgetState => widget.state;
+
+  @override
+  String? get widgetHelperText => widget.helperText;
 
   @override
   void onTextChanged() {
@@ -69,7 +76,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
     setState(() {
       _currentLength = text.length;
     });
-    _runValidator(text);
+    runValidator(text);
   }
 
   @override
@@ -85,30 +92,8 @@ class _AppPasswordFieldState extends State<AppPasswordField>
     super.dispose();
   }
 
-  void _runValidator(String text) {
-    if (widget.validator == null) return;
-    final result = widget.validator!(text);
-    setState(() {
-      if (text.isEmpty) {
-        _validatorState = null;
-        _validatorMessage = null;
-      } else if (result != null) {
-        _validatorState = FieldState.error;
-        _validatorMessage = result;
-      } else {
-        _validatorState = FieldState.success;
-        _validatorMessage = null;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final effectiveState = widget.state != FieldState.defaultState
-        ? widget.state
-        : (_validatorState ?? widget.state);
-
-    final effectiveHelper = _validatorMessage ?? widget.helperText;
     final borderColor = FieldStateColors.border(effectiveState);
     final isDisabled = effectiveState == FieldState.disabled;
 

@@ -31,6 +31,7 @@ export 'atoms/path_button.dart';
 
 // Molecules
 export 'molecules/controller_owner_mixin.dart';
+export 'molecules/validator_mixin.dart';
 export 'molecules/field_state.dart';
 export 'molecules/form_field.dart';
 export 'molecules/text_field_molecule.dart';

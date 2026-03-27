@@ -8,6 +8,7 @@ import '../icons/icon_sizes.dart';
 import 'controller_owner_mixin.dart';
 import 'field_state.dart';
 import 'form_field.dart';
+import 'validator_mixin.dart';
 
 /// Molecule: standard text field with label, helper text, and state support.
 ///
@@ -51,16 +52,21 @@ class AppTextFieldMolecule extends StatefulWidget {
 }
 
 class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
-    with ControllerOwnerMixin {
+    with ControllerOwnerMixin, ValidatorMixin {
   int _currentLength = 0;
   bool _hasText = false;
 
-  // Validator-driven state
-  FieldState? _validatorState;
-  String? _validatorMessage;
-
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  String? Function(String)? get widgetValidator => widget.validator;
+
+  @override
+  FieldState get widgetState => widget.state;
+
+  @override
+  String? get widgetHelperText => widget.helperText;
 
   @override
   void onTextChanged() {
@@ -69,7 +75,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       _currentLength = text.length;
       _hasText = text.isNotEmpty;
     });
-    _runValidator(text);
+    runValidator(text);
   }
 
   @override
@@ -86,23 +92,6 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     super.dispose();
   }
 
-  void _runValidator(String text) {
-    if (widget.validator == null) return;
-    final result = widget.validator!(text);
-    setState(() {
-      if (text.isEmpty) {
-        _validatorState = null;
-        _validatorMessage = null;
-      } else if (result != null) {
-        _validatorState = FieldState.error;
-        _validatorMessage = result;
-      } else {
-        _validatorState = FieldState.success;
-        _validatorMessage = null;
-      }
-    });
-  }
-
   void _clear() {
     controller.clear();
     widget.onChanged?.call('');
@@ -110,13 +99,6 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
 
   @override
   Widget build(BuildContext context) {
-    // Parent-set state takes priority unless it's defaultState and validator
-    // has an opinion.
-    final effectiveState = widget.state != FieldState.defaultState
-        ? widget.state
-        : (_validatorState ?? widget.state);
-
-    final effectiveHelper = _validatorMessage ?? widget.helperText;
     final borderColor = FieldStateColors.border(effectiveState);
     final isDisabled = effectiveState == FieldState.disabled;
 
