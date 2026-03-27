@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
+import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
 import '../foundation/three_d_press_geometry.dart';
 import '../foundation/radius.dart';
@@ -22,20 +23,20 @@ class _ToggleSizeConfig {
   });
 
   static final Map<ToggleSize, _ToggleSizeConfig> _map = {
-    ToggleSize.sm: const _ToggleSizeConfig(
-      trackWidth: 52,
-      trackHeight: 20,
-      thumbSize: 24,
+    ToggleSize.sm: _ToggleSizeConfig(
+      trackWidth: AppGrid.grid52,
+      trackHeight: AppGrid.grid20,
+      thumbSize: AppGrid.grid24,
     ),
-    ToggleSize.md: const _ToggleSizeConfig(
-      trackWidth: 68,
-      trackHeight: 28,
-      thumbSize: 32,
+    ToggleSize.md: _ToggleSizeConfig(
+      trackWidth: AppGrid.grid68,
+      trackHeight: AppGrid.grid28,
+      thumbSize: AppGrid.grid32,
     ),
-    ToggleSize.lg: const _ToggleSizeConfig(
-      trackWidth: 84,
-      trackHeight: 36,
-      thumbSize: 40,
+    ToggleSize.lg: _ToggleSizeConfig(
+      trackWidth: AppGrid.grid84,
+      trackHeight: AppGrid.grid36,
+      thumbSize: AppGrid.grid40,
     ),
   };
 

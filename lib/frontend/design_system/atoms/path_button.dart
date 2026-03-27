@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
+import '../foundation/grid.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'path_button_geometry.dart';
@@ -13,9 +14,9 @@ double _pulseExpandFor(PathButtonShape shape) {
   switch (shape) {
     case PathButtonShape.circle:
     case PathButtonShape.roundedSquare:
-      return 4.0; // Subtle breathing
+      return AppGrid.grid4; // Subtle breathing
     case PathButtonShape.triangle:
-      return 8.0; // Larger shape needs more expansion
+      return AppGrid.grid8; // Larger shape needs more expansion
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/color_utils.dart';
+import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
 import '../foundation/three_d_press_geometry.dart';
 import 'interactive_atom_mixin.dart';
@@ -21,9 +22,9 @@ class _RadioSizeConfig {
   });
 
   static final Map<RadioSize, _RadioSizeConfig> _map = {
-    RadioSize.sm: const _RadioSizeConfig(size: 24, dotSize: 10),
-    RadioSize.md: const _RadioSizeConfig(size: 28, dotSize: 11),
-    RadioSize.lg: const _RadioSizeConfig(size: 32, dotSize: 13),
+    RadioSize.sm: _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10),
+    RadioSize.md: _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11),
+    RadioSize.lg: _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13),
   };
 
   static _RadioSizeConfig of(RadioSize size) => _map[size]!;

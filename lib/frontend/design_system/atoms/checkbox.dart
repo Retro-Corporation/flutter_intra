@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/color_utils.dart';
+import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
 import '../foundation/radius.dart';
 import '../foundation/three_d_press_geometry.dart';
@@ -21,9 +22,9 @@ class _CheckboxSizeConfig {
   const _CheckboxSizeConfig({required this.size, required this.iconSize});
 
   static final Map<CheckboxSize, _CheckboxSizeConfig> _map = {
-    CheckboxSize.sm: const _CheckboxSizeConfig(size: 24, iconSize: 14),
-    CheckboxSize.md: const _CheckboxSizeConfig(size: 28, iconSize: 16),
-    CheckboxSize.lg: const _CheckboxSizeConfig(size: 32, iconSize: 18),
+    CheckboxSize.sm: _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14),
+    CheckboxSize.md: _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16),
+    CheckboxSize.lg: _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18),
   };
 
   static _CheckboxSizeConfig of(CheckboxSize size) => _map[size]!;
