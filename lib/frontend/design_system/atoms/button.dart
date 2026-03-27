@@ -9,6 +9,7 @@ import '../foundation/three_d_press_geometry.dart';
 import '../foundation/typography.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
+import 'interactive_atom_mixin.dart';
 import 'text.dart';
 
 // ── Enums ──
@@ -236,15 +237,23 @@ class AppButton extends StatefulWidget {
   State<AppButton> createState() => _AppButtonState();
 }
 
-class _AppButtonState extends State<AppButton> {
-  bool _pressed = false;
-  bool _selfActive = false;
+class _AppButtonState extends State<AppButton>
+    with InteractiveAtomMixin {
+  @override
+  bool get isInteractive => !widget.isDisabled && !widget.isLoading;
 
-  bool get _interactive => !widget.isDisabled && !widget.isLoading;
-  bool get _active {
-    if (widget.selfToggle) return _selfActive;
-    return widget.isActive ?? false;
-  }
+  @override
+  bool get isSelfToggle => widget.selfToggle;
+
+  @override
+  bool? get parentValue => widget.isActive;
+
+  @override
+  void notifyToggleChanged(bool value) =>
+      widget.onActiveChanged?.call(value);
+
+  @override
+  void onAfterTap() => widget.onPressed?.call();
 
   bool get _iconOnly =>
       widget.label == null &&
@@ -253,9 +262,7 @@ class _AppButtonState extends State<AppButton> {
   @override
   void didUpdateWidget(covariant AppButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.selfToggle && oldWidget.selfToggle) {
-      _selfActive = false;
-    }
+    resetSelfToggleIfNeeded(oldWidget.selfToggle);
   }
 
   @override
@@ -264,7 +271,7 @@ class _AppButtonState extends State<AppButton> {
 
     return Semantics(
       button: true,
-      enabled: _interactive,
+      enabled: isInteractive,
       label: widget.label,
       child: _buildButton(sizeConfig),
     );
@@ -274,8 +281,8 @@ class _AppButtonState extends State<AppButton> {
     final colors = _resolveColors(
       widget.type,
       widget.color,
-      pressed: _pressed,
-      active: _active,
+      pressed: pressed,
+      active: isActive,
     );
 
     final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
@@ -283,9 +290,9 @@ class _AppButtonState extends State<AppButton> {
 
     final PressGeometry geo;
     if (widget.type == ButtonType.filled) {
-      geo = PressGeometry.filled(pressed: _pressed);
+      geo = PressGeometry.filled(pressed: pressed);
     } else if (widget.type == ButtonType.outline) {
-      geo = PressGeometry.outline(pressed: _pressed);
+      geo = PressGeometry.outline(pressed: pressed);
     } else {
       geo = PressGeometry.ghost();
     }
@@ -295,22 +302,9 @@ class _AppButtonState extends State<AppButton> {
     final width = widget.widthOverride ?? (_iconOnly ? height : 0.0);
 
     return GestureDetector(
-      onTapDown: _interactive ? (_) => setState(() => _pressed = true) : null,
-      onTapUp: _interactive
-          ? (_) {
-              setState(() {
-                _pressed = false;
-                if (widget.selfToggle) {
-                  _selfActive = !_selfActive;
-                  widget.onActiveChanged?.call(_selfActive);
-                } else if (widget.isActive != null) {
-                  widget.onActiveChanged?.call(!widget.isActive!);
-                }
-              });
-              widget.onPressed?.call();
-            }
-          : null,
-      onTapCancel: _interactive ? () => setState(() => _pressed = false) : null,
+      onTapDown: isInteractive ? handleTapDown : null,
+      onTapUp: isInteractive ? handleTapUp : null,
+      onTapCancel: isInteractive ? handleTapCancel : null,
       child: CustomPaint(
         painter: _ButtonPainter(
           backgroundColor: colors.background,

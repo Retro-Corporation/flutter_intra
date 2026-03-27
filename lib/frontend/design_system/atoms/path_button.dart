@@ -4,6 +4,7 @@ import '../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'path_button_geometry.dart';
 import 'path_button_renderer.dart';
+import 'press_state_mixin.dart';
 
 // ── Animation constants ──
 
@@ -82,15 +83,28 @@ class AppPathButton extends StatefulWidget {
 }
 
 class _AppPathButtonState extends State<AppPathButton>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, PressStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _breathAnimation;
-  bool _pressed = false;
   bool _pulseStopped = false;
 
-  bool get _interactive =>
+  @override
+  bool get isInteractive =>
       widget.state == PathButtonState.active ||
       widget.state == PathButtonState.completed;
+
+  @override
+  void onTapAction() {
+    if (widget.state == PathButtonState.active && !_pulseStopped) {
+      _pulseStopped = true;
+      _pulseController.animateTo(
+        0.0,
+        duration: _kPulseStopDuration,
+        curve: Curves.easeOut,
+      );
+    }
+    widget.onPressed?.call();
+  }
 
   @override
   void initState() {
@@ -125,27 +139,6 @@ class _AppPathButtonState extends State<AppPathButton>
     }
   }
 
-  void _onTapDown(TapDownDetails _) {
-    setState(() => _pressed = true);
-  }
-
-  void _onTapUp(TapUpDetails _) {
-    setState(() => _pressed = false);
-    if (widget.state == PathButtonState.active && !_pulseStopped) {
-      _pulseStopped = true;
-      _pulseController.animateTo(
-        0.0,
-        duration: _kPulseStopDuration,
-        curve: Curves.easeOut,
-      );
-    }
-    widget.onPressed?.call();
-  }
-
-  void _onTapCancel() {
-    setState(() => _pressed = false);
-  }
-
   @override
   Widget build(BuildContext context) {
     final outerSize = outerSizeFor(widget.shape);
@@ -153,7 +146,7 @@ class _AppPathButtonState extends State<AppPathButton>
 
     final double visualTop;
     final double visualBottom;
-    if (_pressed) {
+    if (pressed) {
       visualTop = kBorderBottom;
       visualBottom = 0.0;
     } else {
@@ -165,11 +158,11 @@ class _AppPathButtonState extends State<AppPathButton>
 
     return Semantics(
       button: true,
-      enabled: _interactive,
+      enabled: isInteractive,
       child: GestureDetector(
-        onTapDown: _interactive ? _onTapDown : null,
-        onTapUp: _interactive ? _onTapUp : null,
-        onTapCancel: _interactive ? _onTapCancel : null,
+        onTapDown: isInteractive ? handleTapDown : null,
+        onTapUp: isInteractive ? handleTapUp : null,
+        onTapCancel: isInteractive ? handleTapCancel : null,
         child: AnimatedBuilder(
           animation: _breathAnimation,
           builder: (context, child) {
@@ -184,7 +177,7 @@ class _AppPathButtonState extends State<AppPathButton>
                 outerSize: outerSize,
                 pulseExpansion: _breathAnimation.value,
                 pulseExpand: pulseExpand,
-                pressed: _pressed,
+                pressed: pressed,
                 visualTop: visualTop,
                 visualBottom: visualBottom,
               ),

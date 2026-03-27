@@ -3,6 +3,7 @@ import '../foundation/colors.dart';
 import '../foundation/color_utils.dart';
 import '../foundation/opacity.dart';
 import '../foundation/three_d_press_geometry.dart';
+import 'interactive_atom_mixin.dart';
 
 // ── Enums ──
 
@@ -79,32 +80,24 @@ class AppRadio extends StatefulWidget {
   State<AppRadio> createState() => _AppRadioState();
 }
 
-class _AppRadioState extends State<AppRadio> {
-  bool _pressed = false;
-  bool _selfSelected = false;
+class _AppRadioState extends State<AppRadio>
+    with InteractiveAtomMixin {
+  @override
+  bool get isInteractive => !widget.isDisabled;
 
-  bool get _interactive => !widget.isDisabled;
+  @override
+  bool get isSelfToggle => widget.selfToggle;
 
-  bool get _isSelected {
-    if (widget.selfToggle) return _selfSelected;
-    return widget.selected ?? false;
-  }
+  @override
+  bool? get parentValue => widget.selected;
 
-  void _toggle() {
-    final next = !_isSelected;
-
-    if (widget.selfToggle) {
-      setState(() => _selfSelected = next);
-    }
-    widget.onChanged?.call(next);
-  }
+  @override
+  void notifyToggleChanged(bool value) => widget.onChanged?.call(value);
 
   @override
   void didUpdateWidget(covariant AppRadio oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.selfToggle && oldWidget.selfToggle) {
-      _selfSelected = false;
-    }
+    resetSelfToggleIfNeeded(oldWidget.selfToggle);
   }
 
   @override
@@ -112,13 +105,13 @@ class _AppRadioState extends State<AppRadio> {
     final sizeConfig = _RadioSizeConfig.of(widget.size);
     final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
-    final geo = PressGeometry.outline(pressed: _pressed);
+    final geo = PressGeometry.outline(pressed: pressed);
 
     // ── Colors ──
     final Color backgroundColor;
     final Color borderColor;
 
-    if (_isSelected) {
+    if (isActive) {
       backgroundColor = widget.color;
       borderColor = resolve700(widget.color);
     } else {
@@ -130,16 +123,11 @@ class _AppRadioState extends State<AppRadio> {
     final totalHeight = sizeConfig.size + PressGeometry.depth;
 
     return Semantics(
-      checked: _isSelected,
+      checked: isActive,
       child: GestureDetector(
-        onTapDown: _interactive ? (_) => setState(() => _pressed = true) : null,
-        onTapUp: _interactive
-            ? (_) {
-                setState(() => _pressed = false);
-                _toggle();
-              }
-            : null,
-        onTapCancel: _interactive ? () => setState(() => _pressed = false) : null,
+        onTapDown: isInteractive ? handleTapDown : null,
+        onTapUp: isInteractive ? handleTapUp : null,
+        onTapCancel: isInteractive ? handleTapCancel : null,
         child: Opacity(
           opacity: contentOpacity,
           child: CustomPaint(
@@ -151,7 +139,7 @@ class _AppRadioState extends State<AppRadio> {
               borderSide: geo.visualSide,
               faceOffset: geo.faceOffset,
               faceSideInset: geo.visualSide,
-              showDot: _isSelected,
+              showDot: isActive,
               dotColor: AppColors.textPrimary,
               dotSize: sizeConfig.dotSize,
             ),
