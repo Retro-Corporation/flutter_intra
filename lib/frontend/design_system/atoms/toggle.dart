@@ -4,6 +4,7 @@ import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
 import '../foundation/three_d_press_geometry.dart';
 import '../foundation/radius.dart';
+import '../foundation/stroke.dart';
 
 // ── Enums ──
 
@@ -210,7 +211,7 @@ class _AppToggleState extends State<AppToggle>
     final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     // Thumb 3D border — static, never changes
-    final thumbGeo = PressGeometry.static(top: 1.0, side: 2.0, bottom: 4.0);
+    final thumbGeo = PressGeometry.static(top: AppStroke.xs, side: AppStroke.md, bottom: AppStroke.xl);
 
     final totalWidth = sizeConfig.trackWidth;
     final totalHeight = sizeConfig.thumbSize + thumbGeo.visualTop + thumbGeo.visualBottom;

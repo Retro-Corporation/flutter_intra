@@ -4,6 +4,7 @@ import '../atoms/icon.dart';
 import '../atoms/text_field.dart';
 import '../foundation/colors.dart';
 import '../foundation/grid.dart';
+import '../foundation/opacity.dart';
 import '../foundation/padding.dart';
 import '../foundation/radius.dart';
 import '../foundation/stroke.dart';
@@ -136,7 +137,7 @@ class _AppNumberFieldState extends State<AppNumberField>
   @override
   Widget build(BuildContext context) {
     final effectiveState = widget.state;
-    final borderColor = FieldStateColors.border(effectiveState);
+    final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
     final focusedColor = isDefault ? null : borderColor;
@@ -188,8 +189,8 @@ class _AppNumberFieldState extends State<AppNumberField>
         maxLength: widget.maxLength,
         borderColor: borderColor,
         focusedBorderColor: focusedColor,
-        textColor: FieldStateColors.text(widget.state),
-        hintColor: FieldStateColors.hint(widget.state),
+        textColor: widget.state.text,
+        hintColor: widget.state.hint,
         enabled: !isDisabled,
         suffixWidget: stepperButtons,
       ),
@@ -235,8 +236,8 @@ class _AppNumberFieldState extends State<AppNumberField>
               maxLength: widget.maxLength,
               borderColor: borderColor,
               focusedBorderColor: focusedColor,
-              textColor: FieldStateColors.text(widget.state),
-              hintColor: FieldStateColors.hint(widget.state),
+              textColor: widget.state.text,
+              hintColor: widget.state.hint,
               enabled: !isDisabled,
             ),
           ),
@@ -321,7 +322,7 @@ class _StepperPressButtonState extends State<_StepperPressButton> {
       effectiveDecoration = widget.decoration!.copyWith(
         color: showPress
             ? Color.alphaBlend(
-                Colors.white.withValues(alpha: 0.08),
+                AppColors.textPrimary.withValues(alpha: AppOpacity.ghostPressed),
                 baseColor,
               )
             : baseColor,
@@ -339,7 +340,7 @@ class _StepperPressButtonState extends State<_StepperPressButton> {
         decoration: effectiveDecoration ??
             (showPress
                 ? BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: AppColors.textPrimary.withValues(alpha: AppOpacity.ghostPressed),
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   )
                 : null),
