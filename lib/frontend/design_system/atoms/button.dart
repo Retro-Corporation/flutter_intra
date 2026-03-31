@@ -38,34 +38,42 @@ class _ButtonSizeConfig {
     required this.borderRadius,
   });
 
-  static final Map<ButtonSize, _ButtonSizeConfig> _map = {
-    ButtonSize.sm: _ButtonSizeConfig(
-      height: 2.25.rem,
-      paddingX: AppPadding.rem075,
-      typeStyle: AppTypography.bodySmall,
-      iconSize: IconSizes.md,
-      gap: AppGrid.grid4,
-      borderRadius: AppRadius.sm,
-    ),
-    ButtonSize.md: _ButtonSizeConfig(
-      height: 2.75.rem,
-      paddingX: AppPadding.rem1,
-      typeStyle: AppTypography.body,
-      iconSize: IconSizes.md,
-      gap: AppGrid.grid8,
-      borderRadius: AppRadius.sm,
-    ),
-    ButtonSize.lg: _ButtonSizeConfig(
-      height: 3.25.rem,
-      paddingX: AppPadding.rem15,
-      typeStyle: AppTypography.bodyLarge,
-      iconSize: IconSizes.lg,
-      gap: AppGrid.grid8,
-      borderRadius: AppRadius.md,
-    ),
-  };
+  /// Exhaustive switch — compiler errors if a new ButtonSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _ButtonSizeConfig of(ButtonSize size) {
+    return switch (size) {
+      ButtonSize.sm => _sm,
+      ButtonSize.md => _md,
+      ButtonSize.lg => _lg,
+    };
+  }
 
-  static _ButtonSizeConfig of(ButtonSize size) => _map[size]!;
+  static final _sm = _ButtonSizeConfig(
+    height: AppGrid.grid36,
+    paddingX: AppPadding.rem075,
+    typeStyle: AppTypography.bodySmall,
+    iconSize: IconSizes.md,
+    gap: AppGrid.grid4,
+    borderRadius: AppRadius.sm,
+  );
+
+  static final _md = _ButtonSizeConfig(
+    height: AppGrid.grid44,
+    paddingX: AppPadding.rem1,
+    typeStyle: AppTypography.body,
+    iconSize: IconSizes.md,
+    gap: AppGrid.grid8,
+    borderRadius: AppRadius.sm,
+  );
+
+  static final _lg = _ButtonSizeConfig(
+    height: AppGrid.grid52,
+    paddingX: AppPadding.rem15,
+    typeStyle: AppTypography.bodyLarge,
+    iconSize: IconSizes.lg,
+    gap: AppGrid.grid8,
+    borderRadius: AppRadius.md,
+  );
 }
 
 // ── Color resolution ──
@@ -82,58 +90,70 @@ class _ResolvedColors {
     required this.border,
     required this.shadow,
   });
-}
 
+  /// Dispatch — exhaustive switch forces compile-time handling of every type.
+  factory _ResolvedColors.of(
+    ButtonType type,
+    Color color, {
+    required bool pressed,
+    required bool active,
+  }) {
+    return switch (type) {
+      ButtonType.filled  => _ResolvedColors.filled(color, active: active),
+      ButtonType.outline => _ResolvedColors.outline(color, active: active),
+      ButtonType.ghost   => _ResolvedColors.ghost(color, pressed: pressed),
+    };
+  }
 
-_ResolvedColors _resolveColors(
-  ButtonType type,
-  Color color, {
-  bool pressed = false,
-  bool active = false,
-}) {
-  switch (type) {
-    case ButtonType.filled:
-      if (active) {
-        return _ResolvedColors(
-          background: AppColors.surface,
-          foreground: color,
-          border: Colors.transparent,
-          shadow: resolve700(color),
-        );
-      }
-      final fg =
-          ThemeData.estimateBrightnessForColor(color) == Brightness.light
-              ? AppColors.textInverse
-              : AppColors.textPrimary;
+  /// Filled: solid background, auto-contrast foreground, 700-shadow border.
+  factory _ResolvedColors.filled(Color color, {required bool active}) {
+    if (active) {
       return _ResolvedColors(
-        background: color,
-        foreground: fg,
+        background: AppColors.surface,
+        foreground: color,
         border: Colors.transparent,
         shadow: resolve700(color),
       );
-    case ButtonType.outline:
-      if (active) {
-        return _ResolvedColors(
-          background: AppColors.grey850,
-          foreground: color,
-          border: color,
-          shadow: color,
-        );
-      }
-      final border900 = resolve900(color);
+    }
+    final fg =
+        ThemeData.estimateBrightnessForColor(color) == Brightness.light
+            ? AppColors.textInverse
+            : AppColors.textPrimary;
+    return _ResolvedColors(
+      background: color,
+      foreground: fg,
+      border: Colors.transparent,
+      shadow: resolve700(color),
+    );
+  }
+
+  /// Outline: transparent background, colored border, 900-shadow.
+  factory _ResolvedColors.outline(Color color, {required bool active}) {
+    if (active) {
       return _ResolvedColors(
-        background: AppColors.background,
+        background: AppColors.grey850,
         foreground: color,
-        border: border900,
-        shadow: border900,
+        border: color,
+        shadow: color,
       );
-    case ButtonType.ghost:
-      return _ResolvedColors(
-        background: pressed ? color.withValues(alpha: AppOpacity.ghostPressed) : Colors.transparent,
-        foreground: color,
-        border: Colors.transparent,
-        shadow: Colors.transparent,
-      );
+    }
+    final border900 = resolve900(color);
+    return _ResolvedColors(
+      background: AppColors.background,
+      foreground: color,
+      border: border900,
+      shadow: border900,
+    );
+  }
+
+  /// Ghost: no border, subtle press tint.
+  factory _ResolvedColors.ghost(Color color, {required bool pressed}) {
+    return _ResolvedColors(
+      background: pressed ? color.withValues(alpha: AppOpacity.ghostPressed) : Colors.transparent,
+      foreground: color,
+      border: Colors.transparent,
+      shadow: Colors.transparent,
+    );
   }
 }
 
@@ -279,7 +299,7 @@ class _AppButtonState extends State<AppButton>
   }
 
   Widget _buildButton(_ButtonSizeConfig sizeConfig) {
-    final colors = _resolveColors(
+    final colors = _ResolvedColors.of(
       widget.type,
       widget.color,
       pressed: pressed,
@@ -289,14 +309,11 @@ class _AppButtonState extends State<AppButton>
     final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
     final padX = widget.paddingOverride ?? sizeConfig.paddingX;
 
-    final PressGeometry geo;
-    if (widget.type == ButtonType.filled) {
-      geo = PressGeometry.filled(pressed: pressed);
-    } else if (widget.type == ButtonType.outline) {
-      geo = PressGeometry.outline(pressed: pressed);
-    } else {
-      geo = PressGeometry.ghost();
-    }
+    final geo = switch (widget.type) {
+      ButtonType.filled  => PressGeometry.filled(pressed: pressed),
+      ButtonType.outline => PressGeometry.outline(pressed: pressed),
+      ButtonType.ghost   => PressGeometry.ghost(),
+    };
 
     // Widget size is fixed — always the token height. Never changes.
     final height = widget.heightOverride ?? sizeConfig.height;
