@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
-import '../foundation/grid.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'path_button_geometry.dart';
@@ -8,17 +7,6 @@ import 'path_button_renderer.dart';
 import 'press_state_mixin.dart';
 
 // ── Animation constants ──
-
-/// Max ring expansion in pixels during pulse (per-shape).
-double _pulseExpandFor(PathButtonShape shape) {
-  switch (shape) {
-    case PathButtonShape.circle:
-    case PathButtonShape.roundedSquare:
-      return AppGrid.grid4; // Subtle breathing
-    case PathButtonShape.triangle:
-      return AppGrid.grid8; // Larger shape needs more expansion
-  }
-}
 
 /// Breathing-style pulse: expand → hold → contract → hold.
 /// Maps controller 0→1 to a full breath cycle.
@@ -90,13 +78,11 @@ class _AppPathButtonState extends State<AppPathButton>
   bool _pulseStopped = false;
 
   @override
-  bool get isInteractive =>
-      widget.state == PathButtonState.active ||
-      widget.state == PathButtonState.completed;
+  bool get isInteractive => widget.state.isInteractive;
 
   @override
   void onTapAction() {
-    if (widget.state == PathButtonState.active && !_pulseStopped) {
+    if (widget.state.isPulsing && !_pulseStopped) {
       _pulseStopped = true;
       _pulseController.animateTo(
         0.0,
@@ -115,7 +101,7 @@ class _AppPathButtonState extends State<AppPathButton>
       duration: _kPulseDuration,
     );
     _breathAnimation = _pulseController.drive(_kBreathSequence);
-    if (widget.state == PathButtonState.active) {
+    if (widget.state.isPulsing) {
       _pulseController.repeat();
     }
   }
@@ -131,7 +117,7 @@ class _AppPathButtonState extends State<AppPathButton>
     super.didUpdateWidget(oldWidget);
     if (widget.state != oldWidget.state) {
       _pulseStopped = false;
-      if (widget.state == PathButtonState.active) {
+      if (widget.state.isPulsing) {
         _pulseController.repeat();
       } else {
         _pulseController.stop();
@@ -142,20 +128,20 @@ class _AppPathButtonState extends State<AppPathButton>
 
   @override
   Widget build(BuildContext context) {
-    final outerSize = outerSizeFor(widget.shape);
-    final faceSize = faceSizeFor(widget.shape);
+    final outerSize = widget.shape.outerSize;
+    final pulseExpand = widget.shape.pulseExpand;
 
     final double visualTop;
     final double visualBottom;
     if (pressed) {
-      visualTop = kBorderBottom;
+      visualTop = pathBorderBottom;
       visualBottom = 0.0;
     } else {
-      visualTop = kBorderTop;
-      visualBottom = kBorderBottom;
+      visualTop = pathBorderTop;
+      visualBottom = pathBorderBottom;
     }
 
-    final totalHeight = outerSize + kBorderBottom;
+    final totalHeight = outerSize + pathBorderBottom;
 
     return Semantics(
       button: true,
@@ -167,17 +153,13 @@ class _AppPathButtonState extends State<AppPathButton>
         child: AnimatedBuilder(
           animation: _breathAnimation,
           builder: (context, child) {
-            final pulseExpand = _pulseExpandFor(widget.shape);
             return CustomPaint(
               painter: PathButtonRenderer(
                 shape: widget.shape,
                 state: widget.state,
                 segments: widget.segments,
                 color: widget.color,
-                faceSize: faceSize,
-                outerSize: outerSize,
                 pulseExpansion: _breathAnimation.value,
-                pulseExpand: pulseExpand,
                 pressed: pressed,
                 visualTop: visualTop,
                 visualBottom: visualBottom,
