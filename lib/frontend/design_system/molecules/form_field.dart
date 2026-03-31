@@ -43,8 +43,8 @@ class AppFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelColor = FieldStateColors.label(state);
-    final helperColor = FieldStateColors.helper(state);
+    final labelColor = state.label;
+    final helperColor = state.helper;
     final hasCount = maxLength != null || minLength != null;
     final showHelperRow = helperText != null || hasCount;
 

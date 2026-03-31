@@ -89,7 +89,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = FieldStateColors.border(effectiveState);
+    final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
 
@@ -121,8 +121,8 @@ class _AppPasswordFieldState extends State<AppPasswordField>
         maxLength: widget.maxLength,
         borderColor: borderColor,
         focusedBorderColor: isDefault ? null : borderColor,
-        textColor: FieldStateColors.text(effectiveState),
-        hintColor: FieldStateColors.hint(effectiveState),
+        textColor: effectiveState.text,
+        hintColor: effectiveState.hint,
         enabled: !isDisabled,
         suffixWidget: eyeIcon,
       ),

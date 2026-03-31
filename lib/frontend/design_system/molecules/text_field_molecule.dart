@@ -90,7 +90,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = FieldStateColors.border(effectiveState);
+    final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
 
@@ -127,8 +127,8 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
         leadingIcon: widget.leadingIcon,
         borderColor: borderColor,
         focusedBorderColor: isDefault ? null : borderColor,
-        textColor: FieldStateColors.text(effectiveState),
-        hintColor: FieldStateColors.hint(effectiveState),
+        textColor: effectiveState.text,
+        hintColor: effectiveState.hint,
         enabled: !isDisabled,
         suffixWidget: suffix,
       ),

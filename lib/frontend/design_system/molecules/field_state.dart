@@ -2,77 +2,58 @@ import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 
 /// Visual state for form-field molecules.
+///
+/// Each case carries its own color tokens for borders, labels, helper text,
+/// input text, and hint text. Adding a new state requires only a new enum
+/// case — no switches or maps to edit elsewhere.
 enum FieldState {
-  defaultState,
-  focused,
-  error,
-  success,
-  disabled,
-}
+  defaultState(
+    border: AppColors.surfaceBorder,
+    label: AppColors.textPrimary,
+    helper: AppColors.textSecondary,
+    text: AppColors.textPrimary,
+    hint: AppColors.textSecondary,
+  ),
+  focused(
+    border: AppColors.brand,
+    label: AppColors.textPrimary,
+    helper: AppColors.textSecondary,
+    text: AppColors.textPrimary,
+    hint: AppColors.textSecondary,
+  ),
+  error(
+    border: AppColors.red500,
+    label: AppColors.red500,
+    helper: AppColors.red500,
+    text: AppColors.textPrimary,
+    hint: AppColors.textSecondary,
+  ),
+  success(
+    border: AppColors.green500,
+    label: AppColors.green500,
+    helper: AppColors.green500,
+    text: AppColors.textPrimary,
+    hint: AppColors.textSecondary,
+  ),
+  disabled(
+    border: AppColors.grey700,
+    label: AppColors.grey600,
+    helper: AppColors.grey600,
+    text: AppColors.grey600,
+    hint: AppColors.grey700,
+  );
 
-/// Resolves [FieldState] → design-system colors for borders, labels,
-/// and helper text.
-class FieldStateColors {
-  FieldStateColors._();
+  const FieldState({
+    required this.border,
+    required this.label,
+    required this.helper,
+    required this.text,
+    required this.hint,
+  });
 
-  static Color border(FieldState state) {
-    switch (state) {
-      case FieldState.defaultState:
-        return AppColors.surfaceBorder;
-      case FieldState.focused:
-        return AppColors.brand;
-      case FieldState.error:
-        return AppColors.red500;
-      case FieldState.success:
-        return AppColors.green500;
-      case FieldState.disabled:
-        return AppColors.grey700;
-    }
-  }
-
-  static Color label(FieldState state) {
-    switch (state) {
-      case FieldState.defaultState:
-      case FieldState.focused:
-        return AppColors.textPrimary;
-      case FieldState.error:
-        return AppColors.red500;
-      case FieldState.success:
-        return AppColors.green500;
-      case FieldState.disabled:
-        return AppColors.grey600;
-    }
-  }
-
-  static Color helper(FieldState state) {
-    switch (state) {
-      case FieldState.defaultState:
-      case FieldState.focused:
-        return AppColors.textSecondary;
-      case FieldState.error:
-        return AppColors.red500;
-      case FieldState.success:
-        return AppColors.green500;
-      case FieldState.disabled:
-        return AppColors.grey600;
-    }
-  }
-
-  static Color text(FieldState state) {
-    switch (state) {
-      case FieldState.disabled:
-        return AppColors.grey600;
-      default:
-        return AppColors.textPrimary;
-    }
-  }
-
-  static Color hint(FieldState state) {
-    switch (state) {
-      case FieldState.disabled:
-        return AppColors.grey700;
-      default:
-        return AppColors.textSecondary;
-    }
-  }
+  final Color border;
+  final Color label;
+  final Color helper;
+  final Color text;
+  final Color hint;
 }
