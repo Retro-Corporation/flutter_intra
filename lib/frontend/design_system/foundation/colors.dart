@@ -43,32 +43,32 @@ class AppColors {
     colors: [red500, red700],
   );
 
+  /// Shadow definitions: (primary, 700-shadow, 900-shadow).
+  /// Single source of truth — both shadow maps derive from this list.
+  /// Adding a new brand color = add one entry here. Both maps update.
+  static const _shadowDefs = <(Color, Color, Color)>[
+    (orange500, orange700, orange900),
+    (red500,    red700,    red900),
+    (blue500,   blue700,   blue900),
+    (green500,  green700,  green900),
+    (yellow500, yellow700, yellow900),
+    (purple500, purple700, purple900),
+    (grey500,   grey700,   grey900),
+    (textPrimary, grey300, grey700),
+  ];
+
   /// Maps primary palette colors to their 700 (shadow) variant.
   /// Used as the border/shadow color in the 3D press effect — a slightly
   /// darker shade that sits behind the face to create depth.
   static final Map<Color, Color> shadow700 = {
-    orange500: orange700,
-    red500: red700,
-    blue500: blue700,
-    green500: green700,
-    yellow500: yellow700,
-    purple500: purple700,
-    grey500: grey700,
-    textPrimary: grey300,
+    for (final (primary, s700, _) in _shadowDefs) primary: s700,
   };
 
   /// Maps primary palette colors to their 900 (deep shadow) variant.
   /// Used as the border color for outline-style 3D components where the
   /// border needs stronger contrast against the dark background.
   static final Map<Color, Color> shadow900 = {
-    orange500: orange900,
-    red500: red900,
-    blue500: blue900,
-    green500: green900,
-    yellow500: yellow900,
-    purple500: purple900,
-    grey500: grey900,
-    textPrimary: grey700,
+    for (final (primary, _, s900) in _shadowDefs) primary: s900,
   };
 
   // ── Raw palette ──

@@ -1,3 +1,5 @@
+import 'stroke.dart';
+
 /// 3D press geometry tokens.
 ///
 /// Single source of truth for the border insets, face offsets, and layout
@@ -10,7 +12,7 @@ class PressGeometry {
   final double layoutSide;
   final bool showBorder;
 
-  const PressGeometry._({
+  const PressGeometry({
     required this.visualTop,
     required this.visualBottom,
     required this.visualSide,
@@ -20,16 +22,16 @@ class PressGeometry {
   });
 
   /// Depth reserved for the 3D effect (bottom border when unpressed).
-  static const double depth = 4.0;
+  static const double depth = AppStroke.xl;
 
   /// Filled style: border ring visible when unpressed, hidden when pressed.
   /// Face sits flush at top when unpressed, drops to bottom on press.
   factory PressGeometry.filled({required bool pressed}) {
-    return PressGeometry._(
-      layoutSide: 2.0,
+    return PressGeometry(
+      layoutSide: AppStroke.md,
       visualTop: pressed ? depth : 0.0,
       visualBottom: pressed ? 0.0 : depth,
-      visualSide: 2.0,
+      visualSide: AppStroke.md,
       faceOffset: 0.0,
       showBorder: !pressed,
     );
@@ -38,19 +40,19 @@ class PressGeometry {
   /// Outline style: border ring always visible.
   /// Face drops down on press via faceOffset.
   factory PressGeometry.outline({required bool pressed}) {
-    return PressGeometry._(
-      layoutSide: 2.0,
-      visualTop: 1.0,
-      visualBottom: pressed ? 1.0 : depth,
-      visualSide: pressed ? 1.0 : 2.0,
-      faceOffset: pressed ? 3.0 : 0.0,
+    return PressGeometry(
+      layoutSide: AppStroke.md,
+      visualTop: AppStroke.xs,
+      visualBottom: pressed ? AppStroke.xs : depth,
+      visualSide: pressed ? AppStroke.xs : AppStroke.md,
+      faceOffset: pressed ? AppStroke.lg : 0.0,
       showBorder: true,
     );
   }
 
   /// Ghost style: no border, no 3D effect.
   factory PressGeometry.ghost() {
-    return const PressGeometry._(
+    return const PressGeometry(
       layoutSide: 0.0,
       visualTop: 0.0,
       visualBottom: 0.0,
@@ -68,7 +70,7 @@ class PressGeometry {
     required double side,
     required double bottom,
   }) {
-    return PressGeometry._(
+    return PressGeometry(
       visualTop: top,
       visualBottom: bottom,
       visualSide: side,
