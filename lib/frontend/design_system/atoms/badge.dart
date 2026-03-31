@@ -12,7 +12,13 @@ import 'text.dart';
 
 // ── Enums ──
 
-enum BadgeType { filled, outline }
+enum BadgeType {
+  filled(_resolveFilled),
+  outline(_resolveOutline);
+
+  const BadgeType(this._resolve);
+  final _ResolvedColors Function(Color) _resolve;
+}
 
 enum BadgeSize { xs, sm, md, lg }
 
@@ -84,26 +90,23 @@ class _ResolvedColors {
 /// Dark grey border for outline badges.
 const _outlineBorderColor = AppColors.grey800;
 
+_ResolvedColors _resolveFilled(Color color) {
+  final fg = ThemeData.estimateBrightnessForColor(color) == Brightness.light
+      ? AppColors.textInverse
+      : AppColors.textPrimary;
+  return _ResolvedColors(
+    background: color,
+    foreground: fg,
+    border: resolve700(color),
+  );
+}
 
-_ResolvedColors _resolveColors(BadgeType type, Color color) {
-  switch (type) {
-    case BadgeType.filled:
-      final fg =
-          ThemeData.estimateBrightnessForColor(color) == Brightness.light
-              ? AppColors.textInverse
-              : AppColors.textPrimary;
-      return _ResolvedColors(
-        background: color,
-        foreground: fg,
-        border: resolve700(color),
-      );
-    case BadgeType.outline:
-      return _ResolvedColors(
-        background: Colors.transparent,
-        foreground: color,
-        border: _outlineBorderColor,
-      );
-  }
+_ResolvedColors _resolveOutline(Color color) {
+  return _ResolvedColors(
+    background: Colors.transparent,
+    foreground: color,
+    border: _outlineBorderColor,
+  );
 }
 
 // ── AppBadge ──
@@ -154,7 +157,7 @@ class AppBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sizeConfig = _BadgeSizeConfig.of(size);
-    final colors = _resolveColors(type, color);
+    final colors = type._resolve(color);
 
     final children = <Widget>[];
 
