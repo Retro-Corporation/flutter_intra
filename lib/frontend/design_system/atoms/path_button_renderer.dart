@@ -5,6 +5,179 @@ import 'package:flutter/material.dart';
 import '../foundation/stroke.dart';
 import 'path_button_geometry.dart';
 
+// ── Shape draw delegates ──
+
+/// Drawing strategy for a PathButtonShape.
+/// Each subclass encapsulates the shadow, face, and ring-path
+/// logic for one shape — keeping the renderer shape-agnostic.
+sealed class ShapeDrawDelegate {
+  const ShapeDrawDelegate();
+
+  /// Draw the 3D border behind the face.
+  void drawShadow(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceHalf, Paint paint);
+
+  /// Draw the main face.
+  void drawFace(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceSize, Paint paint);
+
+  /// Build the closed ring path at the given half-size.
+  Path buildRingPath(PathButtonShape shape,
+      double cx, double cy, double halfSize);
+}
+
+final class _CircleDrawDelegate extends ShapeDrawDelegate {
+  const _CircleDrawDelegate();
+
+  @override
+  void drawShadow(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceHalf, Paint paint) {
+    final shadowShift = pathBorderBottom - pathBorderSide;
+    final shadowExpand = pathBorderSide;
+    final borderPath = Path()
+      ..addOval(Rect.fromCircle(
+        center: Offset(cx, cy + shadowShift),
+        radius: faceHalf + shadowExpand,
+      ))
+      ..addOval(Rect.fromCircle(
+        center: Offset(cx, cy),
+        radius: faceHalf,
+      ));
+    borderPath.fillType = PathFillType.evenOdd;
+    canvas.drawPath(borderPath, paint);
+  }
+
+  @override
+  void drawFace(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceSize, Paint paint) {
+    canvas.drawCircle(Offset(cx, cy), faceSize / 2, paint);
+  }
+
+  @override
+  Path buildRingPath(PathButtonShape shape,
+      double cx, double cy, double halfSize) {
+    return Path()
+      ..addOval(Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: halfSize * 2,
+        height: halfSize * 2,
+      ));
+  }
+}
+
+final class _TriangleDrawDelegate extends ShapeDrawDelegate {
+  const _TriangleDrawDelegate();
+
+  @override
+  void drawShadow(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceHalf, Paint paint) {
+    final triShift = 2 * (pathBorderBottom - pathBorderSide) / 3;
+    final triExpand = 2 * (pathBorderSide + triShift / 2) / math.sqrt(3);
+    final outerPath = buildTrianglePath(
+      cx, cy + triShift,
+      faceHalf + triExpand,
+      shape.faceCornerRadius,
+    );
+    final innerPath = buildTrianglePath(
+      cx, cy,
+      faceHalf,
+      shape.faceCornerRadius,
+    );
+    final borderPath = Path()
+      ..addPath(outerPath, Offset.zero)
+      ..addPath(innerPath, Offset.zero);
+    borderPath.fillType = PathFillType.evenOdd;
+    canvas.drawPath(borderPath, paint);
+  }
+
+  @override
+  void drawFace(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceSize, Paint paint) {
+    final path = buildTrianglePath(cx, cy, faceSize / 2, shape.faceCornerRadius);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  Path buildRingPath(PathButtonShape shape,
+      double cx, double cy, double halfSize) {
+    return buildTrianglePath(cx, cy, halfSize, shape.ringCornerRadius);
+  }
+}
+
+final class _RoundedSquareDrawDelegate extends ShapeDrawDelegate {
+  const _RoundedSquareDrawDelegate();
+
+  @override
+  void drawShadow(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceHalf, Paint paint) {
+    final faceSize = shape.faceSize;
+    final faceRect = Rect.fromCenter(
+      center: Offset(cx, cy),
+      width: faceSize,
+      height: faceSize,
+    );
+    final outerRect = Rect.fromLTRB(
+      faceRect.left - pathBorderSide,
+      faceRect.top - pathBorderTop,
+      faceRect.right + pathBorderSide,
+      faceRect.bottom + pathBorderBottom,
+    );
+    final outerR = RRect.fromRectAndRadius(
+      outerRect,
+      Radius.circular(shape.faceCornerRadius + pathBorderSide),
+    );
+    final innerR = RRect.fromRectAndRadius(
+      faceRect,
+      Radius.circular(shape.faceCornerRadius),
+    );
+    canvas.drawDRRect(outerR, innerR, paint);
+  }
+
+  @override
+  void drawFace(Canvas canvas, PathButtonShape shape,
+      double cx, double cy, double faceSize, Paint paint) {
+    final rect = Rect.fromCenter(
+      center: Offset(cx, cy),
+      width: faceSize,
+      height: faceSize,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, Radius.circular(shape.faceCornerRadius)),
+      paint,
+    );
+  }
+
+  @override
+  Path buildRingPath(PathButtonShape shape,
+      double cx, double cy, double halfSize) {
+    final r = shape.ringCornerRadius.clamp(0.0, halfSize);
+    final h = halfSize;
+    final path = Path();
+    path.moveTo(cx, cy - h);
+    path.lineTo(cx + h - r, cy - h);
+    path.arcToPoint(Offset(cx + h, cy - h + r), radius: Radius.circular(r));
+    path.lineTo(cx + h, cy + h - r);
+    path.arcToPoint(Offset(cx + h - r, cy + h), radius: Radius.circular(r));
+    path.lineTo(cx - h + r, cy + h);
+    path.arcToPoint(Offset(cx - h, cy + h - r), radius: Radius.circular(r));
+    path.lineTo(cx - h, cy - h + r);
+    path.arcToPoint(Offset(cx - h + r, cy - h), radius: Radius.circular(r));
+    path.lineTo(cx, cy - h);
+    path.close();
+    return path;
+  }
+}
+
+// ── Enum → delegate wiring (single exhaustive switch) ──
+
+extension on PathButtonShape {
+  ShapeDrawDelegate get drawDelegate => switch (this) {
+    PathButtonShape.circle        => const _CircleDrawDelegate(),
+    PathButtonShape.triangle      => const _TriangleDrawDelegate(),
+    PathButtonShape.roundedSquare => const _RoundedSquareDrawDelegate(),
+  };
+}
+
 // ── PathButtonRenderer ──
 
 class PathButtonRenderer extends CustomPainter {
@@ -36,6 +209,7 @@ class PathButtonRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final delegate = shape.drawDelegate;
     final cx = size.width / 2;
     // Rest center for both face and ring (before press offset)
     final restCenterY = pulseExpand + outerSize / 2;
@@ -47,12 +221,18 @@ class PathButtonRenderer extends CustomPainter {
 
     // ── 1. Draw 3D shadow (behind main face) ──
     if (!pressed) {
-      _drawShadow(canvas, cx, restCenterY, faceHalf, shadowColor);
+      delegate.drawShadow(
+        canvas, shape, cx, restCenterY, faceHalf,
+        Paint()..color = shadowColor,
+      );
     }
 
     // ── 2. Draw main face ──
     final mainFaceColor = state.faceColor(color);
-    _drawFace(canvas, cx: cx, cy: centerY, faceColor: mainFaceColor);
+    delegate.drawFace(
+      canvas, shape, cx, centerY, faceSize,
+      Paint()..color = mainFaceColor,
+    );
 
     // ── 3. Draw segmented ring (moves with face) ──
     // When unpressed, the shadow inside the ring gap makes the face look
@@ -60,104 +240,13 @@ class PathButtonRenderer extends CustomPainter {
     // centers on the face+shadow unit. When pressed (no shadow), ring and
     // face share the exact same center.
     final ringCenterY = pressed ? centerY : centerY + pathBorderBottom / 2;
-    _drawSegmentedRing(canvas, cx, ringCenterY);
+    _drawSegmentedRing(canvas, cx, ringCenterY, delegate);
   }
 
-  /// Draws the 3D border behind the face.
-  void _drawShadow(Canvas canvas, double cx, double restCenterY, double faceHalf, Color shadowColor) {
-    final paint = Paint()..color = shadowColor;
-    final shadowShift = pathBorderBottom - pathBorderSide;
-    final shadowExpand = pathBorderSide;
-
-    switch (shape) {
-      case PathButtonShape.circle:
-        final borderPath = Path()
-          ..addOval(Rect.fromCircle(
-            center: Offset(cx, restCenterY + shadowShift),
-            radius: faceHalf + shadowExpand,
-          ))
-          ..addOval(Rect.fromCircle(
-            center: Offset(cx, restCenterY),
-            radius: faceHalf,
-          ));
-        borderPath.fillType = PathFillType.evenOdd;
-        canvas.drawPath(borderPath, paint);
-
-      case PathButtonShape.triangle:
-        final triShift = 2 * (pathBorderBottom - pathBorderSide) / 3;
-        final triExpand = 2 * (pathBorderSide + triShift / 2) / math.sqrt(3);
-        final outerPath = buildTrianglePath(
-          cx, restCenterY + triShift,
-          faceHalf + triExpand,
-          shape.faceCornerRadius,
-        );
-        final innerPath = buildTrianglePath(
-          cx, restCenterY,
-          faceHalf,
-          shape.faceCornerRadius,
-        );
-        final borderPath = Path()
-          ..addPath(outerPath, Offset.zero)
-          ..addPath(innerPath, Offset.zero);
-        borderPath.fillType = PathFillType.evenOdd;
-        canvas.drawPath(borderPath, paint);
-
-      case PathButtonShape.roundedSquare:
-        final faceRect = Rect.fromCenter(
-          center: Offset(cx, restCenterY),
-          width: faceSize,
-          height: faceSize,
-        );
-        final outerRect = Rect.fromLTRB(
-          faceRect.left - pathBorderSide,
-          faceRect.top - pathBorderTop,
-          faceRect.right + pathBorderSide,
-          faceRect.bottom + pathBorderBottom,
-        );
-        final outerR = RRect.fromRectAndRadius(
-          outerRect,
-          Radius.circular(shape.faceCornerRadius + pathBorderSide),
-        );
-        final innerR = RRect.fromRectAndRadius(
-          faceRect,
-          Radius.circular(shape.faceCornerRadius),
-        );
-        canvas.drawDRRect(outerR, innerR, paint);
-    }
-  }
-
-  void _drawFace(
-    Canvas canvas, {
-    required double cx,
-    required double cy,
-    required Color faceColor,
-  }) {
-    final faceHalf = faceSize / 2;
-    final paint = Paint()..color = faceColor;
-
-    switch (shape) {
-      case PathButtonShape.circle:
-        canvas.drawCircle(Offset(cx, cy), faceHalf, paint);
-      case PathButtonShape.roundedSquare:
-        final rect = Rect.fromCenter(
-          center: Offset(cx, cy),
-          width: faceSize,
-          height: faceSize,
-        );
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(rect, Radius.circular(shape.faceCornerRadius)),
-          paint,
-        );
-      case PathButtonShape.triangle:
-        final path = buildTrianglePath(cx, cy, faceHalf, shape.faceCornerRadius);
-        canvas.drawPath(path, paint);
-    }
-  }
-
-  void _drawSegmentedRing(Canvas canvas, double cx, double cy) {
+  void _drawSegmentedRing(Canvas canvas, double cx, double cy, ShapeDrawDelegate delegate) {
     final ringHalf = (faceSize / 2) + shape.ringGap + (AppStroke.ring / 2) + (pulseExpansion * pulseExpand);
 
-    final ringPath = _shapePath(cx, cy, ringHalf);
+    final ringPath = delegate.buildRingPath(shape, cx, cy, ringHalf);
     final metrics = ringPath.computeMetrics().toList();
     if (metrics.isEmpty) return;
     final metric = metrics.first;
@@ -204,38 +293,6 @@ class PathButtonRenderer extends CustomPainter {
       canvas.drawPath(extractedPath, paint);
 
       cursor += thisLen + gapLen;
-    }
-  }
-
-  Path _shapePath(double cx, double cy, double halfSize) {
-    switch (shape) {
-      case PathButtonShape.circle:
-        return Path()
-          ..addOval(Rect.fromCenter(
-            center: Offset(cx, cy),
-            width: halfSize * 2,
-            height: halfSize * 2,
-          ));
-
-      case PathButtonShape.roundedSquare:
-        final r = shape.ringCornerRadius.clamp(0.0, halfSize);
-        final h = halfSize;
-        final path = Path();
-        path.moveTo(cx, cy - h);
-        path.lineTo(cx + h - r, cy - h);
-        path.arcToPoint(Offset(cx + h, cy - h + r), radius: Radius.circular(r));
-        path.lineTo(cx + h, cy + h - r);
-        path.arcToPoint(Offset(cx + h - r, cy + h), radius: Radius.circular(r));
-        path.lineTo(cx - h + r, cy + h);
-        path.arcToPoint(Offset(cx - h, cy + h - r), radius: Radius.circular(r));
-        path.lineTo(cx - h, cy - h + r);
-        path.arcToPoint(Offset(cx - h + r, cy - h), radius: Radius.circular(r));
-        path.lineTo(cx, cy - h);
-        path.close();
-        return path;
-
-      case PathButtonShape.triangle:
-        return buildTrianglePath(cx, cy, halfSize, shape.ringCornerRadius);
     }
   }
 
