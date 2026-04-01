@@ -41,35 +41,43 @@ class _AvatarSizeConfig {
     required this.initialsType,
   });
 
-  static final Map<AvatarSize, _AvatarSizeConfig> _map = {
-    AvatarSize.xs: _AvatarSizeConfig(
-      diameter: AppGrid.grid24,
-      iconSize: IconSizes.sm,
-      initialsType: AppTypography.overline,
-    ),
-    AvatarSize.sm: _AvatarSizeConfig(
-      diameter: AppGrid.grid32,
-      iconSize: IconSizes.md,
-      initialsType: AppTypography.caption,
-    ),
-    AvatarSize.md: _AvatarSizeConfig(
-      diameter: 3.rem,
-      iconSize: IconSizes.lg,
-      initialsType: AppTypography.body,
-    ),
-    AvatarSize.lg: _AvatarSizeConfig(
-      diameter: AppGrid.grid60,
-      iconSize: IconSizes.lg,
-      initialsType: AppTypography.proHeading6,
-    ),
-    AvatarSize.xl: _AvatarSizeConfig(
-      diameter: AppGrid.grid100,
-      iconSize: IconSizes.xl,
-      initialsType: AppTypography.heading3,
-    ),
-  };
+  /// Exhaustive switch — compiler errors if a new AvatarSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _AvatarSizeConfig of(AvatarSize size) {
+    return switch (size) {
+      AvatarSize.xs => _xs,
+      AvatarSize.sm => _sm,
+      AvatarSize.md => _md,
+      AvatarSize.lg => _lg,
+      AvatarSize.xl => _xl,
+    };
+  }
 
-  static _AvatarSizeConfig of(AvatarSize size) => _map[size]!;
+  static final _xs = _AvatarSizeConfig(
+    diameter: AppGrid.grid24,
+    iconSize: IconSizes.sm,
+    initialsType: AppTypography.overline,
+  );
+  static final _sm = _AvatarSizeConfig(
+    diameter: AppGrid.grid32,
+    iconSize: IconSizes.md,
+    initialsType: AppTypography.caption,
+  );
+  static final _md = _AvatarSizeConfig(
+    diameter: 3.rem,
+    iconSize: IconSizes.lg,
+    initialsType: AppTypography.body,
+  );
+  static final _lg = _AvatarSizeConfig(
+    diameter: AppGrid.grid60,
+    iconSize: IconSizes.lg,
+    initialsType: AppTypography.proHeading6,
+  );
+  static final _xl = _AvatarSizeConfig(
+    diameter: AppGrid.grid100,
+    iconSize: IconSizes.xl,
+    initialsType: AppTypography.heading3,
+  );
 }
 
 // ── AppAvatar ──
@@ -151,42 +159,36 @@ class _AppAvatarState extends State<AppAvatar> {
   }
 
   String get _semanticLabel {
-    final content = widget.content;
-    if (content is AvatarInitials) return '${content.initials} avatar';
-    if (content is AvatarImage) return 'User avatar';
-    return 'Avatar';
+    return switch (widget.content) {
+      AvatarInitials(:final initials) => '$initials avatar',
+      AvatarImage() => 'User avatar',
+      null => 'Avatar',
+    };
   }
 
   // ── Circle ──
 
   Widget _buildCircle(_AvatarSizeConfig config) {
-    Widget? child;
-
-    final content = widget.content;
-
-    if (content is AvatarImage && !_imageError) {
-      child = Image.network(
-        content.url,
-        fit: BoxFit.cover,
-        width: config.diameter,
-        height: config.diameter,
-        errorBuilder: (_, error, stack) {
-          // Schedule rebuild with fallback on next frame.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) setState(() => _imageError = true);
-          });
-          // Show fallback immediately in this frame.
-          return _buildFallback(config);
-        },
-      );
-    } else if (content is AvatarInitials) {
-      child = _buildInitials(content.initials, config);
-    } else if (content is AvatarImage && _imageError) {
-      child = _buildFallback(config);
-    } else {
-      // null content → person icon
-      child = _buildPersonIcon(config);
-    }
+    final child = switch (widget.content) {
+      AvatarImage(:final url) => _imageError
+          ? _buildFallback(config)
+          : Image.network(
+              url,
+              fit: BoxFit.cover,
+              width: config.diameter,
+              height: config.diameter,
+              errorBuilder: (_, error, stack) {
+                // Schedule rebuild with fallback on next frame.
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) setState(() => _imageError = true);
+                });
+                // Show fallback immediately in this frame.
+                return _buildFallback(config);
+              },
+            ),
+      AvatarInitials(:final initials) => _buildInitials(initials, config),
+      null => _buildPersonIcon(config),
+    };
 
     return ClipOval(
       child: SizedBox(

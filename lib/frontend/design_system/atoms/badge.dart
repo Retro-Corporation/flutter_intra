@@ -39,38 +39,45 @@ class _BadgeSizeConfig {
     required this.gap,
   });
 
-  static final Map<BadgeSize, _BadgeSizeConfig> _map = {
-    BadgeSize.xs: _BadgeSizeConfig(
-      height: 1.25.rem,
-      paddingX: AppPadding.rem025,
-      textStyle: AppTypography.caption.bold,
-      iconSize: IconSizes.sm,
-      gap: AppGrid.grid4,
-    ),
-    BadgeSize.sm: _BadgeSizeConfig(
-      height: 1.5.rem,
-      paddingX: AppPadding.rem05,
-      textStyle: AppTypography.bodySmall.semiBold,
-      iconSize: IconSizes.sm,
-      gap: AppGrid.grid4,
-    ),
-    BadgeSize.md: _BadgeSizeConfig(
-      height: 2.rem,
-      paddingX: AppPadding.rem075,
-      textStyle: AppTypography.body.semiBold,
-      iconSize: IconSizes.md,
-      gap: AppGrid.grid8,
-    ),
-    BadgeSize.lg: _BadgeSizeConfig(
-      height: 2.5.rem,
-      paddingX: AppPadding.rem1,
-      textStyle: AppTypography.bodyLarge.semiBold,
-      iconSize: IconSizes.lg,
-      gap: AppGrid.grid8,
-    ),
-  };
+  /// Exhaustive switch — compiler errors if a new BadgeSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _BadgeSizeConfig of(BadgeSize size) {
+    return switch (size) {
+      BadgeSize.xs => _xs,
+      BadgeSize.sm => _sm,
+      BadgeSize.md => _md,
+      BadgeSize.lg => _lg,
+    };
+  }
 
-  static _BadgeSizeConfig of(BadgeSize size) => _map[size]!;
+  static final _xs = _BadgeSizeConfig(
+    height: 1.25.rem,
+    paddingX: AppPadding.rem025,
+    textStyle: AppTypography.caption.bold,
+    iconSize: IconSizes.sm,
+    gap: AppGrid.grid4,
+  );
+  static final _sm = _BadgeSizeConfig(
+    height: 1.5.rem,
+    paddingX: AppPadding.rem05,
+    textStyle: AppTypography.bodySmall.semiBold,
+    iconSize: IconSizes.sm,
+    gap: AppGrid.grid4,
+  );
+  static final _md = _BadgeSizeConfig(
+    height: 2.rem,
+    paddingX: AppPadding.rem075,
+    textStyle: AppTypography.body.semiBold,
+    iconSize: IconSizes.md,
+    gap: AppGrid.grid8,
+  );
+  static final _lg = _BadgeSizeConfig(
+    height: 2.5.rem,
+    paddingX: AppPadding.rem1,
+    textStyle: AppTypography.bodyLarge.semiBold,
+    iconSize: IconSizes.lg,
+    gap: AppGrid.grid8,
+  );
 }
 
 // ── Color resolution ──

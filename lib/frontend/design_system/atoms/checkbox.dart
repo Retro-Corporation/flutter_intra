@@ -21,13 +21,22 @@ class _CheckboxSizeConfig {
 
   const _CheckboxSizeConfig({required this.size, required this.iconSize});
 
-  static final Map<CheckboxSize, _CheckboxSizeConfig> _map = {
-    CheckboxSize.sm: _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14),
-    CheckboxSize.md: _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16),
-    CheckboxSize.lg: _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18),
-  };
+  /// Exhaustive switch — compiler errors if a new CheckboxSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _CheckboxSizeConfig of(CheckboxSize size) {
+    return switch (size) {
+      CheckboxSize.sm => _sm,
+      CheckboxSize.md => _md,
+      CheckboxSize.lg => _lg,
+    };
+  }
 
-  static _CheckboxSizeConfig of(CheckboxSize size) => _map[size]!;
+  // Icon sizes are optical values hand-tuned per checkbox size for visual
+  // balance inside the 3D border. They intentionally do not align with the
+  // IconSizes token scale (8/16/24/32).
+  static final _sm = _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14);
+  static final _md = _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16);
+  static final _lg = _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18);
 }
 
 // ── Color resolution ──

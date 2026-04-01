@@ -21,13 +21,22 @@ class _RadioSizeConfig {
     required this.dotSize,
   });
 
-  static final Map<RadioSize, _RadioSizeConfig> _map = {
-    RadioSize.sm: _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10),
-    RadioSize.md: _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11),
-    RadioSize.lg: _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13),
-  };
+  /// Exhaustive switch — compiler errors if a new RadioSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _RadioSizeConfig of(RadioSize size) {
+    return switch (size) {
+      RadioSize.sm => _sm,
+      RadioSize.md => _md,
+      RadioSize.lg => _lg,
+    };
+  }
 
-  static _RadioSizeConfig of(RadioSize size) => _map[size]!;
+  // Dot sizes are optical values hand-tuned per radio size for visual
+  // balance inside the 3D border. They intentionally do not align with the
+  // IconSizes token scale (8/16/24/32).
+  static final _sm = _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10);
+  static final _md = _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11);
+  static final _lg = _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13);
 }
 
 // ── Color resolution ──

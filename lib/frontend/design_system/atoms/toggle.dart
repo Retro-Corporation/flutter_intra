@@ -23,25 +23,31 @@ class _ToggleSizeConfig {
     required this.thumbSize,
   });
 
-  static final Map<ToggleSize, _ToggleSizeConfig> _map = {
-    ToggleSize.sm: _ToggleSizeConfig(
-      trackWidth: AppGrid.grid52,
-      trackHeight: AppGrid.grid20,
-      thumbSize: AppGrid.grid24,
-    ),
-    ToggleSize.md: _ToggleSizeConfig(
-      trackWidth: AppGrid.grid68,
-      trackHeight: AppGrid.grid28,
-      thumbSize: AppGrid.grid32,
-    ),
-    ToggleSize.lg: _ToggleSizeConfig(
-      trackWidth: AppGrid.grid84,
-      trackHeight: AppGrid.grid36,
-      thumbSize: AppGrid.grid40,
-    ),
-  };
+  /// Exhaustive switch — compiler errors if a new ToggleSize case is added
+  /// without a corresponding branch. Replaces the old Map lookup.
+  static _ToggleSizeConfig of(ToggleSize size) {
+    return switch (size) {
+      ToggleSize.sm => _sm,
+      ToggleSize.md => _md,
+      ToggleSize.lg => _lg,
+    };
+  }
 
-  static _ToggleSizeConfig of(ToggleSize size) => _map[size]!;
+  static final _sm = _ToggleSizeConfig(
+    trackWidth: AppGrid.grid52,
+    trackHeight: AppGrid.grid20,
+    thumbSize: AppGrid.grid24,
+  );
+  static final _md = _ToggleSizeConfig(
+    trackWidth: AppGrid.grid68,
+    trackHeight: AppGrid.grid28,
+    thumbSize: AppGrid.grid32,
+  );
+  static final _lg = _ToggleSizeConfig(
+    trackWidth: AppGrid.grid84,
+    trackHeight: AppGrid.grid36,
+    thumbSize: AppGrid.grid40,
+  );
 }
 
 // ── Color resolution ──
