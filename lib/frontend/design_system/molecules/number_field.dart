@@ -144,10 +144,10 @@ class _AppNumberFieldState extends State<AppNumberField>
     final iconColor =
         isDisabled ? AppColors.grey600 : AppColors.textSecondary;
 
-    if (widget.stepperLayout == StepperLayout.outside) {
-      return _buildOutsideLayout(borderColor, focusedColor, isDisabled, iconColor);
-    }
-    return _buildInsideLayout(borderColor, focusedColor, isDisabled, iconColor);
+    return switch (widget.stepperLayout) {
+      StepperLayout.inside  => _buildInsideLayout(borderColor, focusedColor, isDisabled, iconColor),
+      StepperLayout.outside => _buildOutsideLayout(borderColor, focusedColor, isDisabled, iconColor),
+    };
   }
 
   Widget _buildInsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
