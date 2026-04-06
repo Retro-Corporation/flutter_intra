@@ -17,10 +17,14 @@ import 'colors.dart';
 
 /// Returns the 700 (shadow) variant of a design system color.
 Color resolve700(Color color) {
+  assert(AppColors.shadow700.containsKey(color),
+      '$color is not in AppColors.shadow700 — add it to _shadowDefs in colors.dart');
   return AppColors.shadow700[color]!;
 }
 
 /// Returns the 900 (deep shadow) variant of a design system color.
 Color resolve900(Color color) {
+  assert(AppColors.shadow900.containsKey(color),
+      '$color is not in AppColors.shadow900 — add it to _shadowDefs in colors.dart');
   return AppColors.shadow900[color]!;
 }

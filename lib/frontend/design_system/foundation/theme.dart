@@ -55,7 +55,7 @@ class AppTheme {
             horizontal: AppPadding.inputPaddingH,
             vertical: AppPadding.inputPaddingV,
           ),
-          hintStyle: const TextStyle(color: AppColors.grey600),
+          hintStyle: AppTypography.body.regular.copyWith(color: AppColors.grey600),
         ),
       );
 }

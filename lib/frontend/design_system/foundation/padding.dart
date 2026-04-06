@@ -30,7 +30,7 @@ class AppPadding {
   static final double rem2 = AppGrid.grid32;
 
   /// 3rem → 48px — large section gaps
-  static final double rem3 = 3.rem;
+  static final double rem3 = AppGrid.grid48;
 
   // ── Component-specific aliases ──
 

@@ -29,6 +29,15 @@ class TypeStyle {
   /// Weight: Regular (w400)
   TextStyle get regular => _build(FontWeight.w400);
 
+  /// Returns this style with [AppColors.textSecondary] as the text color.
+  /// Usage: `AppTypography.body.secondary.regular`
+  TypeStyle get secondary => TypeStyle(
+        fontSize: fontSize,
+        letterSpacing: letterSpacing,
+        height: height,
+        color: AppColors.textSecondary,
+      );
+
   TextStyle _build(FontWeight weight) => TextStyle(
         fontFamily: 'Inter',
         fontSize: fontSize,
