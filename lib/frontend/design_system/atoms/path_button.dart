@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
+import '../foundation/durations.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'path_button_geometry.dart';
@@ -28,12 +29,6 @@ final TweenSequence<double> _kBreathSequence = TweenSequence<double>([
     weight: 10, // hold closed
   ),
 ]);
-
-/// Full breath cycle duration.
-const Duration _kPulseDuration = Duration(milliseconds: 2000);
-
-/// Duration for pulse to settle back to zero after tap.
-const Duration _kPulseStopDuration = Duration(milliseconds: 300);
 
 // ── AppPathButton ──
 
@@ -86,7 +81,7 @@ class _AppPathButtonState extends State<AppPathButton>
       _pulseStopped = true;
       _pulseController.animateTo(
         0.0,
-        duration: _kPulseStopDuration,
+        duration: AppDurations.pathPulseStop,
         curve: Curves.easeOut,
       );
     }
@@ -98,7 +93,7 @@ class _AppPathButtonState extends State<AppPathButton>
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: _kPulseDuration,
+      duration: AppDurations.pathPulse,
     );
     _breathAnimation = _pulseController.drive(_kBreathSequence);
     if (widget.state.isPulsing) {
