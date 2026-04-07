@@ -64,7 +64,7 @@ class _AvatarSizeConfig {
     initialsType: AppTypography.caption,
   );
   static final _md = _AvatarSizeConfig(
-    diameter: 3.rem,
+    diameter: AppGrid.grid48,
     iconSize: IconSizes.lg,
     initialsType: AppTypography.body,
   );

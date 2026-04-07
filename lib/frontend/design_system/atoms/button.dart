@@ -12,6 +12,7 @@ import '../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'interactive_atom_mixin.dart';
 import 'text.dart';
+import 'three_d_press_painter.dart';
 
 // ── Enums ──
 
@@ -215,18 +216,6 @@ class AppButton extends StatefulWidget {
   /// Called when the button is tapped (ignored when disabled or loading).
   final VoidCallback? onPressed;
 
-  /// Override corner radius from size config. When null, uses size default.
-  final double? radiusOverride;
-
-  /// Override horizontal padding from size config. When null, uses size default.
-  final double? paddingOverride;
-
-  /// Override button height from size config. When null, uses size default.
-  final double? heightOverride;
-
-  /// Override button min width. When null, uses default (0 or square for icon-only).
-  final double? widthOverride;
-
   const AppButton({
     super.key,
     this.label,
@@ -241,10 +230,6 @@ class AppButton extends StatefulWidget {
     this.selfToggle = false,
     this.onActiveChanged,
     this.onPressed,
-    this.radiusOverride,
-    this.paddingOverride,
-    this.heightOverride,
-    this.widthOverride,
   }) : assert(
          label != null || leadingIcon != null || trailingIcon != null,
          'AppButton requires at least a label or an icon',
@@ -306,8 +291,8 @@ class _AppButtonState extends State<AppButton>
       active: isActive,
     );
 
-    final radius = widget.radiusOverride ?? sizeConfig.borderRadius;
-    final padX = widget.paddingOverride ?? sizeConfig.paddingX;
+    final radius = sizeConfig.borderRadius;
+    final padX = sizeConfig.paddingX;
 
     final geo = switch (widget.type) {
       ButtonType.filled  => PressGeometry.filled(pressed: pressed),
@@ -316,15 +301,15 @@ class _AppButtonState extends State<AppButton>
     };
 
     // Widget size is fixed — always the token height. Never changes.
-    final height = widget.heightOverride ?? sizeConfig.height;
-    final width = widget.widthOverride ?? (_iconOnly ? height : 0.0);
+    final height = sizeConfig.height;
+    final width = _iconOnly ? height : 0.0;
 
     return GestureDetector(
       onTapDown: isInteractive ? handleTapDown : null,
       onTapUp: isInteractive ? handleTapUp : null,
       onTapCancel: isInteractive ? handleTapCancel : null,
       child: CustomPaint(
-        painter: _ButtonPainter(
+        painter: ThreeDPressPainter(
           backgroundColor: colors.background,
           borderColor: colors.shadow,
           borderRadius: radius,
@@ -423,79 +408,4 @@ class _AppButtonState extends State<AppButton>
       child: content,
     );
   }
-}
-
-// ── Custom painter for 3D button ──
-
-class _ButtonPainter extends CustomPainter {
-  final Color backgroundColor;
-  final Color borderColor;
-  final double borderRadius;
-  final double borderTop;
-  final double borderBottom;
-  final double borderSide;
-  final double faceOffset;
-  final double faceSideInset;
-  final bool showBorder;
-
-  _ButtonPainter({
-    required this.backgroundColor,
-    required this.borderColor,
-    required this.borderRadius,
-    required this.borderTop,
-    required this.borderBottom,
-    required this.borderSide,
-    required this.faceOffset,
-    required this.faceSideInset,
-    required this.showBorder,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // 1. Draw border ring (only the border area, not the interior).
-    //    Uses drawDRRect to paint the ring between outer and inner rects,
-    //    leaving the gap between border and face transparent.
-    if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
-      final outerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(0, faceOffset, size.width, size.height),
-        Radius.circular(borderRadius),
-      );
-      final borderInnerRadius = (borderRadius - borderSide).clamp(0.0, double.infinity);
-      final borderInnerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(borderSide, faceOffset + borderTop, size.width - borderSide, size.height - borderBottom),
-        Radius.circular(borderInnerRadius),
-      );
-      final borderPaint = Paint()..color = borderColor;
-      canvas.drawDRRect(outerRRect, borderInnerRRect, borderPaint);
-    }
-
-    // 2. Draw the button face.
-    //    faceSideInset keeps horizontal position constant regardless of border width.
-    //    faceOffset shifts the face down without thickening the border.
-    final faceRect = Rect.fromLTRB(
-      faceSideInset,
-      borderTop + faceOffset,
-      size.width - faceSideInset,
-      size.height - borderBottom,
-    );
-    final faceRadius = (borderRadius - faceSideInset).clamp(0.0, double.infinity);
-    final faceRRect = RRect.fromRectAndRadius(
-      faceRect,
-      Radius.circular(faceRadius),
-    );
-    final facePaint = Paint()..color = backgroundColor;
-    canvas.drawRRect(faceRRect, facePaint);
-  }
-
-  @override
-  bool shouldRepaint(_ButtonPainter old) =>
-      backgroundColor != old.backgroundColor ||
-      borderColor != old.borderColor ||
-      borderRadius != old.borderRadius ||
-      borderTop != old.borderTop ||
-      borderBottom != old.borderBottom ||
-      borderSide != old.borderSide ||
-      faceOffset != old.faceOffset ||
-      faceSideInset != old.faceSideInset ||
-      showBorder != old.showBorder;
 }

@@ -33,7 +33,7 @@ void main() {
   CustomPainter findPainter(WidgetTester tester) {
     final allCustomPaints = tester.widgetList<CustomPaint>(find.byType(CustomPaint));
     final checkboxPaint = allCustomPaints.firstWhere(
-      (cp) => cp.painter != null && cp.painter.runtimeType.toString() == '_CheckboxPainter',
+      (cp) => cp.painter != null && cp.painter.runtimeType.toString() == 'ThreeDPressPainter',
     );
     return checkboxPaint.painter!;
   }

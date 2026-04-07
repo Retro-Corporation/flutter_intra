@@ -2273,25 +2273,6 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
   bool _isDisabled = false;
   bool _isLoading = false;
 
-  // Override controls
-  bool _useRadiusOverride = false;
-  int _radiusIndex = 1; // default sm
-  bool _usePaddingOverride = false;
-  double _paddingValue = 16;
-  bool _useHeightOverride = false;
-  double _heightValue = 44;
-  bool _useWidthOverride = false;
-  double _widthValue = 120;
-
-  static const _radiusOptions = <(String, double)>[
-    ('none (0)', 0),
-    ('sm (8)', 8),
-    ('md (16)', 16),
-    ('lg (24)', 24),
-    ('xl (40)', 40),
-    ('pill', 999),
-  ];
-
   static const _colorOptions = <(String, Color)>[
     ('Brand', AppColors.brand),
     ('White', AppColors.textPrimary),
@@ -2337,10 +2318,6 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
                 isDisabled: _isDisabled,
                 isLoading: _isLoading,
                 onPressed: () {},
-                radiusOverride: _useRadiusOverride ? _radiusOptions[_radiusIndex].$2 : null,
-                paddingOverride: _usePaddingOverride ? _paddingValue : null,
-                heightOverride: _useHeightOverride ? _heightValue : null,
-                widthOverride: _useWidthOverride ? _widthValue : null,
               ),
             ),
           ),
@@ -2433,56 +2410,6 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           })),
           _buildToggle('Disabled', _isDisabled, (v) => setState(() => _isDisabled = v)),
           _buildToggle('Loading', _isLoading, (v) => setState(() => _isLoading = v)),
-          SizedBox(height: AppGrid.grid16),
-
-          // Corner Radius
-          _buildToggle('Override Corner Radius', _useRadiusOverride, (v) => setState(() => _useRadiusOverride = v)),
-          if (_useRadiusOverride) ...[
-            SizedBox(height: AppGrid.grid4),
-            _buildChipRow(
-              labels: _radiusOptions.map((r) => r.$1).toList(),
-              selectedIndex: _radiusIndex,
-              onSelected: (i) => setState(() => _radiusIndex = i),
-              style: chipStyle,
-            ),
-            SizedBox(height: AppGrid.grid8),
-          ],
-
-          // Padding
-          _buildToggle('Override Padding', _usePaddingOverride, (v) => setState(() => _usePaddingOverride = v)),
-          if (_usePaddingOverride) ...[
-            _buildSlider(
-              label: 'Horizontal Padding',
-              value: _paddingValue,
-              min: 0,
-              max: 48,
-              onChanged: (v) => setState(() => _paddingValue = v),
-            ),
-          ],
-
-          // Height
-          _buildToggle('Override Height', _useHeightOverride, (v) => setState(() => _useHeightOverride = v)),
-          if (_useHeightOverride) ...[
-            _buildSlider(
-              label: 'Height',
-              value: _heightValue,
-              min: 24,
-              max: 80,
-              onChanged: (v) => setState(() => _heightValue = v),
-            ),
-          ],
-
-          // Width
-          _buildToggle('Override Width', _useWidthOverride, (v) => setState(() => _useWidthOverride = v)),
-          if (_useWidthOverride) ...[
-            _buildSlider(
-              label: 'Width',
-              value: _widthValue,
-              min: 40,
-              max: 300,
-              onChanged: (v) => setState(() => _widthValue = v),
-            ),
-          ],
         ],
       ),
     );
@@ -2521,44 +2448,6 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           ),
         );
       }),
-    );
-  }
-
-  Widget _buildSlider({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required ValueChanged<double> onChanged,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid8),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 100,
-            child: AppText('$label: ${value.round()}px', style: AppTypography.caption.bold),
-          ),
-          Expanded(
-            child: SliderTheme(
-              data: SliderThemeData(
-                activeTrackColor: AppColors.brand,
-                inactiveTrackColor: AppColors.surfaceBorder,
-                thumbColor: AppColors.brand,
-                overlayColor: AppColors.brand.withValues(alpha: 0.2),
-                trackHeight: 2,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-              ),
-              child: Slider(
-                value: value,
-                min: min,
-                max: max,
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

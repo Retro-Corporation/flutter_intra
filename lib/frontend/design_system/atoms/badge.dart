@@ -51,28 +51,28 @@ class _BadgeSizeConfig {
   }
 
   static final _xs = _BadgeSizeConfig(
-    height: 1.25.rem,
+    height: AppGrid.grid20,
     paddingX: AppPadding.rem025,
     textStyle: AppTypography.caption.bold,
     iconSize: IconSizes.sm,
     gap: AppGrid.grid4,
   );
   static final _sm = _BadgeSizeConfig(
-    height: 1.5.rem,
+    height: AppGrid.grid24,
     paddingX: AppPadding.rem05,
     textStyle: AppTypography.bodySmall.semiBold,
     iconSize: IconSizes.sm,
     gap: AppGrid.grid4,
   );
   static final _md = _BadgeSizeConfig(
-    height: 2.rem,
+    height: AppGrid.grid32,
     paddingX: AppPadding.rem075,
     textStyle: AppTypography.body.semiBold,
     iconSize: IconSizes.md,
     gap: AppGrid.grid8,
   );
   static final _lg = _BadgeSizeConfig(
-    height: 2.5.rem,
+    height: AppGrid.grid40,
     paddingX: AppPadding.rem1,
     textStyle: AppTypography.bodyLarge.semiBold,
     iconSize: IconSizes.lg,

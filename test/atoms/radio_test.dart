@@ -33,7 +33,7 @@ void main() {
     final radioPaint = allCustomPaints.firstWhere(
       (cp) =>
           cp.painter != null &&
-          cp.painter.runtimeType.toString() == '_RadioPainter',
+          cp.painter.runtimeType.toString() == 'ThreeDPressPainter',
     );
     return radioPaint.painter!;
   }
@@ -43,12 +43,12 @@ void main() {
       await tester.pumpWidget(buildTestRadio());
 
       final painter = findPainter(tester);
-      // Unselected: transparent background, no dot
+      // Unselected: transparent background, no dot (contentPainter is null)
       expect(
         (painter as dynamic).backgroundColor,
         Colors.transparent,
       );
-      expect((painter as dynamic).showDot, false);
+      expect((painter as dynamic).contentPainter, isNull);
     });
 
     testWidgets('renders selected state with accent color and dot',
@@ -57,8 +57,8 @@ void main() {
 
       final painter = findPainter(tester);
       expect((painter as dynamic).backgroundColor, AppColors.brand);
-      expect((painter as dynamic).showDot, true);
-      expect((painter as dynamic).dotColor, AppColors.textPrimary);
+      // contentPainter is non-null when selected (draws the dot)
+      expect((painter as dynamic).contentPainter, isNotNull);
     });
 
     testWidgets('selfToggle toggles on tap', (WidgetTester tester) async {
@@ -71,14 +71,14 @@ void main() {
 
       // Initially unselected
       var painter = findPainter(tester);
-      expect((painter as dynamic).showDot, false);
+      expect((painter as dynamic).contentPainter, isNull);
 
       // Tap to select
       await tester.tap(find.byType(AppRadio));
       await tester.pump();
 
       painter = findPainter(tester);
-      expect((painter as dynamic).showDot, true);
+      expect((painter as dynamic).contentPainter, isNotNull);
       expect(changedValue, true);
     });
 
@@ -97,7 +97,7 @@ void main() {
 
       // Should remain unselected
       final painter = findPainter(tester);
-      expect((painter as dynamic).showDot, false);
+      expect((painter as dynamic).contentPainter, isNull);
       expect(changedValue, null);
     });
 

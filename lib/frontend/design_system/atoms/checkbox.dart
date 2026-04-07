@@ -8,6 +8,7 @@ import '../foundation/three_d_press_geometry.dart';
 import '../icons/app_icons.dart';
 import 'icon.dart';
 import 'interactive_atom_mixin.dart';
+import 'three_d_press_painter.dart';
 
 // ── Enums ──
 
@@ -180,7 +181,7 @@ class _AppCheckboxState extends State<AppCheckbox>
         child: Opacity(
           opacity: contentOpacity,
           child: CustomPaint(
-            painter: _CheckboxPainter(
+            painter: ThreeDPressPainter(
               backgroundColor: colors.background,
               borderColor: colors.border,
               borderRadius: AppRadius.sm,
@@ -225,98 +226,4 @@ class _AppCheckboxState extends State<AppCheckbox>
       ),
     );
   }
-}
-
-// ── Custom painter for 3D checkbox ──
-
-class _CheckboxPainter extends CustomPainter {
-  final Color backgroundColor;
-  final Color borderColor;
-  final double borderRadius;
-  final double borderTop;
-  final double borderBottom;
-  final double borderSide;
-  final double faceOffset;
-  final double faceSideInset;
-  final double borderSideOffset;
-  final bool showBorder;
-
-  _CheckboxPainter({
-    required this.backgroundColor,
-    required this.borderColor,
-    required this.borderRadius,
-    required this.borderTop,
-    required this.borderBottom,
-    required this.borderSide,
-    required this.faceOffset,
-    required this.faceSideInset,
-    required this.borderSideOffset,
-    required this.showBorder,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // 1. Draw border ring
-    if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
-      final outerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(
-          borderSideOffset,
-          faceOffset,
-          size.width - borderSideOffset,
-          size.height,
-        ),
-        Radius.circular(borderRadius),
-      );
-      final borderInnerRadius = (borderRadius - borderSide).clamp(
-        0.0,
-        double.infinity,
-      );
-      final borderInnerRRect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(
-          borderSideOffset + borderSide,
-          faceOffset + borderTop,
-          size.width - borderSideOffset - borderSide,
-          size.height - borderBottom,
-        ),
-        Radius.circular(borderInnerRadius),
-      );
-      final borderPaint = Paint()..color = borderColor;
-      canvas.drawDRRect(outerRRect, borderInnerRRect, borderPaint);
-    }
-
-    // 2. Draw the checkbox face
-    //    faceOffset shifts the face down without thickening the border.
-    final effectiveSideInset = borderSideOffset > 0
-        ? borderSideOffset + borderSide
-        : faceSideInset;
-    final faceRect = Rect.fromLTRB(
-      effectiveSideInset,
-      borderTop + faceOffset,
-      size.width - effectiveSideInset,
-      size.height - borderBottom,
-    );
-    final faceRadius = (borderRadius - effectiveSideInset).clamp(
-      0.0,
-      double.infinity,
-    );
-    final faceRRect = RRect.fromRectAndRadius(
-      faceRect,
-      Radius.circular(faceRadius),
-    );
-    final facePaint = Paint()..color = backgroundColor;
-    canvas.drawRRect(faceRRect, facePaint);
-  }
-
-  @override
-  bool shouldRepaint(_CheckboxPainter old) =>
-      backgroundColor != old.backgroundColor ||
-      borderColor != old.borderColor ||
-      borderRadius != old.borderRadius ||
-      borderTop != old.borderTop ||
-      borderBottom != old.borderBottom ||
-      borderSide != old.borderSide ||
-      faceOffset != old.faceOffset ||
-      faceSideInset != old.faceSideInset ||
-      borderSideOffset != old.borderSideOffset ||
-      showBorder != old.showBorder;
 }

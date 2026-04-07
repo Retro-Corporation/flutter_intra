@@ -36,7 +36,7 @@ void main() {
   CustomPainter findPainter(WidgetTester tester) {
     final allCustomPaints = tester.widgetList<CustomPaint>(find.byType(CustomPaint));
     final buttonPaint = allCustomPaints.firstWhere(
-      (cp) => cp.painter != null && cp.painter.runtimeType.toString() == '_ButtonPainter',
+      (cp) => cp.painter != null && cp.painter.runtimeType.toString() == 'ThreeDPressPainter',
     );
     return buttonPaint.painter!;
   }
