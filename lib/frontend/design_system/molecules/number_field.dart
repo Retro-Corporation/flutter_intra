@@ -128,8 +128,8 @@ class _AppNumberFieldState extends State<AppNumberField>
       iconColor: color,
       // Fill the full height of the text field so the tap target & flash
       // area is a visible box, not just a thin strip around the icon.
-      width: 2.75.rem,
-      height: 2.75.rem,
+      width: AppGrid.grid44,
+      height: AppGrid.grid44,
       padding: padding ?? EdgeInsets.zero,
     );
   }
@@ -161,7 +161,7 @@ class _AppNumberFieldState extends State<AppNumberField>
         ),
         Container(
           width: AppStroke.xs,
-          height: 2.75.rem,
+          height: AppGrid.grid44,
           color: AppColors.surfaceBorder,
         ),
         _buildStepperButton(
@@ -207,8 +207,8 @@ class _AppNumberFieldState extends State<AppNumberField>
         icon: icon,
         onTap: onTap,
         iconColor: iconColor,
-        width: 2.75.rem,
-        height: 2.75.rem,
+        width: AppGrid.grid44,
+        height: AppGrid.grid44,
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.sm),
