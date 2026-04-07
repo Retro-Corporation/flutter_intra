@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
+import '../foundation/curves.dart';
+import '../foundation/durations.dart';
 import '../foundation/three_d_press_geometry.dart';
 import '../foundation/radius.dart';
 import '../foundation/stroke.dart';
@@ -149,12 +151,12 @@ class _AppToggleState extends State<AppToggle>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: AppDurations.toggle,
       vsync: this,
     );
     _position = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeInOut,
+      curve: AppCurves.toggle,
     );
     if (_currentValue) _controller.value = 1.0;
   }
