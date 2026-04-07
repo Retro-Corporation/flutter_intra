@@ -10,6 +10,9 @@ export 'foundation/theme.dart';
 export 'foundation/opacity.dart';
 export 'foundation/stroke.dart';
 export 'foundation/color_utils.dart';
+export 'foundation/breath.dart';
+export 'foundation/curves.dart';
+export 'foundation/durations.dart';
 export 'foundation/three_d_press_geometry.dart';
 
 // Icons
