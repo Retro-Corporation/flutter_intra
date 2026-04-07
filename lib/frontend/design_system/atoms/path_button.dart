@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
+import '../foundation/curves.dart';
 import '../foundation/durations.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
@@ -13,7 +14,7 @@ import 'press_state_mixin.dart';
 /// Maps controller 0→1 to a full breath cycle.
 final TweenSequence<double> _kBreathSequence = TweenSequence<double>([
   TweenSequenceItem(
-    tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeOut)),
+    tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: AppCurves.breathInhale)),
     weight: 40, // inhale
   ),
   TweenSequenceItem(
@@ -21,7 +22,7 @@ final TweenSequence<double> _kBreathSequence = TweenSequence<double>([
     weight: 10, // hold open
   ),
   TweenSequenceItem(
-    tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)),
+    tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: AppCurves.breathExhale)),
     weight: 40, // exhale
   ),
   TweenSequenceItem(
@@ -82,7 +83,7 @@ class _AppPathButtonState extends State<AppPathButton>
       _pulseController.animateTo(
         0.0,
         duration: AppDurations.pathPulseStop,
-        curve: Curves.easeOut,
+        curve: AppCurves.pathPulseStop,
       );
     }
     widget.onPressed?.call();
