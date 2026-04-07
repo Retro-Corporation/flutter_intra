@@ -1197,7 +1197,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: const [
-          AppAvatar(content: AvatarImage('https://i.pravatar.cc/150?img=3')),
+          AppAvatar(content: AvatarImage(AssetImage('assets/images/avatar_placeholder.png'))),
           AppAvatar(content: AvatarInitials('TP')),
           AppAvatar(),
         ],

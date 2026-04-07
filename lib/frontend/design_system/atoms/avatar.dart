@@ -19,8 +19,8 @@ sealed class AvatarContent {
 }
 
 class AvatarImage extends AvatarContent {
-  final String url;
-  const AvatarImage(this.url);
+  final ImageProvider image;
+  const AvatarImage(this.image);
 }
 
 class AvatarInitials extends AvatarContent {
@@ -85,7 +85,7 @@ class _AvatarSizeConfig {
 /// Atom: circular avatar with optional badge dots at four corners.
 ///
 /// Content patterns:
-/// - image: `AppAvatar(content: AvatarImage('https://...'))`
+/// - image: `AppAvatar(content: AvatarImage(NetworkImage('https://...')))`
 /// - initials: `AppAvatar(content: AvatarInitials('TP'))`
 /// - fallback icon: `AppAvatar()` (person icon)
 ///
@@ -170,10 +170,10 @@ class _AppAvatarState extends State<AppAvatar> {
 
   Widget _buildCircle(_AvatarSizeConfig config) {
     final child = switch (widget.content) {
-      AvatarImage(:final url) => _imageError
+      AvatarImage(:final image) => _imageError
           ? _buildFallback(config)
-          : Image.network(
-              url,
+          : Image(
+              image: image,
               fit: BoxFit.cover,
               width: config.diameter,
               height: config.diameter,
