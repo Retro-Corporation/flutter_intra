@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../foundation/breath.dart';
 import '../foundation/colors.dart';
 import '../foundation/curves.dart';
 import '../foundation/durations.dart';
@@ -7,29 +8,6 @@ import 'icon.dart';
 import 'path_button_geometry.dart';
 import 'path_button_renderer.dart';
 import 'press_state_mixin.dart';
-
-// ── Animation constants ──
-
-/// Breathing-style pulse: expand → hold → contract → hold.
-/// Maps controller 0→1 to a full breath cycle.
-final TweenSequence<double> _kBreathSequence = TweenSequence<double>([
-  TweenSequenceItem(
-    tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: AppCurves.breathInhale)),
-    weight: 40, // inhale
-  ),
-  TweenSequenceItem(
-    tween: ConstantTween(1.0),
-    weight: 10, // hold open
-  ),
-  TweenSequenceItem(
-    tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: AppCurves.breathExhale)),
-    weight: 40, // exhale
-  ),
-  TweenSequenceItem(
-    tween: ConstantTween(0.0),
-    weight: 10, // hold closed
-  ),
-]);
 
 // ── AppPathButton ──
 
@@ -96,7 +74,7 @@ class _AppPathButtonState extends State<AppPathButton>
       vsync: this,
       duration: AppDurations.pathPulse,
     );
-    _breathAnimation = _pulseController.drive(_kBreathSequence);
+    _breathAnimation = _pulseController.drive(AppBreath.sequence());
     if (widget.state.isPulsing) {
       _pulseController.repeat();
     }
