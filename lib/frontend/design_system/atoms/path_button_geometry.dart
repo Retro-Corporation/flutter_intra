@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../foundation/colors.dart';
 import '../foundation/color_utils.dart';
 import '../foundation/grid.dart';
+import '../foundation/radius.dart';
 import '../foundation/stroke.dart';
 
 // ── Enums ──
@@ -30,16 +31,16 @@ enum PathButtonShape {
 
   /// Face corner radius.
   double get faceCornerRadius => switch (this) {
-    circle        => 0.0,
-    triangle      => AppGrid.grid8,
-    roundedSquare => AppGrid.grid12,
+    circle        => AppRadius.none,
+    triangle      => AppRadius.md,
+    roundedSquare => AppRadius.md,
   };
 
   /// Ring corner radius.
   double get ringCornerRadius => switch (this) {
-    circle        => 0.0,
-    triangle      => AppGrid.grid16,
-    roundedSquare => 23.0,
+    circle        => AppRadius.none,
+    triangle      => AppRadius.lg,
+    roundedSquare => AppRadius.lg,
   };
 
   /// Max pulse expansion in pixels during breathing animation.
