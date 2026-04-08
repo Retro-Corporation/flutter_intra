@@ -258,3 +258,7 @@ bcdedit /set hypervisorlaunchtype auto
 - [Dart Documentation](https://dart.dev/guides)
 - [flutter_pose_landmark](https://pub.dev/documentation/flutter_pose_detection/latest/)
 - [Android Emulator Documentation](https://developer.android.com/studio/run/emulator)
+
+,
+# Installing Swift on Windows:
+Ignore the instructions use winget directly. 

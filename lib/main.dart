@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
 // Pose
 import 'features/pose/widgets/pose_overlay.dart';
@@ -32,8 +31,6 @@ import 'core/metrics_tracker.dart';
 import 'features/auth/pages/login_page.dart';
 import 'features/auth/pages/sign_up.dart';
 
-
-late List<CameraDescription> cameras;
 
 // services
 late AuthService authService;
@@ -68,9 +65,8 @@ Future<void> main() async {
   authController = AuthController(authService);
   exerciseController = ExerciseController(exerciseService);
 
-  // Camera + Pose controller
-  cameras = await availableCameras();
-  poseController = PoseController(cameras.first);
+  // Pose controller (uses NativeMotionEngine / FFI)
+  poseController = PoseController();
   await poseController.initialize(); 
 
   runApp(const MyApp());
@@ -129,9 +125,9 @@ class _PosePageState extends State<PosePage> {
 
   void _onUpdate() {
     // Process frames for rep counting if active
-    if (_isCounting && _repCounter != null && _controller.landmarks != null) {
-      final frame = PoseFrame.fromPoseLandmarks(
-        poseLandmarks: _controller.landmarks!,
+    if (_isCounting && _repCounter != null && _controller.worldLandmarks != null) {
+      final frame = PoseFrame.fromWorldLandmarks(
+        worldLandmarks: _controller.worldLandmarks!,
         timestamp: DateTime.now().millisecondsSinceEpoch,
       );
       _repCounter!.processFrame(frame);
@@ -301,16 +297,12 @@ class _PosePageState extends State<PosePage> {
 
   @override
   Widget build(BuildContext context) {
-    final cam = _controller.cameraController;
-
-    if (cam == null || !cam.value.isInitialized) {
+    if (!_controller.isReady) {
       return const Scaffold(
         backgroundColor: _bg,
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
-    final previewSize = cam.value.previewSize!;
 
     return Scaffold(
       backgroundColor: _bg,
@@ -424,16 +416,14 @@ class _PosePageState extends State<PosePage> {
                             color: Colors.white.withValues(alpha: 0.06),
                           ),
                         ),
-                        child: AspectRatio(
-                          aspectRatio: cam.value.aspectRatio,
-                          child: Stack(
+                        child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              CameraPreview(cam),
-                              if (_controller.landmarks != null)
+                              Texture(textureId: _controller.textureId!),
+                              if (_controller.poseLandmarks != null)
                                 PoseOverlay(
-                                  landmarks: _controller.landmarks!,
-                                  previewSize: previewSize,
+                                  landmarks: _controller.poseLandmarks!,
+                                  previewSize: MediaQuery.of(context).size,
                                 ),
                               // LIVE badge
                               Positioned(
@@ -529,7 +519,6 @@ class _PosePageState extends State<PosePage> {
                                   ),
                                 ),
                             ],
-                          ),
                         ),
                       ),
                     ),

@@ -3,7 +3,6 @@
  * 
  * This file contains the MotionSimilarity class,
  * which computes a similarity score between two pose sequences.
- * This is a test version, we will only be comparing the arms.
  * 
  * Since the library is only returning normalized coordinates,
  * we will be comparing joint angles instead of absolute positions.
@@ -16,23 +15,14 @@ import 'dart:math' as math;
 import '../pose/pose_frame.dart';
 
 class MotionSimilarity {
-  /// Defines the arm joints we care about for this test version
-  static const List<String> armJoints = [
-    'left_shoulder',
-    'left_elbow',
-    'left_wrist',
-    'right_shoulder',
-    'right_elbow',
-    'right_wrist',
-  ];
-
   /// Computes the average similarity between two frames (0.0 to 1.0)
   /// 1.0 is identical, 0.0 is completely different.
-  static double compareArms(PoseFrame current, PoseFrame reference) {
+  /// Compares all joint angles present in both frames.
+  static double compareAll(PoseFrame current, PoseFrame reference) {
     double totalError = 0.0;
     int count = 0;
 
-    for (String joint in armJoints) {
+    for (String joint in current.jointAngles.keys) {
       final double? currentAngle = current.jointAngles[joint];
       final double? refAngle = reference.jointAngles[joint];
 
@@ -59,6 +49,6 @@ class MotionSimilarity {
     PoseFrame reference, {
     double threshold = 0.15,
   }) {
-    return compareArms(current, reference) >= (1.0 - threshold);
+    return compareAll(current, reference) >= (1.0 - threshold);
   }
 }

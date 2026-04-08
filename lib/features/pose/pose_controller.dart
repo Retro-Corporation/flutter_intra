@@ -1,95 +1,75 @@
 // pose_controller.dart
-import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_pose_detection/flutter_pose_detection.dart';
 
 import 'pose_frame.dart';
 import 'pose_sequence.dart';
 
 class PoseController extends ChangeNotifier {
-  final CameraDescription camera;
   final NpuPoseDetector _detector = NpuPoseDetector();
+  NativeMotionEngine? _engine;
 
-  CameraController? _cameraController;
-  bool _isProcessing = false;
+  PoseSnapshot? _latestSnapshot;
 
-  List<PoseLandmark>? _landmarks;
+  /// Texture ID for rendering the camera feed via [Texture] widget.
+  int? get textureId => _engine?.textureId;
 
-  CameraController? get cameraController => _cameraController;
-  List<PoseLandmark>? get landmarks => _landmarks;
+  /// Whether the engine is ready and producing frames.
+  bool get isReady => _engine != null;
 
+  /// The latest image-space landmarks (for overlay drawing).
+  List<LandmarkData>? get poseLandmarks => _latestSnapshot?.poseLandmarks;
+
+  /// The latest world-space landmarks (meters, hip-centered).
+  List<LandmarkData>? get worldLandmarks => _latestSnapshot?.worldLandmarks;
 
   bool _isRecording = false;
-  int? _recordingStartMs;           
+  int? _recordingStartMs;
   final List<PoseFrame> _recordedFrames = [];
 
   bool get isRecording => _isRecording;
 
-  PoseController(this.camera);
+  PoseController();
 
   Future<void> initialize() async {
     await _detector.initialize();
 
-    _cameraController = CameraController(
-      camera,
-      ResolutionPreset.medium,
-      enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.yuv420,
-      fps: 20, // Limit to 20 FPS to reduce processing load
+    _engine = await _detector.startMotionEngine(
+      config: const MotionEngineConfig(
+        cameraFacing: CameraFacing.front,
+        targetFps: 20,
+      ),
     );
 
-    await _cameraController!.initialize();
-    await _cameraController!.startImageStream(_processFrame);
-
+    // Poll the FFI buffer every frame
+    _startPolling();
     notifyListeners();
   }
 
-  Future<void> _processFrame(CameraImage image) async {
-    if (_isProcessing || !_detector.isInitialized) return;
-    _isProcessing = true;
+  void _startPolling() {
+    SchedulerBinding.instance.addPersistentFrameCallback((_) {
+      if (_engine == null) return;
 
-    try {
-      final planes = image.planes
-          .map(
-            (p) => {
-              'bytes': p.bytes,
-              'bytesPerRow': p.bytesPerRow,
-              'bytesPerPixel': p.bytesPerPixel,
-            },
-          )
-          .toList();
+      final snapshot = _engine!.readLatestPose();
+      if (snapshot == null) return;
 
-      final result = await _detector.processFrame(
-        planes: planes,
-        width: image.width,
-        height: image.height,
-        format: 'yuv420',
-        rotation: _cameraController!.description.sensorOrientation,
-      );
+      _latestSnapshot = snapshot;
+      notifyListeners();
 
-      if (result.hasPoses) {
-        _landmarks = result.firstPose!.landmarks;
-        notifyListeners();
+      if (_isRecording && _latestSnapshot != null) {
+        final nowMs = DateTime.now().millisecondsSinceEpoch;
+        _recordingStartMs ??= nowMs;
+        final relativeMs = nowMs - _recordingStartMs!;
 
-        if (_isRecording && _landmarks != null) {
-          final nowMs = DateTime.now().millisecondsSinceEpoch;
-
-          // Lazily set recording start time on first frame
-          _recordingStartMs ??= nowMs;
-          final relativeMs = nowMs - _recordingStartMs!;
-
-          // Use the new fromPoseLandmarks constructor
-          _recordedFrames.add(
-            PoseFrame.fromPoseLandmarks(
-              poseLandmarks: _landmarks!,
-              timestamp: relativeMs,
-            ),
-          );
-        }
+        _recordedFrames.add(
+          PoseFrame.fromWorldLandmarks(
+            worldLandmarks: _latestSnapshot!.worldLandmarks,
+            timestamp: relativeMs,
+          ),
+        );
       }
-    } finally {
-      _isProcessing = false;
-    }
+    });
   }
 
   // Start collecting PoseFrames
@@ -106,7 +86,8 @@ class PoseController extends ChangeNotifier {
   }
 
   Future<void> disposeController() async {
-    await _cameraController?.dispose();
+    await _detector.stopMotionEngine();
     _detector.dispose();
+    _engine = null;
   }
 }

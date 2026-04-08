@@ -3,7 +3,7 @@ import 'package:flutter_pose_detection/flutter_pose_detection.dart'
     as pose_detection;
 
 class PoseOverlay extends material.StatelessWidget {
-  final List<pose_detection.PoseLandmark> landmarks;
+  final List<pose_detection.LandmarkData> landmarks;
   final material.Size previewSize;
 
   const PoseOverlay({
@@ -21,7 +21,7 @@ class PoseOverlay extends material.StatelessWidget {
 }
 
 class PosePainter extends material.CustomPainter {
-  final List<pose_detection.PoseLandmark> landmarks;
+  final List<pose_detection.LandmarkData> landmarks;
   final material.Size imageSize;
 
   PosePainter(this.landmarks, this.imageSize);

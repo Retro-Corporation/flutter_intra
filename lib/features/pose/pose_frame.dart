@@ -28,12 +28,26 @@ class PoseFrame {
     _computeAllJointAngles();
   }
 
-  /// Creates a PoseFrame from library PoseLandmark objects
+  /// Creates a PoseFrame from library PoseLandmark objects (image-space)
   PoseFrame.fromPoseLandmarks({
     required List<PoseLandmark> poseLandmarks,
     required this.timestamp,
   }) : landmarks = _orientToUserLeft(
           poseLandmarks.map((l) => Vector3(l.x, l.y, l.z)).toList(),
+        ) {
+    _computeAllJointAngles();
+  }
+
+  /// Creates a PoseFrame from FFI world-space LandmarkData (meters, hip-centered).
+  ///
+  /// World landmarks are already in real-world coordinates so the
+  /// X-flip for user-left orientation still applies, but the values
+  /// represent metric distances rather than normalized image coords.
+  PoseFrame.fromWorldLandmarks({
+    required List<LandmarkData> worldLandmarks,
+    required this.timestamp,
+  }) : landmarks = _orientToUserLeft(
+          worldLandmarks.map((l) => Vector3(l.x, l.y, l.z)).toList(),
         ) {
     _computeAllJointAngles();
   }
