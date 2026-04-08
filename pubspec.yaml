@@ -53,6 +53,12 @@ dependencies:
   # Added for joint angle calculations
   vector_math: ^2.2.0
 
+  # SVG icon rendering
+  flutter_svg: ^2.0.10+1
+
+  # Shimmer loading placeholder
+  shimmer: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -71,6 +77,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/models/pose_landmarker_lite.task
+    - assets/icons/
+    - assets/images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
