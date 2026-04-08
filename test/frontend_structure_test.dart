@@ -16,12 +16,12 @@ void main() {
     });
 
     test('foundation token files exist', () {
-      expect(File('$base/design_system/foundation/colors.dart').existsSync(),
+      expect(File('$base/design_system/foundation/color/colors.dart').existsSync(),
           isTrue);
       expect(
-          File('$base/design_system/foundation/typography.dart').existsSync(),
+          File('$base/design_system/foundation/type/typography.dart').existsSync(),
           isTrue);
-      expect(File('$base/design_system/foundation/padding.dart').existsSync(),
+      expect(File('$base/design_system/foundation/space/padding.dart').existsSync(),
           isTrue);
       expect(File('$base/design_system/foundation/theme.dart').existsSync(),
           isTrue);
@@ -55,14 +55,14 @@ void main() {
 
     test('foundation files contain expected classes', () {
       final colors =
-          File('$base/design_system/foundation/colors.dart').readAsStringSync();
+          File('$base/design_system/foundation/color/colors.dart').readAsStringSync();
       expect(colors, contains('class AppColors'));
 
-      final typography = File('$base/design_system/foundation/typography.dart')
+      final typography = File('$base/design_system/foundation/type/typography.dart')
           .readAsStringSync();
       expect(typography, contains('class AppTypography'));
 
-      final padding = File('$base/design_system/foundation/padding.dart')
+      final padding = File('$base/design_system/foundation/space/padding.dart')
           .readAsStringSync();
       expect(padding, contains('class AppPadding'));
 
