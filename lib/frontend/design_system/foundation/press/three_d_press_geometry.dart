@@ -1,4 +1,4 @@
-import 'stroke.dart';
+import '../space/stroke.dart';
 
 /// 3D press geometry tokens.
 ///

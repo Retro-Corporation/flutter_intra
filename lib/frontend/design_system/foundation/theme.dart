@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'colors.dart';
-import 'typography.dart';
-import 'padding.dart';
-import 'radius.dart';
-import 'stroke.dart';
+import 'color/colors.dart';
+import 'type/typography.dart';
+import 'space/padding.dart';
+import 'space/radius.dart';
+import 'space/stroke.dart';
 
 /// App theme built from foundation tokens.
 class AppTheme {

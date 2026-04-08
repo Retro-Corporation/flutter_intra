@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/color_utils.dart';
-import '../foundation/grid.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
-import '../foundation/typography.dart';
-import '../icons/icon_sizes.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/color/color_utils.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/space/padding.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
+import '../../foundation/type/typography.dart';
+import '../../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'text.dart';
-
-// ── Enums ──
-
-enum BadgeType {
-  filled(_resolveFilled),
-  outline(_resolveOutline);
-
-  const BadgeType(this._resolve);
-  final _ResolvedColors Function(Color) _resolve;
-}
-
-enum BadgeSize { xs, sm, md, lg }
+import 'badge_types.dart';
 
 // ── Size configuration ──
 
@@ -164,7 +153,10 @@ class AppBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sizeConfig = _BadgeSizeConfig.of(size);
-    final colors = type._resolve(color);
+    final colors = switch (type) {
+      BadgeType.filled => _resolveFilled(color),
+      BadgeType.outline => _resolveOutline(color),
+    };
 
     final children = <Widget>[];
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../atoms/icon.dart';
-import '../atoms/text_field.dart';
-import '../foundation/colors.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../icons/app_icons.dart';
-import '../icons/icon_sizes.dart';
-import 'controller_owner_mixin.dart';
+import '../../atoms/primitives/icon.dart';
+import '../../atoms/inputs/text_field.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/padding.dart';
+import '../../foundation/space/radius.dart';
+import '../../icons/app_icons.dart';
+import '../../icons/icon_sizes.dart';
+import '../behaviors/controller_owner_mixin.dart';
 
 /// Molecule: pill-shaped search bar. Shows a search icon by default, and
 /// swaps to a clear (close) icon when text is present so the user can

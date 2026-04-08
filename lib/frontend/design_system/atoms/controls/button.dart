@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/color_utils.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
-import '../foundation/three_d_press_geometry.dart';
-import '../foundation/typography.dart';
-import '../icons/icon_sizes.dart';
-import 'icon.dart';
-import 'interactive_atom_mixin.dart';
-import 'text.dart';
-import 'three_d_press_painter.dart';
-
-// ── Enums ──
-
-enum ButtonType { filled, outline, ghost }
-
-enum ButtonSize { sm, md, lg }
+import '../../foundation/color/colors.dart';
+import '../../foundation/color/color_utils.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/space/padding.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
+import '../../foundation/press/three_d_press_geometry.dart';
+import '../../foundation/type/typography.dart';
+import '../../icons/icon_sizes.dart';
+import '../primitives/icon.dart';
+import '../behaviors/interactive_atom_mixin.dart';
+import '../primitives/text.dart';
+import '../behaviors/three_d_press_painter.dart';
+import 'button_types.dart';
 
 // ── Size configuration ──
 

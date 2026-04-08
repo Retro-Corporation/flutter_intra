@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../atoms/icon.dart';
-import '../atoms/text_field.dart';
-import '../foundation/colors.dart';
-import '../foundation/padding.dart';
-import '../icons/app_icons.dart';
-import '../icons/icon_sizes.dart';
-import 'controller_owner_mixin.dart';
-import 'field_state.dart';
+import '../../atoms/primitives/icon.dart';
+import '../../atoms/inputs/text_field.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/padding.dart';
+import '../../icons/app_icons.dart';
+import '../../icons/icon_sizes.dart';
+import '../behaviors/controller_owner_mixin.dart';
+import '../behaviors/field_state.dart';
 import 'form_field.dart';
-import 'validator_mixin.dart';
+import '../behaviors/validator_mixin.dart';
 
 /// Molecule: standard text field with label, helper text, and state support.
 ///

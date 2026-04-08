@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../atoms/icon.dart';
-import '../atoms/text_field.dart';
-import '../foundation/colors.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
-import '../icons/app_icons.dart';
-import '../icons/icon_sizes.dart';
-import 'controller_owner_mixin.dart';
-import 'field_state.dart';
+import '../../atoms/primitives/icon.dart';
+import '../../atoms/inputs/text_field.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/space/padding.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
+import '../../icons/app_icons.dart';
+import '../../icons/icon_sizes.dart';
+import '../behaviors/controller_owner_mixin.dart';
+import '../behaviors/field_state.dart';
 import 'form_field.dart';
-
-/// Layout for the +/- stepper buttons.
-enum StepperLayout {
-  /// Buttons inside the text field border (as suffix icons).
-  inside,
-
-  /// Buttons outside the text field, to the right of it.
-  outside,
-}
+import 'number_field_types.dart';
 
 /// Molecule: numeric input with +/- stepper buttons.
 ///

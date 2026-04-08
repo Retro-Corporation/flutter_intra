@@ -1,32 +1,13 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/typography.dart';
-import '../icons/app_icons.dart';
-import '../icons/icon_sizes.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/type/typography.dart';
+import '../../icons/app_icons.dart';
+import '../../icons/icon_sizes.dart';
 import 'icon.dart';
 import 'shimmer.dart';
-
-// ── Enums ──
-
-enum AvatarSize { xs, sm, md, lg, xl }
-
-// ── Avatar content ──
-
-sealed class AvatarContent {
-  const AvatarContent();
-}
-
-class AvatarImage extends AvatarContent {
-  final ImageProvider image;
-  const AvatarImage(this.image);
-}
-
-class AvatarInitials extends AvatarContent {
-  final String initials;
-  const AvatarInitials(this.initials);
-}
+import 'avatar_types.dart';
 
 // ── Size configuration ──
 

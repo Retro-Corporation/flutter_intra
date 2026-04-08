@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../foundation/colors.dart';
-import '../foundation/padding.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
-import '../foundation/typography.dart';
-import '../icons/app_icons.dart';
-import '../icons/icon_sizes.dart';
-import 'icon.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/padding.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
+import '../../foundation/type/typography.dart';
+import '../../icons/app_icons.dart';
+import '../../icons/icon_sizes.dart';
+import '../primitives/icon.dart';
 
 /// Atom: text field with configurable borders, icons, and multiline support.
 ///

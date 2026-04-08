@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../foundation/stroke.dart';
+import '../../foundation/space/stroke.dart';
 import 'path_button_geometry.dart';
 
 // ── Shape draw delegates ──

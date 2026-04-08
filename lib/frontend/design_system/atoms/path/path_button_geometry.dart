@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/color_utils.dart';
-import '../foundation/grid.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/color/color_utils.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
 
 // ── Enums ──
 

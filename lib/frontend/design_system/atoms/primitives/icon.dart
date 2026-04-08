@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../foundation/colors.dart';
-import '../icons/icon_sizes.dart';
+import '../../foundation/color/colors.dart';
+import '../../icons/icon_sizes.dart';
 
 /// Atom: renders an SVG icon at the correct size with color tinting.
 /// Uses [BoxFit.contain] so non-square viewBoxes are never stretched.

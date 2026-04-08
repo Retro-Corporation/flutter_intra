@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../foundation/breath.dart';
-import '../foundation/colors.dart';
-import '../foundation/curves.dart';
-import '../foundation/durations.dart';
-import '../icons/icon_sizes.dart';
-import 'icon.dart';
+import '../../foundation/motion/breath.dart';
+import '../../foundation/color/colors.dart';
+import '../../foundation/motion/curves.dart';
+import '../../foundation/motion/durations.dart';
+import '../../icons/icon_sizes.dart';
+import '../primitives/icon.dart';
 import 'path_button_geometry.dart';
 import 'path_button_renderer.dart';
-import 'press_state_mixin.dart';
+import '../behaviors/press_state_mixin.dart';
 
 // ── AppPathButton ──
 

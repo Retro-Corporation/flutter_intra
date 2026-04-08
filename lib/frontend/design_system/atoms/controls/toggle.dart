@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/curves.dart';
-import '../foundation/durations.dart';
-import '../foundation/three_d_press_geometry.dart';
-import '../foundation/radius.dart';
-import '../foundation/stroke.dart';
-
-// ── Enums ──
-
-enum ToggleSize { sm, md, lg }
+import '../../foundation/color/colors.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/motion/curves.dart';
+import '../../foundation/motion/durations.dart';
+import '../../foundation/press/three_d_press_geometry.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
+import 'toggle_types.dart';
 
 // ── Size configuration ──
 

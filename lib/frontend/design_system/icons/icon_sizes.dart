@@ -1,4 +1,4 @@
-import '../foundation/grid.dart';
+import '../foundation/space/grid.dart';
 
 /// Design tokens: Icon sizes.
 /// Derived from the 8-point grid via rem scaling.

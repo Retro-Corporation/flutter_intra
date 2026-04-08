@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/color_utils.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/radius.dart';
-import '../foundation/three_d_press_geometry.dart';
-import '../icons/app_icons.dart';
-import 'icon.dart';
-import 'interactive_atom_mixin.dart';
-import 'three_d_press_painter.dart';
-
-// ── Enums ──
-
-enum CheckboxSize { sm, md, lg }
+import '../../foundation/color/colors.dart';
+import '../../foundation/color/color_utils.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/space/radius.dart';
+import '../../foundation/press/three_d_press_geometry.dart';
+import '../../icons/app_icons.dart';
+import '../primitives/icon.dart';
+import '../behaviors/interactive_atom_mixin.dart';
+import '../behaviors/three_d_press_painter.dart';
+import 'checkbox_types.dart';
 
 // ── Size configuration ──
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
+import '../../foundation/color/colors.dart';
 
 /// Visual state for form-field molecules.
 ///

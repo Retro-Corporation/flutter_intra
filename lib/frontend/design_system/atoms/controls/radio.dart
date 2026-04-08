@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import '../foundation/colors.dart';
-import '../foundation/color_utils.dart';
-import '../foundation/grid.dart';
-import '../foundation/opacity.dart';
-import '../foundation/three_d_press_geometry.dart';
-import 'interactive_atom_mixin.dart';
-import 'three_d_press_painter.dart';
-
-// ── Enums ──
-
-enum RadioSize { sm, md, lg }
+import '../../foundation/color/colors.dart';
+import '../../foundation/color/color_utils.dart';
+import '../../foundation/space/grid.dart';
+import '../../foundation/opacity.dart';
+import '../../foundation/press/three_d_press_geometry.dart';
+import '../behaviors/interactive_atom_mixin.dart';
+import '../behaviors/three_d_press_painter.dart';
+import 'radio_types.dart';
 
 // ── Size configuration ──
 

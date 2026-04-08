@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'colors.dart';
-import 'grid.dart';
+import '../color/colors.dart';
+import '../space/grid.dart';
 
 /// A type scale entry that exposes weight variants.
 /// Usage: `AppTypography.heading1.bold` or `AppTypography.body.regular`
