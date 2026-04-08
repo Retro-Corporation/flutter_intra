@@ -32,6 +32,7 @@ export 'atoms/radio.dart';
 export 'atoms/path_button_geometry.dart';
 export 'atoms/path_button_renderer.dart';
 export 'atoms/path_button.dart';
+export 'atoms/shimmer.dart';
 export 'atoms/interactive_atom_mixin.dart';
 export 'atoms/press_state_mixin.dart';
 

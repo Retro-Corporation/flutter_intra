@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import '../foundation/colors.dart';
 import '../foundation/grid.dart';
 import '../foundation/opacity.dart';
@@ -7,6 +6,7 @@ import '../foundation/typography.dart';
 import '../icons/app_icons.dart';
 import '../icons/icon_sizes.dart';
 import 'icon.dart';
+import 'shimmer.dart';
 
 // ── Enums ──
 
