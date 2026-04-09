@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
-import '../../foundation/space/grid.dart';
+import '../../foundation/motion/shimmer.dart';
 import '../../foundation/opacity.dart';
+import '../../foundation/space/grid.dart';
 import '../../foundation/type/typography.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import 'icon.dart';
-import 'shimmer.dart';
 import 'avatar_types.dart';
+import 'icon.dart';
 
 // ── Size configuration ──
 

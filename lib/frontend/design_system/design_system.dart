@@ -17,6 +17,7 @@ export 'foundation/type/typography.dart';
 export 'foundation/motion/durations.dart';
 export 'foundation/motion/curves.dart';
 export 'foundation/motion/breath.dart';
+export 'foundation/motion/shimmer.dart';
 
 // Foundation — press
 export 'foundation/press/three_d_press_geometry.dart';
@@ -41,7 +42,6 @@ export 'atoms/primitives/badge.dart';
 export 'atoms/primitives/badge_types.dart';
 export 'atoms/primitives/avatar.dart';
 export 'atoms/primitives/avatar_types.dart';
-export 'atoms/primitives/shimmer.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
