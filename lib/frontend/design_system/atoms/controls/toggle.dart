@@ -32,17 +32,17 @@ class _ToggleSizeConfig {
     };
   }
 
-  static final _sm = _ToggleSizeConfig(
+  static const _sm = _ToggleSizeConfig(
     trackWidth: AppGrid.grid52,
     trackHeight: AppGrid.grid20,
     thumbSize: AppGrid.grid24,
   );
-  static final _md = _ToggleSizeConfig(
+  static const _md = _ToggleSizeConfig(
     trackWidth: AppGrid.grid68,
     trackHeight: AppGrid.grid28,
     thumbSize: AppGrid.grid32,
   );
-  static final _lg = _ToggleSizeConfig(
+  static const _lg = _ToggleSizeConfig(
     trackWidth: AppGrid.grid84,
     trackHeight: AppGrid.grid36,
     thumbSize: AppGrid.grid40,
@@ -139,6 +139,11 @@ class _AppToggleState extends State<AppToggle>
 
   bool get _interactive => !widget.isDisabled;
 
+  Widget _wrapDisabled({required Widget child}) {
+    if (!widget.isDisabled) return child;
+    return Opacity(opacity: AppOpacity.disabled, child: child);
+  }
+
   bool get _currentValue {
     if (widget.selfToggle) return _selfValue;
     return widget.value ?? false;
@@ -213,7 +218,6 @@ class _AppToggleState extends State<AppToggle>
       isOn: _currentValue,
       color: widget.color,
     );
-    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     // Thumb 3D border — static, never changes
     final thumbGeo = PressGeometry.static(top: AppStroke.xs, side: AppStroke.md, bottom: AppStroke.xl);
@@ -227,8 +231,7 @@ class _AppToggleState extends State<AppToggle>
         onTap: _interactive ? _toggle : null,
         onHorizontalDragUpdate: _interactive ? _onDragUpdate : null,
         onHorizontalDragEnd: _interactive ? _onDragEnd : null,
-        child: Opacity(
-          opacity: contentOpacity,
+        child: _wrapDisabled(
           child: AnimatedBuilder(
             animation: _position,
             builder: (context, child) {

@@ -44,7 +44,7 @@ class _ButtonSizeConfig {
     };
   }
 
-  static final _sm = _ButtonSizeConfig(
+  static const _sm = _ButtonSizeConfig(
     height: AppGrid.grid36,
     paddingX: AppPadding.rem075,
     typeStyle: AppTypography.bodySmall,
@@ -53,7 +53,7 @@ class _ButtonSizeConfig {
     borderRadius: AppRadius.sm,
   );
 
-  static final _md = _ButtonSizeConfig(
+  static const _md = _ButtonSizeConfig(
     height: AppGrid.grid44,
     paddingX: AppPadding.rem1,
     typeStyle: AppTypography.body,
@@ -62,7 +62,7 @@ class _ButtonSizeConfig {
     borderRadius: AppRadius.sm,
   );
 
-  static final _lg = _ButtonSizeConfig(
+  static const _lg = _ButtonSizeConfig(
     height: AppGrid.grid52,
     paddingX: AppPadding.rem15,
     typeStyle: AppTypography.bodyLarge,
@@ -343,8 +343,6 @@ class _AppButtonState extends State<AppButton>
     _ButtonSizeConfig sizeConfig,
     _ResolvedColors colors,
   ) {
-    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
-
     final children = <Widget>[];
 
     if (widget.leadingIcon != null) {
@@ -398,9 +396,10 @@ class _AppButtonState extends State<AppButton>
       );
     }
 
-    return Opacity(
-      opacity: contentOpacity,
-      child: content,
-    );
+    if (widget.isDisabled) {
+      content = Opacity(opacity: AppOpacity.disabled, child: content);
+    }
+
+    return content;
   }
 }

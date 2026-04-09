@@ -16,17 +16,28 @@ import 'badge_types.dart';
 class _BadgeSizeConfig {
   final double height;
   final double paddingX;
-  final TextStyle textStyle;
+  final TypeStyle typeStyle;
+  final FontWeight fontWeight;
   final double iconSize;
   final double gap;
 
   const _BadgeSizeConfig({
     required this.height,
     required this.paddingX,
-    required this.textStyle,
+    required this.typeStyle,
+    required this.fontWeight,
     required this.iconSize,
     required this.gap,
   });
+
+  TextStyle get textStyle => TextStyle(
+    fontFamily: 'Inter',
+    fontSize: typeStyle.fontSize,
+    fontWeight: fontWeight,
+    letterSpacing: typeStyle.letterSpacing,
+    height: typeStyle.height,
+    color: typeStyle.color,
+  );
 
   /// Exhaustive switch — compiler errors if a new BadgeSize case is added
   /// without a corresponding branch. Replaces the old Map lookup.
@@ -39,31 +50,35 @@ class _BadgeSizeConfig {
     };
   }
 
-  static final _xs = _BadgeSizeConfig(
+  static const _xs = _BadgeSizeConfig(
     height: AppGrid.grid20,
     paddingX: AppPadding.rem025,
-    textStyle: AppTypography.caption.bold,
+    typeStyle: AppTypography.caption,
+    fontWeight: FontWeight.w700,
     iconSize: IconSizes.sm,
     gap: AppGrid.grid4,
   );
-  static final _sm = _BadgeSizeConfig(
+  static const _sm = _BadgeSizeConfig(
     height: AppGrid.grid24,
     paddingX: AppPadding.rem05,
-    textStyle: AppTypography.bodySmall.semiBold,
+    typeStyle: AppTypography.bodySmall,
+    fontWeight: FontWeight.w600,
     iconSize: IconSizes.sm,
     gap: AppGrid.grid4,
   );
-  static final _md = _BadgeSizeConfig(
+  static const _md = _BadgeSizeConfig(
     height: AppGrid.grid32,
     paddingX: AppPadding.rem075,
-    textStyle: AppTypography.body.semiBold,
+    typeStyle: AppTypography.body,
+    fontWeight: FontWeight.w600,
     iconSize: IconSizes.md,
     gap: AppGrid.grid8,
   );
-  static final _lg = _BadgeSizeConfig(
+  static const _lg = _BadgeSizeConfig(
     height: AppGrid.grid40,
     paddingX: AppPadding.rem1,
-    textStyle: AppTypography.bodyLarge.semiBold,
+    typeStyle: AppTypography.bodyLarge,
+    fontWeight: FontWeight.w600,
     iconSize: IconSizes.lg,
     gap: AppGrid.grid8,
   );
