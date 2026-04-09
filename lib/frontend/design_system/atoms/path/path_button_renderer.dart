@@ -31,8 +31,8 @@ final class _CircleDrawDelegate extends ShapeDrawDelegate {
   @override
   void drawShadow(Canvas canvas, PathButtonShape shape,
       double cx, double cy, double faceHalf, Paint paint) {
-    final shadowShift = pathBorderBottom - pathBorderSide;
-    final shadowExpand = pathBorderSide;
+    const shadowShift = pathBorderBottom - pathBorderSide;
+    const shadowExpand = pathBorderSide;
     final borderPath = Path()
       ..addOval(Rect.fromCircle(
         center: Offset(cx, cy + shadowShift),
@@ -70,7 +70,7 @@ final class _TriangleDrawDelegate extends ShapeDrawDelegate {
   @override
   void drawShadow(Canvas canvas, PathButtonShape shape,
       double cx, double cy, double faceHalf, Paint paint) {
-    final triShift = 2 * (pathBorderBottom - pathBorderSide) / 3;
+    const triShift = 2 * (pathBorderBottom - pathBorderSide) / 3;
     final triExpand = 2 * (pathBorderSide + triShift / 2) / math.sqrt(3);
     final outerPath = buildTrianglePath(
       cx, cy + triShift,

@@ -120,13 +120,13 @@ class PathButtonSegment {
 const double kGapFraction = 0.06;
 
 /// 3D border: top inset (flush).
-final double pathBorderTop = AppGrid.grid0;
+const double pathBorderTop = AppGrid.grid0;
 
 /// 3D border: side inset.
-final double pathBorderSide = AppStroke.md;
+const double pathBorderSide = AppStroke.md;
 
 /// 3D border: bottom inset (creates 3D depth).
-final double pathBorderBottom = AppStroke.xxl;
+const double pathBorderBottom = AppStroke.xxl;
 
 // ── Triangle path builder ──
 

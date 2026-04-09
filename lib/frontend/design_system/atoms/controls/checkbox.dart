@@ -66,7 +66,7 @@ _ResolvedColors _resolveColors(
   }
 
   // Unchecked
-  return _ResolvedColors(
+  return const _ResolvedColors(
     background: Colors.transparent,
     border: AppColors.textPrimary,
     icon: Colors.transparent,

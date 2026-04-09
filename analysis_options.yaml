@@ -26,6 +26,10 @@ linter:
     prefer_const_constructors: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
+    prefer_single_quotes: true
+    always_declare_return_types: true
+    no_literal_bool_comparisons: true
+    unnecessary_lambdas: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -72,7 +72,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestToggle(
           selfToggle: true,
-          onChanged: (v) => values.add(v),
+          onChanged: values.add,
         ));
 
         // First tap → on
@@ -116,7 +116,7 @@ void main() {
         await tester.pumpWidget(buildTestToggle(
           selfToggle: true,
           isDisabled: true,
-          onChanged: (v) => values.add(v),
+          onChanged: values.add,
         ));
 
         await tester.tap(find.byType(GestureDetector));

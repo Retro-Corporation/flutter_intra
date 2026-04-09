@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Frontend structure setup', () {
-    final base = 'lib/frontend';
+    const base = 'lib/frontend';
 
     test('README exists', () {
       expect(File('$base/README.md').existsSync(), isTrue);

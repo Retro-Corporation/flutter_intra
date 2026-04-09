@@ -76,7 +76,7 @@ _ResolvedToggleColors _resolveToggleColors({
   }
 
   // Off state
-  return _ResolvedToggleColors(
+  return const _ResolvedToggleColors(
     trackColor: AppColors.surfaceBorder,
     thumbColor: AppColors.surface,
     thumbBorder: AppColors.grey700,

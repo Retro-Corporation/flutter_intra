@@ -354,7 +354,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestButton(
           selfToggle: true,
-          onActiveChanged: (v) => values.add(v),
+          onActiveChanged: values.add,
         ));
 
         // First tap → active
@@ -391,7 +391,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestButton(
           isActive: false,
-          onActiveChanged: (v) => values.add(v),
+          onActiveChanged: values.add,
         ));
 
         await tester.tap(find.byType(GestureDetector));

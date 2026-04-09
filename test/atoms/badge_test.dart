@@ -155,7 +155,7 @@ void main() {
           color: AppColors.yellow500,
         ));
 
-        final appText = tester.widget<AppText>(find.byType(AppText));
+        tester.widget<AppText>(find.byType(AppText));
         // AppText applies color via copyWith — check the rendered Text widget
         final text = tester.widget<Text>(find.byType(Text).first);
         expect(text.style?.color, AppColors.textInverse);

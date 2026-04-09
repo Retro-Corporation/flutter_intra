@@ -41,17 +41,17 @@ class AppTheme {
           fillColor: AppColors.surface,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
-            borderSide: BorderSide(color: AppColors.surfaceBorder, width: AppStroke.xs),
+            borderSide: const BorderSide(color: AppColors.surfaceBorder, width: AppStroke.xs),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
-            borderSide: BorderSide(color: AppColors.grey800, width: AppStroke.xs),
+            borderSide: const BorderSide(color: AppColors.grey800, width: AppStroke.xs),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
-            borderSide: BorderSide(color: AppColors.brand, width: AppStroke.xs),
+            borderSide: const BorderSide(color: AppColors.brand, width: AppStroke.xs),
           ),
-          contentPadding: EdgeInsets.symmetric(
+          contentPadding: const EdgeInsets.symmetric(
             horizontal: AppPadding.inputPaddingH,
             vertical: AppPadding.inputPaddingV,
           ),
