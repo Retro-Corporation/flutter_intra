@@ -126,6 +126,13 @@ class _AppPathButtonState extends State<AppPathButton>
         onTapCancel: isInteractive ? handleTapCancel : null,
         child: AnimatedBuilder(
           animation: _breathAnimation,
+          child: Center(
+            child: AppIcon(
+              widget.icon,
+              size: IconSizes.lg,
+              color: AppColors.textPrimary,
+            ),
+          ),
           builder: (context, child) {
             return CustomPaint(
               painter: PathButtonRenderer(
@@ -148,13 +155,7 @@ class _AppPathButtonState extends State<AppPathButton>
                     top: pulseExpand + visualTop,
                     bottom: pulseExpand + visualBottom,
                   ),
-                  child: Center(
-                    child: AppIcon(
-                      widget.icon,
-                      size: IconSizes.lg,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                  child: child,
                 ),
               ),
             );

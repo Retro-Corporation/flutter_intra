@@ -234,6 +234,10 @@ class _AppToggleState extends State<AppToggle>
         child: _wrapDisabled(
           child: AnimatedBuilder(
             animation: _position,
+            child: SizedBox(
+              width: totalWidth,
+              height: totalHeight,
+            ),
             builder: (context, child) {
               return CustomPaint(
                 painter: _TogglePainter(
@@ -249,10 +253,7 @@ class _AppToggleState extends State<AppToggle>
                   thumbBorderSide: thumbGeo.visualSide,
                   thumbBorderBottom: thumbGeo.visualBottom,
                 ),
-                child: SizedBox(
-                  width: totalWidth,
-                  height: totalHeight,
-                ),
+                child: child,
               );
             },
           ),

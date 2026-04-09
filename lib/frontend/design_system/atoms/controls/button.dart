@@ -383,7 +383,7 @@ class _AppButtonState extends State<AppButton>
       content = Stack(
         alignment: Alignment.center,
         children: [
-          Opacity(opacity: 0, child: content),
+          Visibility(visible: false, maintainSize: true, maintainAnimation: true, maintainState: true, child: content),
           SizedBox(
             width: sizeConfig.iconSize,
             height: sizeConfig.iconSize,
