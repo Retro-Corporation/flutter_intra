@@ -32,9 +32,9 @@ class _CheckboxSizeConfig {
   // Icon sizes are optical values hand-tuned per checkbox size for visual
   // balance inside the 3D border. They intentionally do not align with the
   // IconSizes token scale (8/16/24/32).
-  static const _sm = _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14);
-  static const _md = _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16);
-  static const _lg = _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18);
+  static final _sm = _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14);
+  static final _md = _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16);
+  static final _lg = _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18);
 }
 
 // ── Color resolution ──
@@ -134,11 +134,6 @@ class _AppCheckboxState extends State<AppCheckbox>
   @override
   bool get isInteractive => !widget.isDisabled;
 
-  Widget _wrapDisabled({required Widget child}) {
-    if (!widget.isDisabled) return child;
-    return Opacity(opacity: AppOpacity.disabled, child: child);
-  }
-
   @override
   bool get isSelfToggle => widget.selfToggle;
 
@@ -165,6 +160,7 @@ class _AppCheckboxState extends State<AppCheckbox>
       widget.color,
       pressed: pressed,
     );
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     final geo = showFilled
         ? PressGeometry.filled(pressed: pressed)
@@ -179,7 +175,8 @@ class _AppCheckboxState extends State<AppCheckbox>
         onTapDown: isInteractive ? handleTapDown : null,
         onTapUp: isInteractive ? handleTapUp : null,
         onTapCancel: isInteractive ? handleTapCancel : null,
-        child: _wrapDisabled(
+        child: Opacity(
+          opacity: contentOpacity,
           child: CustomPaint(
             painter: ThreeDPressPainter(
               backgroundColor: colors.background,

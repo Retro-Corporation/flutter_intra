@@ -34,27 +34,27 @@ class _AvatarSizeConfig {
     };
   }
 
-  static const _xs = _AvatarSizeConfig(
+  static final _xs = _AvatarSizeConfig(
     diameter: AppGrid.grid24,
     iconSize: IconSizes.sm,
     initialsType: AppTypography.overline,
   );
-  static const _sm = _AvatarSizeConfig(
+  static final _sm = _AvatarSizeConfig(
     diameter: AppGrid.grid32,
     iconSize: IconSizes.md,
     initialsType: AppTypography.caption,
   );
-  static const _md = _AvatarSizeConfig(
+  static final _md = _AvatarSizeConfig(
     diameter: AppGrid.grid48,
     iconSize: IconSizes.lg,
     initialsType: AppTypography.body,
   );
-  static const _lg = _AvatarSizeConfig(
+  static final _lg = _AvatarSizeConfig(
     diameter: AppGrid.grid60,
     iconSize: IconSizes.lg,
     initialsType: AppTypography.proHeading6,
   );
-  static const _xl = _AvatarSizeConfig(
+  static final _xl = _AvatarSizeConfig(
     diameter: AppGrid.grid100,
     iconSize: IconSizes.xl,
     initialsType: AppTypography.heading3,

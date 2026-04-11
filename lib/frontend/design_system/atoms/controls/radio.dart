@@ -32,9 +32,9 @@ class _RadioSizeConfig {
   // Dot sizes are optical values hand-tuned per radio size for visual
   // balance inside the 3D border. They intentionally do not align with the
   // IconSizes token scale (8/16/24/32).
-  static const _sm = _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10);
-  static const _md = _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11);
-  static const _lg = _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13);
+  static final _sm = _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10);
+  static final _md = _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11);
+  static final _lg = _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13);
 }
 
 // ── Color resolution ──
@@ -93,11 +93,6 @@ class _AppRadioState extends State<AppRadio>
   @override
   bool get isInteractive => !widget.isDisabled;
 
-  Widget _wrapDisabled({required Widget child}) {
-    if (!widget.isDisabled) return child;
-    return Opacity(opacity: AppOpacity.disabled, child: child);
-  }
-
   @override
   bool get isSelfToggle => widget.selfToggle;
 
@@ -116,6 +111,7 @@ class _AppRadioState extends State<AppRadio>
   @override
   Widget build(BuildContext context) {
     final sizeConfig = _RadioSizeConfig.of(widget.size);
+    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
 
     final geo = PressGeometry.outline(pressed: pressed);
 
@@ -140,7 +136,8 @@ class _AppRadioState extends State<AppRadio>
         onTapDown: isInteractive ? handleTapDown : null,
         onTapUp: isInteractive ? handleTapUp : null,
         onTapCancel: isInteractive ? handleTapCancel : null,
-        child: _wrapDisabled(
+        child: Opacity(
+          opacity: contentOpacity,
           child: CustomPaint(
             painter: ThreeDPressPainter(
               backgroundColor: backgroundColor,

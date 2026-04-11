@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../foundation/space/stroke.dart';
 import 'path_button_geometry.dart';
@@ -320,17 +321,8 @@ class PathButtonRenderer extends CustomPainter {
       pressed != old.pressed ||
       visualTop != old.visualTop ||
       visualBottom != old.visualBottom ||
-      _segmentStatusChanged(segments, old.segments);
-
-  static bool _segmentStatusChanged(
-    List<PathButtonSegment> a,
-    List<PathButtonSegment> b,
-  ) {
-    if (identical(a, b)) return false;
-    if (a.length != b.length) return true;
-    for (int i = 0; i < a.length; i++) {
-      if (a[i].status != b[i].status) return true;
-    }
-    return false;
-  }
+      !listEquals(
+        segments.map((s) => s.status).toList(),
+        old.segments.map((s) => s.status).toList(),
+      );
 }

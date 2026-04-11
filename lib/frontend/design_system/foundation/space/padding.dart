@@ -1,3 +1,5 @@
+import 'grid.dart';
+
 /// Design tokens: Padding / layout spacing.
 /// Source of truth — mirrors Figma "Spacing" collection.
 /// Semantic padding tokens that reference the [AppGrid].
@@ -7,34 +9,34 @@ class AppPadding {
   // ── Rem-scaled padding tokens ──
 
   /// 0rem → 0px
-  static const double rem0 = 0;
+  static final double rem0 = AppGrid.grid0;
 
   /// 0.25rem → 4px — tight inner spacing
-  static const double rem025 = 4.0;
+  static final double rem025 = AppGrid.grid4;
 
   /// 0.5rem → 8px — small component padding
-  static const double rem05 = 8.0;
+  static final double rem05 = AppGrid.grid8;
 
   /// 0.75rem → 12px — medium component padding
-  static const double rem075 = 12.0;
+  static final double rem075 = AppGrid.grid12;
 
   /// 1rem → 16px — standard card/component padding
-  static const double rem1 = 16.0;
+  static final double rem1 = AppGrid.grid16;
 
   /// 1.5rem → 24px — page padding
-  static const double rem15 = 24.0;
+  static final double rem15 = AppGrid.grid24;
 
   /// 2rem → 32px — section padding
-  static const double rem2 = 32.0;
+  static final double rem2 = AppGrid.grid32;
 
   /// 3rem → 48px — large section gaps
-  static const double rem3 = 48.0;
+  static final double rem3 = AppGrid.grid48;
 
   // ── Component-specific aliases ──
 
-  static const double pagePadding = rem15;
-  static const double cardPadding = rem1;
-  static const double sectionGap = rem1;
-  static const double inputPaddingH = rem1;
-  static const double inputPaddingV = rem075;
+  static final double pagePadding = rem15;
+  static final double cardPadding = rem1;
+  static final double sectionGap = rem1;
+  static final double inputPaddingH = rem1;
+  static final double inputPaddingV = rem075;
 }
