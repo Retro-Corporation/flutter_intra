@@ -96,7 +96,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
     final eyeIcon = GestureDetector(
       onTap: isDisabled ? null : () => setState(() => _obscured = !_obscured),
       child: Padding(
-        padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
+        padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
         child: AppIcon(
           _obscured ? AppIcons.eye : AppIcons.eyeOff,
           size: IconSizes.md,

@@ -21,7 +21,7 @@ extension RemScale on num {
 class AppGrid {
   AppGrid._();
 
-  static final double grid0 = 0.rem;
+  static const double grid0 = 0;
   static final double grid4 = 0.25.rem;
   static final double grid8 = 0.5.rem;
   static final double grid12 = 0.75.rem;

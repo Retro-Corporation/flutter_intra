@@ -9,7 +9,7 @@ class AppPadding {
   // ── Rem-scaled padding tokens ──
 
   /// 0rem → 0px
-  static final double rem0 = AppGrid.grid0;
+  static const double rem0 = AppGrid.grid0;
 
   /// 0.25rem → 4px — tight inner spacing
   static final double rem025 = AppGrid.grid4;

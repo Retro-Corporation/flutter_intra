@@ -64,7 +64,7 @@ class _AppSearchBarState extends State<AppSearchBar>
     final suffixIcon = hasText
         ? GestureDetector(
             onTap: _clear,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
               child: AppIcon(
                 AppIcons.close,
@@ -73,7 +73,7 @@ class _AppSearchBarState extends State<AppSearchBar>
               ),
             ),
           )
-        : const Padding(
+        : Padding(
             padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
             child: AppIcon(
               AppIcons.search,

@@ -134,6 +134,11 @@ class _AppCheckboxState extends State<AppCheckbox>
   @override
   bool get isInteractive => !widget.isDisabled;
 
+  Widget _wrapDisabled({required Widget child}) {
+    if (!widget.isDisabled) return child;
+    return Opacity(opacity: AppOpacity.disabled, child: child);
+  }
+
   @override
   bool get isSelfToggle => widget.selfToggle;
 
@@ -160,8 +165,6 @@ class _AppCheckboxState extends State<AppCheckbox>
       widget.color,
       pressed: pressed,
     );
-    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
-
     final geo = showFilled
         ? PressGeometry.filled(pressed: pressed)
         : PressGeometry.outline(pressed: pressed);
@@ -175,8 +178,7 @@ class _AppCheckboxState extends State<AppCheckbox>
         onTapDown: isInteractive ? handleTapDown : null,
         onTapUp: isInteractive ? handleTapUp : null,
         onTapCancel: isInteractive ? handleTapCancel : null,
-        child: Opacity(
-          opacity: contentOpacity,
+        child: _wrapDisabled(
           child: CustomPaint(
             painter: ThreeDPressPainter(
               backgroundColor: colors.background,

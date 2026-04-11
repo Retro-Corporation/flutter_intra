@@ -343,8 +343,6 @@ class _AppButtonState extends State<AppButton>
     _ButtonSizeConfig sizeConfig,
     _ResolvedColors colors,
   ) {
-    final contentOpacity = widget.isDisabled ? AppOpacity.disabled : AppOpacity.default_;
-
     final children = <Widget>[];
 
     if (widget.leadingIcon != null) {
@@ -398,9 +396,10 @@ class _AppButtonState extends State<AppButton>
       );
     }
 
-    return Opacity(
-      opacity: contentOpacity,
-      child: content,
-    );
+    if (widget.isDisabled) {
+      content = Opacity(opacity: AppOpacity.disabled, child: content);
+    }
+
+    return content;
   }
 }

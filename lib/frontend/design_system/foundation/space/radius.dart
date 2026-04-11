@@ -7,7 +7,7 @@ class AppRadius {
   AppRadius._();
 
   /// 0rem → 0px — sharp corners
-  static final double none = 0;
+  static const double none = 0;
 
   /// 0.5rem → 8px — subtle rounding
   static final double sm = 0.5.rem;

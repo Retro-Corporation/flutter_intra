@@ -122,7 +122,7 @@ class AppTextField extends StatelessWidget {
     Widget? prefix;
     if (leadingIcon != null) {
       prefix = Padding(
-        padding: const EdgeInsets.only(left: AppPadding.inputPaddingH),
+        padding: EdgeInsets.only(left: AppPadding.inputPaddingH),
         child: AppIcon(
           leadingIcon!,
           size: IconSizes.md,
@@ -160,7 +160,7 @@ class AppTextField extends StatelessWidget {
         enabledBorder: border,
         focusedBorder: focusedBorder,
         disabledBorder: disabledBorder,
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: AppPadding.inputPaddingH,
           vertical: AppPadding.inputPaddingV,
         ),

@@ -67,7 +67,7 @@ class AppFormField extends StatelessWidget {
             style: AppTypography.bodySmall.semiBold,
             color: labelColor,
           ),
-          const SizedBox(height: AppPadding.rem025),
+          SizedBox(height: AppPadding.rem025),
         ],
 
         // ── Input slot ──
@@ -75,7 +75,7 @@ class AppFormField extends StatelessWidget {
 
         // ── Helper row ──
         if (showHelperRow) ...[
-          const SizedBox(height: AppPadding.rem025),
+          SizedBox(height: AppPadding.rem025),
           Row(
             children: [
               if (helperText != null)
