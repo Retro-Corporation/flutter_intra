@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_intra/frontend/design_system/atoms/button.dart';
-import 'package:flutter_intra/frontend/design_system/foundation/colors.dart';
+import 'package:flutter_intra/frontend/design_system/atoms/controls/button.dart';
+import 'package:flutter_intra/frontend/design_system/atoms/controls/button_types.dart';
+import 'package:flutter_intra/frontend/design_system/foundation/color/colors.dart';
 
 void main() {
   // Helper to wrap widget in MaterialApp for testing
@@ -353,7 +354,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestButton(
           selfToggle: true,
-          onActiveChanged: (v) => values.add(v),
+          onActiveChanged: values.add,
         ));
 
         // First tap → active
@@ -390,7 +391,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestButton(
           isActive: false,
-          onActiveChanged: (v) => values.add(v),
+          onActiveChanged: values.add,
         ));
 
         await tester.tap(find.byType(GestureDetector));

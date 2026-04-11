@@ -36,7 +36,7 @@ class _Section {
 
   _Section(this.name, List<String> subNames, {this.isExpanded = false})
       : key = GlobalKey(),
-        subSections = subNames.map((n) => _SubSection(n)).toList();
+        subSections = subNames.map(_SubSection.new).toList();
 }
 
 // ── Main catalog ──
@@ -196,31 +196,31 @@ class _CatalogHomeState extends State<CatalogHome> {
             Expanded(
               child: ListView(
                 controller: _scrollController,
-                padding: EdgeInsets.all(AppPadding.pagePadding),
+                padding: const EdgeInsets.all(AppPadding.pagePadding),
                 children: [
                   AppText('Design System', style: AppTypography.heading4.bold),
                   const SizedBox(height: 4),
                   AppText('CATALOG', style: AppTypography.overline.semiBold),
-                  SizedBox(height: AppGrid.grid24),
+                  const SizedBox(height: AppGrid.grid24),
 
                   // Foundation
                   _buildCollapsibleSection(0, _buildFoundationContent()),
 
-                  SizedBox(height: AppGrid.grid16),
+                  const SizedBox(height: AppGrid.grid16),
 
                   // Atoms
                   _buildCollapsibleSection(1, _buildAtomsContent()),
 
-                  SizedBox(height: AppGrid.grid16),
+                  const SizedBox(height: AppGrid.grid16),
 
                   // Molecules
                   _buildCollapsibleSection(2, _buildMoleculesContent()),
 
-                  SizedBox(height: AppGrid.grid16),
+                  const SizedBox(height: AppGrid.grid16),
 
                   // Organisms
                   _buildCollapsibleSection(3, [
-                    SizedBox(height: AppGrid.grid24),
+                    const SizedBox(height: AppGrid.grid24),
                     Center(
                       child: AppText(
                         'Coming soon',
@@ -228,14 +228,14 @@ class _CatalogHomeState extends State<CatalogHome> {
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    SizedBox(height: AppGrid.grid24),
+                    const SizedBox(height: AppGrid.grid24),
                   ]),
 
-                  SizedBox(height: AppGrid.grid16),
+                  const SizedBox(height: AppGrid.grid16),
 
                   // Templates
                   _buildCollapsibleSection(4, [
-                    SizedBox(height: AppGrid.grid24),
+                    const SizedBox(height: AppGrid.grid24),
                     Center(
                       child: AppText(
                         'Coming soon',
@@ -243,10 +243,10 @@ class _CatalogHomeState extends State<CatalogHome> {
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    SizedBox(height: AppGrid.grid24),
+                    const SizedBox(height: AppGrid.grid24),
                   ]),
 
-                  SizedBox(height: AppGrid.grid60),
+                  const SizedBox(height: AppGrid.grid60),
                 ],
               ),
             ),
@@ -263,7 +263,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
       width: _navExpanded ? 220 : 48,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface,
         border: Border(
           right: BorderSide(color: AppColors.surfaceBorder, width: AppStroke.xs),
@@ -278,7 +278,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             child: Container(
               height: 48,
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               alignment: _navExpanded ? Alignment.centerLeft : Alignment.center,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -291,7 +291,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                     size: 22,
                   ),
                   if (_navExpanded) ...[
-                    SizedBox(width: AppGrid.grid8),
+                    const SizedBox(width: AppGrid.grid8),
                     AppText(
                       'Sections',
                       style: AppTypography.bodySmall.bold,
@@ -303,18 +303,18 @@ class _CatalogHomeState extends State<CatalogHome> {
           ),
 
           if (_navExpanded) ...[
-            Divider(color: AppColors.surfaceBorder, height: 1),
+            const Divider(color: AppColors.surfaceBorder, height: 1),
 
             // Expand / Collapse all
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 children: [
                   _NavAction(
                     label: 'Expand All',
                     onTap: _expandAll,
                   ),
-                  SizedBox(width: AppGrid.grid8),
+                  const SizedBox(width: AppGrid.grid8),
                   _NavAction(
                     label: 'Collapse All',
                     onTap: _collapseAll,
@@ -323,12 +323,12 @@ class _CatalogHomeState extends State<CatalogHome> {
               ),
             ),
 
-            Divider(color: AppColors.surfaceBorder, height: 1),
+            const Divider(color: AppColors.surfaceBorder, height: 1),
 
             // Section links
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(_sections.length, (i) {
@@ -342,7 +342,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                           onTap: () => _scrollToSection(i),
                           child: Container(
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 8,
                             ),
@@ -377,7 +377,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                                       turns:
                                           (_navSubExpanded[i] ?? false) ? 0.25 : 0,
                                       duration: const Duration(milliseconds: 200),
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.chevron_right,
                                         size: 16,
                                         color: AppColors.textSecondary,
@@ -396,7 +396,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                             return InkWell(
                               onTap: () => _scrollToSubSection(i, entry.key),
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                   left: 24,
                                   right: 12,
                                   top: 4,
@@ -435,7 +435,7 @@ class _CatalogHomeState extends State<CatalogHome> {
           onTap: () => setState(() => section.isExpanded = !section.isExpanded),
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppPadding.rem1,
               vertical: AppPadding.rem075,
             ),
@@ -455,7 +455,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                 AnimatedRotation(
                   turns: section.isExpanded ? 0.25 : 0,
                   duration: const Duration(milliseconds: 200),
-                  child: Icon(
+                  child: const Icon(
                     Icons.chevron_right,
                     color: AppColors.textSecondary,
                   ),
@@ -472,7 +472,7 @@ class _CatalogHomeState extends State<CatalogHome> {
           alignment: Alignment.topCenter,
           child: section.isExpanded
               ? Padding(
-                  padding: EdgeInsets.only(top: AppGrid.grid16),
+                  padding: const EdgeInsets.only(top: AppGrid.grid16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: children,
@@ -491,7 +491,7 @@ class _CatalogHomeState extends State<CatalogHome> {
     return [
       // Semantic Colors
       _subSectionHeader(subs[0]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
       const _ColorRow('Brand', AppColors.brand),
       const _ColorRow('Brand Light', AppColors.brandLight),
       const _ColorRow('Brand Subtle', AppColors.brandSubtle),
@@ -510,9 +510,9 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Color Palettes
       _subSectionHeader(subs[1]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
       AppText('GREY', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('50', AppColors.grey50),
         _PaletteColor('100', AppColors.grey100),
@@ -526,9 +526,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         _PaletteColor('900', AppColors.grey900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('ORANGE (PRIMARY)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('50', AppColors.orange50),
         _PaletteColor('100', AppColors.orange100),
@@ -537,45 +537,45 @@ class _CatalogHomeState extends State<CatalogHome> {
         _PaletteColor('900', AppColors.orange900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('BLUE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.blue500),
         _PaletteColor('700', AppColors.blue700),
         _PaletteColor('900', AppColors.blue900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('RED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.red500),
         _PaletteColor('700', AppColors.red700),
         _PaletteColor('900', AppColors.red900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('GREEN', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.green500),
         _PaletteColor('700', AppColors.green700),
         _PaletteColor('900', AppColors.green900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('PURPLE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.purple500),
         _PaletteColor('700', AppColors.purple700),
         _PaletteColor('900', AppColors.purple900),
       ]),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('YELLOW', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       const _PaletteStrip([
         _PaletteColor('500', AppColors.yellow500),
         _PaletteColor('700', AppColors.yellow700),
@@ -586,44 +586,44 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Gradients
       _subSectionHeader(subs[2]),
-      SizedBox(height: AppGrid.grid12),
-      _GradientSwatch('Brand', AppColors.brandGradient),
-      SizedBox(height: AppGrid.grid8),
-      _GradientSwatch('Error', AppColors.errorGradient),
+      const SizedBox(height: AppGrid.grid12),
+      const _GradientSwatch('Brand', AppColors.brandGradient),
+      const SizedBox(height: AppGrid.grid8),
+      const _GradientSwatch('Error', AppColors.errorGradient),
 
       _sectionDivider(),
 
       // Typography
       _subSectionHeader(subs[3]),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Row(
         children: [
           Expanded(child: AppText('BLACK', style: AppTypography.overline.semiBold)),
-          SizedBox(width: AppGrid.grid8),
+          const SizedBox(width: AppGrid.grid8),
           Expanded(child: AppText('BOLD', style: AppTypography.overline.semiBold)),
-          SizedBox(width: AppGrid.grid8),
+          const SizedBox(width: AppGrid.grid8),
           Expanded(child: AppText('SEMI BOLD', style: AppTypography.overline.semiBold)),
-          SizedBox(width: AppGrid.grid8),
+          const SizedBox(width: AppGrid.grid8),
           Expanded(child: AppText('REGULAR', style: AppTypography.overline.semiBold)),
         ],
       ),
-      SizedBox(height: AppGrid.grid16),
+      const SizedBox(height: AppGrid.grid16),
 
-      _TypeRow('Display 1', AppTypography.display1),
-      _TypeRow('Display 2', AppTypography.display2),
-      _TypeRow('Heading 1', AppTypography.heading1),
-      _TypeRow('Heading 2', AppTypography.heading2),
-      _TypeRow('Heading 3', AppTypography.heading3),
-      _TypeRow('Heading 4', AppTypography.heading4),
-      _TypeRow('Heading 5', AppTypography.heading5),
-      _TypeRow('Pro Heading 6', AppTypography.proHeading6),
-      _TypeRow('Body Large (19.2)', AppTypography.bodyLarge),
-      _TypeRow('Body (16)', AppTypography.body),
-      _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
+      const _TypeRow('Display 1', AppTypography.display1),
+      const _TypeRow('Display 2', AppTypography.display2),
+      const _TypeRow('Heading 1', AppTypography.heading1),
+      const _TypeRow('Heading 2', AppTypography.heading2),
+      const _TypeRow('Heading 3', AppTypography.heading3),
+      const _TypeRow('Heading 4', AppTypography.heading4),
+      const _TypeRow('Heading 5', AppTypography.heading5),
+      const _TypeRow('Pro Heading 6', AppTypography.proHeading6),
+      const _TypeRow('Body Large (19.2)', AppTypography.bodyLarge),
+      const _TypeRow('Body (16)', AppTypography.body),
+      const _TypeRow('Body Small (13.3)', AppTypography.bodySmall),
 
-      SizedBox(height: AppGrid.grid16),
+      const SizedBox(height: AppGrid.grid16),
       AppText('LINKS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Row(
         children: [
           Expanded(child: AppText('Link Large', style: AppTypography.linkLarge.semiBold)),
@@ -636,74 +636,74 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // 4-Point Grid
       _subSectionHeader(subs[4]),
-      SizedBox(height: AppGrid.grid12),
-      _SpacingRow('grid0', '0rem', AppGrid.grid0),
-      _SpacingRow('grid4', '0.25rem', AppGrid.grid4),
-      _SpacingRow('grid8', '0.5rem', AppGrid.grid8),
-      _SpacingRow('grid12', '0.75rem', AppGrid.grid12),
-      _SpacingRow('grid16', '1rem', AppGrid.grid16),
-      _SpacingRow('grid20', '1.25rem', AppGrid.grid20),
-      _SpacingRow('grid24', '1.5rem', AppGrid.grid24),
-      _SpacingRow('grid28', '1.75rem', AppGrid.grid28),
-      _SpacingRow('grid32', '2rem', AppGrid.grid32),
-      _SpacingRow('grid36', '2.25rem', AppGrid.grid36),
-      _SpacingRow('grid40', '2.5rem', AppGrid.grid40),
-      _SpacingRow('grid44', '2.75rem', AppGrid.grid44),
-      _SpacingRow('grid48', '3rem', AppGrid.grid48),
-      _SpacingRow('grid52', '3.25rem', AppGrid.grid52),
-      _SpacingRow('grid56', '3.5rem', AppGrid.grid56),
-      _SpacingRow('grid60', '3.75rem', AppGrid.grid60),
-      _SpacingRow('grid64', '4rem', AppGrid.grid64),
-      _SpacingRow('grid68', '4.25rem', AppGrid.grid68),
-      _SpacingRow('grid72', '4.5rem', AppGrid.grid72),
-      _SpacingRow('grid76', '4.75rem', AppGrid.grid76),
-      _SpacingRow('grid80', '5rem', AppGrid.grid80),
-      _SpacingRow('grid84', '5.25rem', AppGrid.grid84),
-      _SpacingRow('grid88', '5.5rem', AppGrid.grid88),
-      _SpacingRow('grid92', '5.75rem', AppGrid.grid92),
-      _SpacingRow('grid96', '6rem', AppGrid.grid96),
-      _SpacingRow('grid100', '6.25rem', AppGrid.grid100),
-      _SpacingRow('grid160', '10rem', AppGrid.grid160),
-      _SpacingRow('grid240', '15rem', AppGrid.grid240),
+      const SizedBox(height: AppGrid.grid12),
+      const _SpacingRow('grid0', '0rem', AppGrid.grid0),
+      const _SpacingRow('grid4', '0.25rem', AppGrid.grid4),
+      const _SpacingRow('grid8', '0.5rem', AppGrid.grid8),
+      const _SpacingRow('grid12', '0.75rem', AppGrid.grid12),
+      const _SpacingRow('grid16', '1rem', AppGrid.grid16),
+      const _SpacingRow('grid20', '1.25rem', AppGrid.grid20),
+      const _SpacingRow('grid24', '1.5rem', AppGrid.grid24),
+      const _SpacingRow('grid28', '1.75rem', AppGrid.grid28),
+      const _SpacingRow('grid32', '2rem', AppGrid.grid32),
+      const _SpacingRow('grid36', '2.25rem', AppGrid.grid36),
+      const _SpacingRow('grid40', '2.5rem', AppGrid.grid40),
+      const _SpacingRow('grid44', '2.75rem', AppGrid.grid44),
+      const _SpacingRow('grid48', '3rem', AppGrid.grid48),
+      const _SpacingRow('grid52', '3.25rem', AppGrid.grid52),
+      const _SpacingRow('grid56', '3.5rem', AppGrid.grid56),
+      const _SpacingRow('grid60', '3.75rem', AppGrid.grid60),
+      const _SpacingRow('grid64', '4rem', AppGrid.grid64),
+      const _SpacingRow('grid68', '4.25rem', AppGrid.grid68),
+      const _SpacingRow('grid72', '4.5rem', AppGrid.grid72),
+      const _SpacingRow('grid76', '4.75rem', AppGrid.grid76),
+      const _SpacingRow('grid80', '5rem', AppGrid.grid80),
+      const _SpacingRow('grid84', '5.25rem', AppGrid.grid84),
+      const _SpacingRow('grid88', '5.5rem', AppGrid.grid88),
+      const _SpacingRow('grid92', '5.75rem', AppGrid.grid92),
+      const _SpacingRow('grid96', '6rem', AppGrid.grid96),
+      const _SpacingRow('grid100', '6.25rem', AppGrid.grid100),
+      const _SpacingRow('grid160', '10rem', AppGrid.grid160),
+      const _SpacingRow('grid240', '15rem', AppGrid.grid240),
 
       _sectionDivider(),
 
       // Padding
       _subSectionHeader(subs[5]),
-      SizedBox(height: AppGrid.grid12),
-      _SpacingRow('rem0', '0rem', AppPadding.rem0),
-      _SpacingRow('rem025', '0.25rem', AppPadding.rem025),
-      _SpacingRow('rem05', '0.5rem', AppPadding.rem05),
-      _SpacingRow('rem075', '0.75rem', AppPadding.rem075),
-      _SpacingRow('rem1', '1rem', AppPadding.rem1),
-      _SpacingRow('rem15', '1.5rem', AppPadding.rem15),
-      _SpacingRow('rem2', '2rem', AppPadding.rem2),
-      _SpacingRow('rem3', '3rem', AppPadding.rem3),
+      const SizedBox(height: AppGrid.grid12),
+      const _SpacingRow('rem0', '0rem', AppPadding.rem0),
+      const _SpacingRow('rem025', '0.25rem', AppPadding.rem025),
+      const _SpacingRow('rem05', '0.5rem', AppPadding.rem05),
+      const _SpacingRow('rem075', '0.75rem', AppPadding.rem075),
+      const _SpacingRow('rem1', '1rem', AppPadding.rem1),
+      const _SpacingRow('rem15', '1.5rem', AppPadding.rem15),
+      const _SpacingRow('rem2', '2rem', AppPadding.rem2),
+      const _SpacingRow('rem3', '3rem', AppPadding.rem3),
 
       _sectionDivider(),
 
       // Corner Radius
       _subSectionHeader(subs[6]),
-      SizedBox(height: AppGrid.grid12),
-      _RadiusRow('none', AppRadius.none),
-      _RadiusRow('sm (0.5rem)', AppRadius.sm),
-      _RadiusRow('md (1rem)', AppRadius.md),
-      _RadiusRow('lg (1.5rem)', AppRadius.lg),
-      _RadiusRow('xl (2.5rem)', AppRadius.xl),
-      _RadiusRow('pill', AppRadius.pill),
+      const SizedBox(height: AppGrid.grid12),
+      const _RadiusRow('none', AppRadius.none),
+      const _RadiusRow('sm (0.5rem)', AppRadius.sm),
+      const _RadiusRow('md (1rem)', AppRadius.md),
+      const _RadiusRow('lg (1.5rem)', AppRadius.lg),
+      const _RadiusRow('xl (2.5rem)', AppRadius.xl),
+      const _RadiusRow('pill', AppRadius.pill),
 
       _sectionDivider(),
 
       // Stroke Widths
       _subSectionHeader(subs[7]),
-      SizedBox(height: AppGrid.grid12),
-      _StrokeRow('xs', AppStroke.xs),
-      _StrokeRow('sm', AppStroke.sm),
-      _StrokeRow('md', AppStroke.md),
-      _StrokeRow('lg', AppStroke.lg),
-      _StrokeRow('xl', AppStroke.xl),
-      _StrokeRow('xxl', AppStroke.xxl),
-      _StrokeRow('ring', AppStroke.ring),
+      const SizedBox(height: AppGrid.grid12),
+      const _StrokeRow('xs', AppStroke.xs),
+      const _StrokeRow('sm', AppStroke.sm),
+      const _StrokeRow('md', AppStroke.md),
+      const _StrokeRow('lg', AppStroke.lg),
+      const _StrokeRow('xl', AppStroke.xl),
+      const _StrokeRow('xxl', AppStroke.xxl),
+      const _StrokeRow('ring', AppStroke.ring),
     ];
   }
 
@@ -714,26 +714,26 @@ class _CatalogHomeState extends State<CatalogHome> {
     return [
       // Text
       _subSectionHeader(subs[0]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('COLOR OVERRIDES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       AppText('Primary (default)', style: AppTypography.body.regular),
-      SizedBox(height: AppGrid.grid4),
+      const SizedBox(height: AppGrid.grid4),
       AppText('Secondary', style: AppTypography.body.regular, color: AppColors.textSecondary),
-      SizedBox(height: AppGrid.grid4),
+      const SizedBox(height: AppGrid.grid4),
       Container(
         color: AppColors.textPrimary,
-        padding: EdgeInsets.symmetric(horizontal: AppPadding.rem05, vertical: AppPadding.rem025),
+        padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem05, vertical: AppPadding.rem025),
         child: AppText('Inverse', style: AppTypography.body.regular, color: AppColors.textInverse),
       ),
-      SizedBox(height: AppGrid.grid4),
+      const SizedBox(height: AppGrid.grid4),
       AppText('Brand', style: AppTypography.body.regular, color: AppColors.brand),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
 
       AppText('TRUNCATION', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 200,
         child: AppText(
@@ -744,39 +744,39 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
 
       AppText('ALIGNMENT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: double.infinity,
         child: AppText('Left aligned', style: AppTypography.body.regular, textAlign: TextAlign.left),
       ),
-      SizedBox(height: AppGrid.grid4),
+      const SizedBox(height: AppGrid.grid4),
       SizedBox(
         width: double.infinity,
         child: AppText('Center aligned', style: AppTypography.body.regular, textAlign: TextAlign.center),
       ),
-      SizedBox(height: AppGrid.grid4),
+      const SizedBox(height: AppGrid.grid4),
       SizedBox(
         width: double.infinity,
         child: AppText('Right aligned', style: AppTypography.body.regular, textAlign: TextAlign.right),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
 
       AppText('UTILITY STYLES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      _TypeRow('Caption (11)', AppTypography.caption),
-      _TypeRow('Overline (10)', AppTypography.overline),
+      const SizedBox(height: AppGrid.grid8),
+      const _TypeRow('Caption (11)', AppTypography.caption),
+      const _TypeRow('Overline (10)', AppTypography.overline),
 
       _sectionDivider(),
 
       // Icons
       _subSectionHeader(subs[1]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
       AppText('OUTLINED (${AppIcons.all.length})', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid16,
@@ -785,7 +785,7 @@ class _CatalogHomeState extends State<CatalogHome> {
           child: Column(
             children: [
               AppIcon(e.value, size: IconSizes.lg),
-              SizedBox(height: AppGrid.grid4),
+              const SizedBox(height: AppGrid.grid4),
               AppText(
                 e.key,
                 style: AppTypography.overline.semiBold,
@@ -798,9 +798,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         )).toList(),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('FILLED (${AppIcons.allFilled.length})', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid16,
@@ -809,7 +809,7 @@ class _CatalogHomeState extends State<CatalogHome> {
           child: Column(
             children: [
               AppIcon(e.value, size: IconSizes.lg),
-              SizedBox(height: AppGrid.grid4),
+              const SizedBox(height: AppGrid.grid4),
               AppText(
                 e.key,
                 style: AppTypography.overline.semiBold,
@@ -822,10 +822,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         )).toList(),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLOR VARIANTS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Row(
+      const SizedBox(height: AppGrid.grid8),
+      const Row(
         children: [
           _IconVariant('White', AppIcons.home, AppColors.textPrimary),
           _IconVariant('Black', AppIcons.home, AppColors.textInverse),
@@ -834,10 +834,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid16),
+      const SizedBox(height: AppGrid.grid16),
       AppText('SIZE VARIANTS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Row(
+      const SizedBox(height: AppGrid.grid8),
+      const Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           _IconSize('sm', AppIcons.home, IconSizes.sm),
@@ -854,27 +854,27 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Buttons
       _subSectionHeader(subs[2]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppButton(label: 'Filled', type: ButtonType.filled),
           AppButton(label: 'Outline', type: ButtonType.outline),
           AppButton(label: 'Ghost', type: ButtonType.ghost),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppButton(label: 'Brand', color: AppColors.brand),
           AppButton(label: 'White', color: AppColors.textPrimary),
           AppButton(label: 'Error', color: AppColors.error),
@@ -883,13 +883,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid16),
+      const SizedBox(height: AppGrid.grid16),
       AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppButton(label: 'Brand', type: ButtonType.outline, color: AppColors.brand),
           AppButton(label: 'White', type: ButtonType.outline, color: AppColors.textPrimary),
           AppButton(label: 'Error', type: ButtonType.outline, color: AppColors.error),
@@ -898,41 +898,41 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppButton(label: 'Small', size: ButtonSize.sm),
           AppButton(label: 'Medium', size: ButtonSize.md),
           AppButton(label: 'Large', size: ButtonSize.lg),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('CONTENT PATTERNS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
         children: [
-          const AppButton(label: 'Text only'),
+          AppButton(label: 'Text only'),
           AppButton(leadingIcon: AppIcons.add),
           AppButton(leadingIcon: AppIcons.add, label: 'Leading'),
           AppButton(label: 'Trailing', trailingIcon: AppIcons.arrowRight),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppButton(label: 'Default'),
           AppButton(label: 'Active', isActive: true),
           AppButton(label: 'Disabled', isDisabled: true),
@@ -941,20 +941,20 @@ class _CatalogHomeState extends State<CatalogHome> {
           AppButton(label: 'Outline Active', type: ButtonType.outline, isActive: true),
         ],
       ),
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('TOGGLE DEMO', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      AppButton(label: 'Toggle Me', selfToggle: true),
+      const SizedBox(height: AppGrid.grid8),
+      const AppButton(label: 'Toggle Me', selfToggle: true),
 
       _sectionDivider(),
 
       // Checkboxes
       _subSectionHeader(subs[3]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         children: [
@@ -964,10 +964,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -978,13 +978,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppCheckbox(selected: true, color: AppColors.brand),
           AppCheckbox(selected: true, color: AppColors.error),
           AppCheckbox(selected: true, color: AppColors.success),
@@ -992,26 +992,26 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('DISABLED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppCheckbox(selected: false, isDisabled: true),
           AppCheckbox(selected: true, isDisabled: true),
           AppCheckbox(isIndeterminate: true, isDisabled: true),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Row(
         children: [
-          AppCheckbox(selfToggle: true),
-          SizedBox(width: AppGrid.grid8),
+          const AppCheckbox(selfToggle: true),
+          const SizedBox(width: AppGrid.grid8),
           AppText('Checkbox text', style: AppTypography.body.regular),
         ],
       ),
@@ -1020,11 +1020,11 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Toggles
       _subSectionHeader(subs[4]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -1035,27 +1035,27 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppToggle(value: true, size: ToggleSize.sm),
           AppToggle(value: true, size: ToggleSize.md),
           AppToggle(value: true, size: ToggleSize.lg),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppToggle(value: true, color: AppColors.brand),
           AppToggle(value: true, color: AppColors.error),
           AppToggle(value: true, color: AppColors.success),
@@ -1063,13 +1063,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('DISABLED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppToggle(value: false, isDisabled: true),
           AppToggle(value: true, isDisabled: true),
         ],
@@ -1079,40 +1079,40 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Badges
       _subSectionHeader(subs[5]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppBadge(label: 'Text Only'),
           AppBadge(leadingIcon: AppIcons.star, label: 'Icon + Text'),
           AppBadge(leadingIcon: AppIcons.crown),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('FILL STYLES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppBadge(label: 'Filled'),
           AppBadge(label: 'Outline', type: BadgeType.outline),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppBadge(label: 'Orange', color: AppColors.orange500),
           AppBadge(label: 'Blue', color: AppColors.blue500),
           AppBadge(label: 'Red', color: AppColors.red500),
@@ -1123,13 +1123,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppBadge(label: 'Orange', type: BadgeType.outline, color: AppColors.orange500),
           AppBadge(label: 'Blue', type: BadgeType.outline, color: AppColors.blue500),
           AppBadge(label: 'Red', type: BadgeType.outline, color: AppColors.red500),
@@ -1140,14 +1140,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppBadge(label: 'XS', size: BadgeSize.xs),
           AppBadge(label: 'Small', size: BadgeSize.sm),
           AppBadge(label: 'Medium', size: BadgeSize.md),
@@ -1155,13 +1155,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('ICON SLOTS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid8,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppBadge(leadingIcon: AppIcons.star, label: 'Leading'),
           AppBadge(label: 'Trailing', trailingIcon: AppIcons.close),
           AppBadge(leadingIcon: AppIcons.star, label: 'Both', trailingIcon: AppIcons.close),
@@ -1172,15 +1172,15 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Avatars
       _subSectionHeader(subs[6]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppAvatar(content: AvatarInitials('XS'), size: AvatarSize.xs),
           AppAvatar(content: AvatarInitials('SM'), size: AvatarSize.sm),
           AppAvatar(content: AvatarInitials('MD'), size: AvatarSize.md),
@@ -1189,28 +1189,28 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('CONTENT TYPES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppAvatar(content: AvatarImage(AssetImage('assets/images/avatar_placeholder.png'))),
           AppAvatar(content: AvatarInitials('TP')),
           AppAvatar(),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppAvatar(content: AvatarInitials('LD'), isLoading: true),
           AppAvatar(content: AvatarInitials('DI'), isDisabled: true),
           AppAvatar(
@@ -1225,31 +1225,31 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Text Fields
       _subSectionHeader(subs[7]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldDefault, hintText: 'Text box...'),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH VALUE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldValue),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('PASSWORD', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
 
       _sectionDivider(),
 
       // Radios
       _subSectionHeader(subs[8]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -1259,27 +1259,27 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SIZES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppRadio(selected: true, size: RadioSize.sm),
           AppRadio(selected: true, size: RadioSize.md),
           AppRadio(selected: true, size: RadioSize.lg),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppRadio(selected: true, color: AppColors.brand),
           AppRadio(selected: true, color: AppColors.error),
           AppRadio(selected: true, color: AppColors.success),
@@ -1287,25 +1287,25 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('DISABLED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
-        children: const [
+        children: [
           AppRadio(selected: false, isDisabled: true),
           AppRadio(selected: true, isDisabled: true),
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH LABEL (EXTERNAL COMPOSITION)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       Row(
         children: [
-          AppRadio(selfToggle: true),
-          SizedBox(width: AppGrid.grid8),
+          const AppRadio(selfToggle: true),
+          const SizedBox(width: AppGrid.grid8),
           AppText('Radio text', style: AppTypography.body.regular),
         ],
       ),
@@ -1314,11 +1314,11 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Path Buttons
       _subSectionHeader(subs[9]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -1327,7 +1327,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             shape: PathButtonShape.circle,
             state: PathButtonState.active,
             icon: AppIcons.crownFilled,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.current),
               PathButtonSegment(status: SegmentStatus.upcoming),
@@ -1337,7 +1337,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             shape: PathButtonShape.triangle,
             state: PathButtonState.active,
             icon: AppIcons.starFilled,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.current),
@@ -1348,7 +1348,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             shape: PathButtonShape.roundedSquare,
             state: PathButtonState.active,
             icon: AppIcons.trophyFilled,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.current),
               PathButtonSegment(status: SegmentStatus.upcoming),
               PathButtonSegment(status: SegmentStatus.upcoming),
@@ -1359,14 +1359,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COMPLETED (MIXED SEGMENTS)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppPathButton(
             shape: PathButtonShape.circle,
             state: PathButtonState.completed,
@@ -1400,14 +1400,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('LOCKED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppPathButton(
             shape: PathButtonShape.circle,
             state: PathButtonState.locked,
@@ -1441,14 +1441,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('SEGMENT COUNTS (1–5)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: const [
+        children: [
           AppPathButton(
             shape: PathButtonShape.circle,
             state: PathButtonState.completed,
@@ -1502,10 +1502,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('COLORS (CYCLING SHAPES)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      Wrap(
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
         spacing: AppGrid.grid16,
         runSpacing: AppGrid.grid8,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -1516,7 +1516,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             state: PathButtonState.active,
             icon: AppIcons.crownFilled,
             color: AppColors.orange500,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.current),
               PathButtonSegment(status: SegmentStatus.upcoming),
@@ -1528,7 +1528,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             state: PathButtonState.active,
             icon: AppIcons.starFilled,
             color: AppColors.red500,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.current),
               PathButtonSegment(status: SegmentStatus.upcoming),
@@ -1540,14 +1540,14 @@ class _CatalogHomeState extends State<CatalogHome> {
             state: PathButtonState.active,
             icon: AppIcons.trophyFilled,
             color: AppColors.blue500,
-            segments: const [
+            segments: [
               PathButtonSegment(status: SegmentStatus.completed),
               PathButtonSegment(status: SegmentStatus.current),
               PathButtonSegment(status: SegmentStatus.upcoming),
             ],
           ),
           // Green — circle, completed
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.circle,
             state: PathButtonState.completed,
             icon: AppIcons.crownFilled,
@@ -1559,7 +1559,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           ),
           // Yellow — triangle, completed
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.triangle,
             state: PathButtonState.completed,
             icon: AppIcons.starFilled,
@@ -1571,7 +1571,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           ),
           // Purple — square, completed
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.roundedSquare,
             state: PathButtonState.completed,
             icon: AppIcons.trophyFilled,
@@ -1582,7 +1582,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           ),
           // Orange — triangle, locked
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.triangle,
             state: PathButtonState.locked,
             icon: AppIcons.starFilled,
@@ -1594,7 +1594,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           ),
           // Red — square, locked
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.roundedSquare,
             state: PathButtonState.locked,
             icon: AppIcons.trophyFilled,
@@ -1605,7 +1605,7 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           ),
           // Blue — circle, locked
-          const AppPathButton(
+          AppPathButton(
             shape: PathButtonShape.circle,
             state: PathButtonState.locked,
             icon: AppIcons.crownFilled,
@@ -1624,7 +1624,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground
       _subSectionHeader(subs[10]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
     ];
   }
@@ -1636,19 +1636,19 @@ class _CatalogHomeState extends State<CatalogHome> {
     return [
       // ── Text Fields ──
       _subSectionHeader(subs[0]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Default',
           hintText: 'Text box...',
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Focused',
@@ -1656,8 +1656,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.focused,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Error',
@@ -1666,8 +1666,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.error,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Success',
@@ -1676,8 +1676,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.success,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Disabled',
@@ -1686,10 +1686,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Title for text box',
@@ -1698,10 +1698,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH LEADING ICON', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'With icon',
@@ -1710,10 +1710,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH CHARACTER COUNT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppTextFieldMolecule(
           label: 'Username',
@@ -1727,11 +1727,11 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Password Fields ──
       _subSectionHeader(subs[1]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppPasswordField(
           label: 'Password',
@@ -1740,8 +1740,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           minLength: 7,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppPasswordField(
           label: 'Password',
@@ -1751,8 +1751,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.focused,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppPasswordField(
           label: 'Password',
@@ -1762,8 +1762,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.error,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppPasswordField(
           label: 'Password',
@@ -1773,8 +1773,8 @@ class _CatalogHomeState extends State<CatalogHome> {
           state: FieldState.success,
         ),
       ),
-      SizedBox(height: AppGrid.grid16),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
         width: 300,
         child: AppPasswordField(
           label: 'Password',
@@ -1789,11 +1789,11 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Text Areas ──
       _subSectionHeader(subs[2]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('FIXED HEIGHT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 400,
         child: AppTextArea(
           label: 'Description',
@@ -1804,10 +1804,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('AUTO-GROW', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 400,
         child: AppTextArea(
           label: 'Notes',
@@ -1819,10 +1819,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('ERROR STATE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 400,
         child: AppTextArea(
           label: 'Description',
@@ -1836,11 +1836,11 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Number Fields ──
       _subSectionHeader(subs[3]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('INSIDE (DEFAULT)', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 200,
         child: AppNumberField(
           label: 'Quantity',
@@ -1851,10 +1851,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('OUTSIDE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 280,
         child: AppNumberField(
           label: 'Quantity',
@@ -1866,10 +1866,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 200,
         child: AppNumberField(
           label: 'Players',
@@ -1881,10 +1881,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('DISABLED', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 200,
         child: AppNumberField(
           label: 'Quantity',
@@ -1898,18 +1898,18 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Search Bar ──
       _subSectionHeader(subs[4]),
-      SizedBox(height: AppGrid.grid12),
+      const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
-      SizedBox(
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
         width: 300,
         child: AppSearchBar(hintText: 'Search Bar...'),
       ),
 
-      SizedBox(height: AppGrid.grid24),
+      const SizedBox(height: AppGrid.grid24),
       AppText('WITH VALUE', style: AppTypography.overline.semiBold),
-      SizedBox(height: AppGrid.grid8),
+      const SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
         child: AppSearchBar(
@@ -1929,7 +1929,7 @@ class _CatalogHomeState extends State<CatalogHome> {
     );
   }
 
-  static Widget _sectionDivider() => Divider(
+  static Widget _sectionDivider() => const Divider(
         color: AppColors.surfaceBorder,
         thickness: 1,
         height: AppPadding.sectionGap * 2,
@@ -1966,7 +1966,7 @@ class _ColorRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid8),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid8),
       child: Row(
         children: [
           Container(
@@ -1978,7 +1978,7 @@ class _ColorRow extends StatelessWidget {
               border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
             ),
           ),
-          SizedBox(width: AppGrid.grid12),
+          const SizedBox(width: AppGrid.grid12),
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
           AppText(
             '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
@@ -2014,7 +2014,7 @@ class _PaletteStrip extends StatelessWidget {
                 .toList(),
           ),
         ),
-        SizedBox(height: AppGrid.grid4),
+        const SizedBox(height: AppGrid.grid4),
         Row(
           children: colors
               .map((c) => Expanded(
@@ -2039,7 +2039,7 @@ class _TypeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid16),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2047,7 +2047,7 @@ class _TypeRow extends StatelessWidget {
             '${typeStyle.fontSize.toStringAsFixed(1)}px  •  ${(typeStyle.fontSize / AppScale.root).toStringAsFixed(2)}rem',
             style: AppTypography.overline.semiBold,
           ),
-          SizedBox(height: AppGrid.grid4),
+          const SizedBox(height: AppGrid.grid4),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -2060,7 +2060,7 @@ class _TypeRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: AppGrid.grid8),
+              const SizedBox(width: AppGrid.grid8),
               Expanded(
                 child: AppText(
                   label,
@@ -2069,7 +2069,7 @@ class _TypeRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: AppGrid.grid8),
+              const SizedBox(width: AppGrid.grid8),
               Expanded(
                 child: AppText(
                   label,
@@ -2078,7 +2078,7 @@ class _TypeRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: AppGrid.grid8),
+              const SizedBox(width: AppGrid.grid8),
               Expanded(
                 child: AppText(
                   label,
@@ -2123,7 +2123,7 @@ class _SpacingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid8),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid8),
       child: Row(
         children: [
           SizedBox(
@@ -2138,7 +2138,7 @@ class _SpacingRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
           ),
-          SizedBox(width: AppGrid.grid8),
+          const SizedBox(width: AppGrid.grid8),
           AppText('${value.toInt()}px  ($remValue)', style: AppTypography.bodySmall.regular),
         ],
       ),
@@ -2154,7 +2154,7 @@ class _RadiusRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid12),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid12),
       child: Row(
         children: [
           Container(
@@ -2166,7 +2166,7 @@ class _RadiusRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius.clamp(0, 32)),
             ),
           ),
-          SizedBox(width: AppGrid.grid16),
+          const SizedBox(width: AppGrid.grid16),
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
           AppText('${radius.toInt()}px', style: AppTypography.caption.bold),
         ],
@@ -2183,7 +2183,7 @@ class _StrokeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid12),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid12),
       child: Row(
         children: [
           Container(
@@ -2195,7 +2195,7 @@ class _StrokeRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
           ),
-          SizedBox(width: AppGrid.grid16),
+          const SizedBox(width: AppGrid.grid16),
           Expanded(child: AppText(name, style: AppTypography.body.regular)),
           AppText('${width % 1 == 0 ? width.toInt() : width}px', style: AppTypography.caption.bold),
         ],
@@ -2226,7 +2226,7 @@ class _IconVariant extends StatelessWidget {
               child: AppIcon(iconPath, size: IconSizes.lg, color: color),
             ),
           ),
-          SizedBox(height: AppGrid.grid4),
+          const SizedBox(height: AppGrid.grid4),
           AppText(label, style: AppTypography.overline.semiBold),
         ],
       ),
@@ -2245,7 +2245,7 @@ class _IconSize extends StatelessWidget {
     return Column(
       children: [
         AppIcon(iconPath, size: size),
-        SizedBox(height: AppGrid.grid4),
+        const SizedBox(height: AppGrid.grid4),
         AppText('$label\n${size.toInt()}px', style: AppTypography.overline.semiBold, textAlign: TextAlign.center),
       ],
     );
@@ -2288,7 +2288,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
     final chipStyle = AppTypography.bodySmall.semiBold;
 
     return Container(
-      padding: EdgeInsets.all(AppPadding.rem1),
+      padding: const EdgeInsets.all(AppPadding.rem1),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -2300,7 +2300,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           // Preview
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: AppGrid.grid40),
+            padding: const EdgeInsets.symmetric(vertical: AppGrid.grid40),
             decoration: BoxDecoration(
               color: AppColors.background,
               borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -2321,33 +2321,33 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
               ),
             ),
           ),
-          SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid16),
 
           // Type
           AppText('TYPE', style: AppTypography.overline.semiBold),
-          SizedBox(height: AppGrid.grid8),
+          const SizedBox(height: AppGrid.grid8),
           _buildChipRow(
             labels: ButtonType.values.map((t) => t.name).toList(),
             selectedIndex: _type.index,
             onSelected: (i) => setState(() => _type = ButtonType.values[i]),
             style: chipStyle,
           ),
-          SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid16),
 
           // Size
           AppText('SIZE', style: AppTypography.overline.semiBold),
-          SizedBox(height: AppGrid.grid8),
+          const SizedBox(height: AppGrid.grid8),
           _buildChipRow(
             labels: ButtonSize.values.map((s) => s.name).toList(),
             selectedIndex: _size.index,
             onSelected: (i) => setState(() => _size = ButtonSize.values[i]),
             style: chipStyle,
           ),
-          SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid16),
 
           // Color
           AppText('COLOR', style: AppTypography.overline.semiBold),
-          SizedBox(height: AppGrid.grid8),
+          const SizedBox(height: AppGrid.grid8),
           Wrap(
             spacing: AppGrid.grid8,
             runSpacing: AppGrid.grid8,
@@ -2370,13 +2370,13 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
               );
             }),
           ),
-          SizedBox(height: AppGrid.grid4),
+          const SizedBox(height: AppGrid.grid4),
           AppText(_colorOptions[_colorIndex].$1, style: AppTypography.caption.bold),
-          SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid16),
 
           // Content
           AppText('CONTENT', style: AppTypography.overline.semiBold),
-          SizedBox(height: AppGrid.grid8),
+          const SizedBox(height: AppGrid.grid8),
           _buildToggle('Label', _hasLabel, (v) => setState(() {
             _hasLabel = v;
             if (!_hasLabel && !_hasLeadingIcon && !_hasTrailingIcon) {
@@ -2395,11 +2395,11 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
               _hasLabel = true;
             }
           })),
-          SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid16),
 
           // States
           AppText('STATE', style: AppTypography.overline.semiBold),
-          SizedBox(height: AppGrid.grid8),
+          const SizedBox(height: AppGrid.grid8),
           _buildToggle('Active', _isActive, (v) => setState(() {
             _isActive = v;
             if (v) _selfToggle = false;
@@ -2428,7 +2428,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
         return GestureDetector(
           onTap: () => onSelected(i),
           child: Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppPadding.rem075,
               vertical: AppGrid.grid4,
             ),
@@ -2453,7 +2453,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
 
   Widget _buildToggle(String label, bool value, ValueChanged<bool> onChanged) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppGrid.grid4),
+      padding: const EdgeInsets.only(bottom: AppGrid.grid4),
       child: Row(
         children: [
           SizedBox(
@@ -2465,7 +2465,7 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
               activeTrackColor: AppColors.brand,
             ),
           ),
-          SizedBox(width: AppGrid.grid8),
+          const SizedBox(width: AppGrid.grid8),
           AppText(label, style: AppTypography.bodySmall.regular),
         ],
       ),

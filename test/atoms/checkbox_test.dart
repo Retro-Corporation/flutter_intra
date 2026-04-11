@@ -83,7 +83,7 @@ void main() {
         final values = <bool>[];
         await tester.pumpWidget(buildTestCheckbox(
           selfToggle: true,
-          onChanged: (v) => values.add(v),
+          onChanged: values.add,
         ));
 
         // Initially unchecked — no icon
@@ -128,7 +128,7 @@ void main() {
         await tester.pumpWidget(buildTestCheckbox(
           selfToggle: true,
           isDisabled: true,
-          onChanged: (v) => values.add(v),
+          onChanged: values.add,
         ));
 
         // Tap — should not fire callback

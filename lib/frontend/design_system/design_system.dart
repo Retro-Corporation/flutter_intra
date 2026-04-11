@@ -1,48 +1,76 @@
 // Barrel export — one import for the entire design system.
 
-// Foundation
-export 'foundation/colors.dart';
-export 'foundation/grid.dart';
-export 'foundation/padding.dart';
-export 'foundation/radius.dart';
-export 'foundation/typography.dart';
-export 'foundation/theme.dart';
+// Foundation — color
+export 'foundation/color/colors.dart';
+export 'foundation/color/color_utils.dart';
+
+// Foundation — space
+export 'foundation/space/grid.dart';
+export 'foundation/space/padding.dart';
+export 'foundation/space/radius.dart';
+export 'foundation/space/stroke.dart';
+
+// Foundation — type
+export 'foundation/type/typography.dart';
+
+// Foundation — motion
+export 'foundation/motion/durations.dart';
+export 'foundation/motion/curves.dart';
+export 'foundation/motion/breath.dart';
+export 'foundation/motion/shimmer.dart';
+
+// Foundation — press
+export 'foundation/press/three_d_press_geometry.dart';
+
+// Foundation — ungrouped
 export 'foundation/opacity.dart';
-export 'foundation/stroke.dart';
-export 'foundation/color_utils.dart';
-export 'foundation/breath.dart';
-export 'foundation/curves.dart';
-export 'foundation/durations.dart';
-export 'foundation/three_d_press_geometry.dart';
+export 'foundation/theme.dart';
 
 // Icons
 export 'icons/app_icons.dart';
 export 'icons/icon_sizes.dart';
 
-// Atoms
-export 'atoms/text.dart';
-export 'atoms/icon.dart';
-export 'atoms/button.dart';
-export 'atoms/checkbox.dart';
-export 'atoms/toggle.dart';
-export 'atoms/avatar.dart';
-export 'atoms/badge.dart';
-export 'atoms/text_field.dart';
-export 'atoms/radio.dart';
-export 'atoms/path_button_geometry.dart';
-export 'atoms/path_button_renderer.dart';
-export 'atoms/path_button.dart';
-export 'atoms/shimmer.dart';
-export 'atoms/interactive_atom_mixin.dart';
-export 'atoms/press_state_mixin.dart';
+// Atom behaviors
+export 'atoms/behaviors/interactive_atom_mixin.dart';
+export 'atoms/behaviors/press_state_mixin.dart';
+export 'atoms/behaviors/three_d_press_painter.dart';
 
-// Molecules
-export 'molecules/controller_owner_mixin.dart';
-export 'molecules/validator_mixin.dart';
-export 'molecules/field_state.dart';
-export 'molecules/form_field.dart';
-export 'molecules/text_field_molecule.dart';
-export 'molecules/password_field.dart';
-export 'molecules/text_area.dart';
-export 'molecules/number_field.dart';
-export 'molecules/search_bar.dart';
+// Atoms — primitives
+export 'atoms/primitives/text.dart';
+export 'atoms/primitives/icon.dart';
+export 'atoms/primitives/badge.dart';
+export 'atoms/primitives/badge_types.dart';
+export 'atoms/primitives/avatar.dart';
+export 'atoms/primitives/avatar_types.dart';
+
+// Atoms — controls
+export 'atoms/controls/button.dart';
+export 'atoms/controls/button_types.dart';
+export 'atoms/controls/checkbox.dart';
+export 'atoms/controls/checkbox_types.dart';
+export 'atoms/controls/radio.dart';
+export 'atoms/controls/radio_types.dart';
+export 'atoms/controls/toggle.dart';
+export 'atoms/controls/toggle_types.dart';
+
+// Atoms — inputs
+export 'atoms/inputs/text_field.dart';
+
+// Atoms — path
+export 'atoms/path/path_button.dart';
+export 'atoms/path/path_button_geometry.dart';
+export 'atoms/path/path_button_renderer.dart';
+
+// Molecule behaviors
+export 'molecules/behaviors/field_state.dart';
+export 'molecules/behaviors/controller_owner_mixin.dart';
+export 'molecules/behaviors/validator_mixin.dart';
+
+// Molecules — form fields
+export 'molecules/form_fields/form_field.dart';
+export 'molecules/form_fields/text_field_molecule.dart';
+export 'molecules/form_fields/password_field.dart';
+export 'molecules/form_fields/text_area.dart';
+export 'molecules/form_fields/number_field.dart';
+export 'molecules/form_fields/number_field_types.dart';
+export 'molecules/form_fields/search_bar.dart';
