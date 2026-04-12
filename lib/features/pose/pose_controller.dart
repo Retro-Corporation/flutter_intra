@@ -39,6 +39,9 @@ class PoseController extends ChangeNotifier {
       config: const MotionEngineConfig(
         cameraFacing: CameraFacing.front,
         targetFps: 20,
+        minPoseDetectionConfidence: 0.4,
+        minPosePresenceConfidence: 0.4,
+        minTrackingConfidence: 0.6,
       ),
     );
 
