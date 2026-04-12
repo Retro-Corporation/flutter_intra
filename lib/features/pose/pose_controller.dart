@@ -38,7 +38,7 @@ class PoseController extends ChangeNotifier {
     _engine = await _detector.startMotionEngine(
       config: const MotionEngineConfig(
         cameraFacing: CameraFacing.front,
-        targetFps: 20,
+        targetFps: 20, // Keep this at 20 fps to prevent overheating.
         minPoseDetectionConfidence: 0.4,
         minPosePresenceConfidence: 0.4,
         minTrackingConfidence: 0.6,
