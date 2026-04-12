@@ -32,17 +32,17 @@ class _ToggleSizeConfig {
     };
   }
 
-  static final _sm = _ToggleSizeConfig(
+  static const _sm = _ToggleSizeConfig(
     trackWidth: AppGrid.grid52,
     trackHeight: AppGrid.grid20,
     thumbSize: AppGrid.grid24,
   );
-  static final _md = _ToggleSizeConfig(
+  static const _md = _ToggleSizeConfig(
     trackWidth: AppGrid.grid68,
     trackHeight: AppGrid.grid28,
     thumbSize: AppGrid.grid32,
   );
-  static final _lg = _ToggleSizeConfig(
+  static const _lg = _ToggleSizeConfig(
     trackWidth: AppGrid.grid84,
     trackHeight: AppGrid.grid36,
     thumbSize: AppGrid.grid40,

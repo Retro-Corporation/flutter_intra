@@ -32,9 +32,9 @@ class _CheckboxSizeConfig {
   // Icon sizes are optical values hand-tuned per checkbox size for visual
   // balance inside the 3D border. They intentionally do not align with the
   // IconSizes token scale (8/16/24/32).
-  static final _sm = _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14);
-  static final _md = _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16);
-  static final _lg = _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18);
+  static const _sm = _CheckboxSizeConfig(size: AppGrid.grid24, iconSize: 14);
+  static const _md = _CheckboxSizeConfig(size: AppGrid.grid28, iconSize: 16);
+  static const _lg = _CheckboxSizeConfig(size: AppGrid.grid32, iconSize: 18);
 }
 
 // ── Color resolution ──

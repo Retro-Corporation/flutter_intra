@@ -51,7 +51,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppRadius.md),
             borderSide: const BorderSide(color: AppColors.brand, width: AppStroke.xs),
           ),
-          contentPadding: EdgeInsets.symmetric(
+          contentPadding: const EdgeInsets.symmetric(
             horizontal: AppPadding.inputPaddingH,
             vertical: AppPadding.inputPaddingV,
           ),

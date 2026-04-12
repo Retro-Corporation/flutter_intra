@@ -100,7 +100,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
-          padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
+          padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
           child: AppIcon(
             AppIcons.close,
             size: IconSizes.md,

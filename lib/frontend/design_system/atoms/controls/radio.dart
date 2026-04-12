@@ -32,9 +32,9 @@ class _RadioSizeConfig {
   // Dot sizes are optical values hand-tuned per radio size for visual
   // balance inside the 3D border. They intentionally do not align with the
   // IconSizes token scale (8/16/24/32).
-  static final _sm = _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10);
-  static final _md = _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11);
-  static final _lg = _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13);
+  static const _sm = _RadioSizeConfig(size: AppGrid.grid24, dotSize: 10);
+  static const _md = _RadioSizeConfig(size: AppGrid.grid28, dotSize: 11);
+  static const _lg = _RadioSizeConfig(size: AppGrid.grid32, dotSize: 13);
 }
 
 // ── Color resolution ──

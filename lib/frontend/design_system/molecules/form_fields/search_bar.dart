@@ -65,7 +65,7 @@ class _AppSearchBarState extends State<AppSearchBar>
         ? GestureDetector(
             onTap: _clear,
             child: Padding(
-              padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
+              padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
               child: AppIcon(
                 AppIcons.close,
                 size: IconSizes.md,
@@ -74,7 +74,7 @@ class _AppSearchBarState extends State<AppSearchBar>
             ),
           )
         : Padding(
-            padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
+            padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
             child: AppIcon(
               AppIcons.search,
               size: IconSizes.md,

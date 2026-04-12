@@ -160,7 +160,7 @@ class _AppNumberFieldState extends State<AppNumberField>
           icon: AppIcons.add,
           onTap: isDisabled ? null : _increment,
           color: iconColor,
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: AppPadding.rem025,
             right: AppPadding.inputPaddingH,
           ),
@@ -233,12 +233,12 @@ class _AppNumberFieldState extends State<AppNumberField>
               enabled: !isDisabled,
             ),
           ),
-          SizedBox(width: AppPadding.rem025),
+          const SizedBox(width: AppPadding.rem025),
           outsideButton(
             icon: AppIcons.minus,
             onTap: isDisabled ? null : _decrement,
           ),
-          SizedBox(width: AppPadding.rem025),
+          const SizedBox(width: AppPadding.rem025),
           outsideButton(
             icon: AppIcons.add,
             onTap: isDisabled ? null : _increment,
