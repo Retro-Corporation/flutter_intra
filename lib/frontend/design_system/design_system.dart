@@ -34,6 +34,7 @@ export 'icons/icon_sizes.dart';
 export 'atoms/behaviors/interactive_atom_mixin.dart';
 export 'atoms/behaviors/press_state_mixin.dart';
 export 'atoms/behaviors/three_d_press_painter.dart';
+export 'atoms/behaviors/pressable_surface.dart';
 
 // Atoms — primitives
 export 'atoms/primitives/text.dart';
@@ -42,6 +43,7 @@ export 'atoms/primitives/badge.dart';
 export 'atoms/primitives/badge_types.dart';
 export 'atoms/primitives/avatar.dart';
 export 'atoms/primitives/avatar_types.dart';
+export 'atoms/primitives/score_badge.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
@@ -74,3 +76,13 @@ export 'molecules/form_fields/text_area.dart';
 export 'molecules/form_fields/number_field.dart';
 export 'molecules/form_fields/number_field_types.dart';
 export 'molecules/form_fields/search_bar.dart';
+
+// Molecules — display
+export 'molecules/display/section_header.dart';
+export 'molecules/display/icon_text_action.dart';
+
+// Molecules — cards
+export 'molecules/cards/current_client_card.dart';
+export 'molecules/cards/current_client_card_types.dart';
+export 'molecules/cards/all_client_card.dart';
+export 'molecules/cards/all_client_card_types.dart';

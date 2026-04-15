@@ -83,11 +83,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Checkboxes',
         'Toggles',
         'Badges',
+        'Score Badge',
         'Avatars',
         'Text Fields',
         'Radios',
         'Path Buttons',
         'Button Playground',
+        'Pressable Surface',
       ]),
       _Section('Molecules', [
         'Text Fields',
@@ -95,6 +97,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Text Areas',
         'Number Fields',
         'Search Bar',
+        'Section Header',
+        'Icon Text Action',
+        'Current Client Card',
+        'All Client Card',
       ]),
       _Section('Organisms', []),
       _Section('Templates', []),
@@ -1170,8 +1176,47 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Avatars
+      // Score Badge
       _subSectionHeader(subs[6]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('urgent', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 8.2, underlineColor: AppColors.textPrimary),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('pending review', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 4.6, underlineColor: AppColors.surfaceBorder),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('reviewed', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Avatars
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('SIZES', style: AppTypography.overline.semiBold),
@@ -1224,7 +1269,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Text Fields
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[8]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1244,7 +1289,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1313,7 +1358,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Path Buttons
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1623,9 +1668,75 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Button Playground
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
       const _ButtonPlayground(),
+
+      _sectionDivider(),
+
+      // Pressable Surface
+      _subSectionHeader(subs[12]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PressableSurface(
+                backgroundColor: AppColors.surface,
+                borderColor: AppColors.brand,
+                borderRadius: AppRadius.md,
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(AppGrid.grid16),
+                  child: AppText('Press me', style: AppTypography.body.bold),
+                ),
+              ),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('brand border', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PressableSurface(
+                backgroundColor: AppColors.surface,
+                borderColor: AppColors.textPrimary,
+                borderRadius: AppRadius.md,
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(AppGrid.grid16),
+                  child: AppText('Press me', style: AppTypography.body.bold),
+                ),
+              ),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('white border', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PressableSurface(
+                backgroundColor: AppColors.surface,
+                borderColor: AppColors.surfaceBorder,
+                borderRadius: AppRadius.md,
+                isInteractive: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppGrid.grid16),
+                  child: AppText('Not interactive', style: AppTypography.body.bold),
+                ),
+              ),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('isInteractive: false', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+        ],
+      ),
     ];
   }
 
@@ -1917,6 +2028,112 @@ class _CatalogHomeState extends State<CatalogHome> {
           controller: TextEditingController(text: 'Flutter'),
         ),
       ),
+
+      _sectionDivider(),
+
+      // ── Section Header ──
+      _subSectionHeader(subs[5]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SectionHeader(label: 'Current clients', count: '17/30'),
+      const SizedBox(height: AppGrid.grid16),
+      const SectionHeader(label: 'All clients', count: '130'),
+      const SizedBox(height: AppGrid.grid16),
+      const SectionHeader(label: 'Current clients', count: '0/30'),
+
+      _sectionDivider(),
+
+      // ── Icon Text Action ──
+      _subSectionHeader(subs[6]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      IconTextAction(
+        iconPath: AppIcons.add,
+        label: 'Add Clients',
+        onTap: () {},
+      ),
+
+      _sectionDivider(),
+
+      // ── Current Client Card ──
+      _subSectionHeader(subs[7]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            CurrentClientCard(
+              clientName: 'Ryan Levin',
+              lastSessionText: 'Last Session: 1 day ago',
+              score: 3.9,
+              status: ReviewStatus.urgent,
+              onTap: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            CurrentClientCard(
+              clientName: 'Gretchen Mango',
+              lastSessionText: 'Last Session: 8 days ago',
+              score: 8.2,
+              status: ReviewStatus.pendingReview,
+              onTap: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            CurrentClientCard(
+              clientName: 'Dulce Franci',
+              lastSessionText: 'Last Session: 1 day ago',
+              score: 4.6,
+              status: ReviewStatus.reviewed,
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── All Client Card ──
+      _subSectionHeader(subs[8]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.add,
+              onTap: () {},
+              onAction: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.remove,
+              onTap: () {},
+              onAction: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.rosterFull,
+              onTap: () {},
+              onAction: () {},
+            ),
+          ],
+        ),
+      ),
     ];
   }
 
@@ -2130,16 +2347,20 @@ class _SpacingRow extends StatelessWidget {
             width: 80,
             child: AppText(name, style: AppTypography.caption.bold),
           ),
-          Container(
-            width: value.clamp(0, 200),
-            height: 24,
+          Flexible(
+            flex: 3,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: value.clamp(0, 200)),
+              child: Container(height: 24,
             decoration: BoxDecoration(
               color: AppColors.brand,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
+            ),
+          ),
           const SizedBox(width: AppGrid.grid8),
-          AppText('${value.toInt()}px  ($remValue)', style: AppTypography.bodySmall.regular),
+          Flexible(flex: 2, child: AppText('${value.toInt()}px  ($remValue)', style: AppTypography.bodySmall.regular, maxLines: 1, overflow: TextOverflow.ellipsis)),
         ],
       ),
     );
