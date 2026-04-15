@@ -14,13 +14,18 @@ typedef ContentPainter = void Function(Canvas canvas, Rect faceRect);
 ///
 /// Optional [borderSideOffset] shifts the border ring horizontally (checkbox press).
 /// Optional [contentPainter] draws additional content on the face (radio dot).
+/// Optional [borderSideLeft] / [borderSideRight] override [borderSide] per edge
+/// for asymmetric side borders (split-zone cards).
 class ThreeDPressPainter extends CustomPainter {
   final Color backgroundColor;
   final Color borderColor;
   final double borderRadius;
+  final BorderRadius? borderRadiusGeometry;
   final double borderTop;
   final double borderBottom;
   final double borderSide;
+  final double? borderSideLeft;
+  final double? borderSideRight;
   final double faceOffset;
   final double faceSideInset;
   final bool showBorder;
@@ -31,9 +36,12 @@ class ThreeDPressPainter extends CustomPainter {
     required this.backgroundColor,
     required this.borderColor,
     required this.borderRadius,
+    this.borderRadiusGeometry,
     required this.borderTop,
     required this.borderBottom,
     required this.borderSide,
+    this.borderSideLeft,
+    this.borderSideRight,
     required this.faceOffset,
     required this.faceSideInset,
     required this.showBorder,
@@ -41,31 +49,61 @@ class ThreeDPressPainter extends CustomPainter {
     this.contentPainter,
   });
 
+  /// Reduce each corner radius by per-side insets, clamping to zero.
+  BorderRadius _insetCornersLR(
+    BorderRadius br,
+    double leftInset,
+    double rightInset,
+  ) {
+    return BorderRadius.only(
+      topLeft: Radius.circular(
+          (br.topLeft.x - leftInset).clamp(0.0, double.infinity)),
+      topRight: Radius.circular(
+          (br.topRight.x - rightInset).clamp(0.0, double.infinity)),
+      bottomLeft: Radius.circular(
+          (br.bottomLeft.x - leftInset).clamp(0.0, double.infinity)),
+      bottomRight: Radius.circular(
+          (br.bottomRight.x - rightInset).clamp(0.0, double.infinity)),
+    );
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    final corners =
+        borderRadiusGeometry ?? BorderRadius.circular(borderRadius);
+    final effectiveLeft = borderSideLeft ?? borderSide;
+    final effectiveRight = borderSideRight ?? borderSide;
+
     // 1. Draw border ring (only the border area, not the interior).
     //    Uses drawDRRect to paint the ring between outer and inner rects,
     //    leaving the gap between border and face transparent.
-    if (showBorder && (borderBottom > 0 || borderSide > 0 || borderTop > 0)) {
-      final outerRRect = RRect.fromRectAndRadius(
+    if (showBorder &&
+        (borderBottom > 0 || effectiveLeft > 0 || effectiveRight > 0 ||
+            borderTop > 0)) {
+      final outerRRect = RRect.fromRectAndCorners(
         Rect.fromLTRB(
           borderSideOffset,
           faceOffset,
           size.width - borderSideOffset,
           size.height,
         ),
-        Radius.circular(borderRadius),
+        topLeft: corners.topLeft,
+        topRight: corners.topRight,
+        bottomLeft: corners.bottomLeft,
+        bottomRight: corners.bottomRight,
       );
-      final borderInnerRadius =
-          (borderRadius - borderSide).clamp(0.0, double.infinity);
-      final borderInnerRRect = RRect.fromRectAndRadius(
+      final innerCorners = _insetCornersLR(corners, effectiveLeft, effectiveRight);
+      final borderInnerRRect = RRect.fromRectAndCorners(
         Rect.fromLTRB(
-          borderSideOffset + borderSide,
+          borderSideOffset + effectiveLeft,
           faceOffset + borderTop,
-          size.width - borderSideOffset - borderSide,
+          size.width - borderSideOffset - effectiveRight,
           size.height - borderBottom,
         ),
-        Radius.circular(borderInnerRadius),
+        topLeft: innerCorners.topLeft,
+        topRight: innerCorners.topRight,
+        bottomLeft: innerCorners.bottomLeft,
+        bottomRight: innerCorners.bottomRight,
       );
       final borderPaint = Paint()..color = borderColor;
       canvas.drawDRRect(outerRRect, borderInnerRRect, borderPaint);
@@ -73,21 +111,32 @@ class ThreeDPressPainter extends CustomPainter {
 
     // 2. Draw the face surface.
     //    When borderSideOffset is active (checkbox press), the face insets
-    //    from the offset + border. Otherwise it uses the standard faceSideInset.
-    final effectiveSideInset = borderSideOffset > 0
-        ? borderSideOffset + borderSide
-        : faceSideInset;
+    //    from the offset + border. Otherwise it uses the larger of
+    //    faceSideInset and the border width on each side.
+    final double faceLeft;
+    final double faceRight;
+    if (borderSideOffset > 0) {
+      faceLeft = borderSideOffset + effectiveLeft;
+      faceRight = borderSideOffset + effectiveRight;
+    } else {
+      faceLeft =
+          effectiveLeft > faceSideInset ? effectiveLeft : faceSideInset;
+      faceRight =
+          effectiveRight > faceSideInset ? effectiveRight : faceSideInset;
+    }
     final faceRect = Rect.fromLTRB(
-      effectiveSideInset,
+      faceLeft,
       borderTop + faceOffset,
-      size.width - effectiveSideInset,
+      size.width - faceRight,
       size.height - borderBottom,
     );
-    final faceRadius =
-        (borderRadius - effectiveSideInset).clamp(0.0, double.infinity);
-    final faceRRect = RRect.fromRectAndRadius(
+    final faceCorners = _insetCornersLR(corners, faceLeft, faceRight);
+    final faceRRect = RRect.fromRectAndCorners(
       faceRect,
-      Radius.circular(faceRadius),
+      topLeft: faceCorners.topLeft,
+      topRight: faceCorners.topRight,
+      bottomLeft: faceCorners.bottomLeft,
+      bottomRight: faceCorners.bottomRight,
     );
     final facePaint = Paint()..color = backgroundColor;
     canvas.drawRRect(faceRRect, facePaint);
@@ -101,9 +150,12 @@ class ThreeDPressPainter extends CustomPainter {
       backgroundColor != old.backgroundColor ||
       borderColor != old.borderColor ||
       borderRadius != old.borderRadius ||
+      borderRadiusGeometry != old.borderRadiusGeometry ||
       borderTop != old.borderTop ||
       borderBottom != old.borderBottom ||
       borderSide != old.borderSide ||
+      borderSideLeft != old.borderSideLeft ||
+      borderSideRight != old.borderSideRight ||
       faceOffset != old.faceOffset ||
       faceSideInset != old.faceSideInset ||
       showBorder != old.showBorder ||
