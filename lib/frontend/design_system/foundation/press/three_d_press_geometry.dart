@@ -4,6 +4,12 @@ import '../space/stroke.dart';
 ///
 /// Single source of truth for the border insets, face offsets, and layout
 /// constants that create the 3D press effect across button, checkbox, and radio.
+///
+/// [reservedVertical] is the total constant vertical padding this geometry
+/// reserves (top + bottom), regardless of press state. [PressableSurface] uses
+/// this to derive a constant bottom padding, preventing layout shift when the
+/// press state changes — the same technique buttons and checkboxes use via
+/// fixed-size [ConstrainedBox] / [SizedBox].
 class PressGeometry {
   final double visualTop;
   final double visualBottom;
@@ -12,6 +18,11 @@ class PressGeometry {
   final double layoutSide;
   final bool showBorder;
 
+  /// Total vertical space reserved by this geometry (top + bottom padding
+  /// combined). Must be constant across pressed/unpressed states for the
+  /// same geometry type to prevent layout shift.
+  final double reservedVertical;
+
   const PressGeometry({
     required this.visualTop,
     required this.visualBottom,
@@ -19,6 +30,7 @@ class PressGeometry {
     required this.faceOffset,
     required this.layoutSide,
     required this.showBorder,
+    required this.reservedVertical,
   });
 
   /// Depth reserved for the 3D effect (bottom border when unpressed).
@@ -26,6 +38,8 @@ class PressGeometry {
 
   /// Filled style: border ring visible when unpressed, hidden when pressed.
   /// Face sits flush at top when unpressed, drops to bottom on press.
+  ///
+  /// reservedVertical = depth (constant: depth moves between top and bottom).
   factory PressGeometry.filled({required bool pressed}) {
     return PressGeometry(
       layoutSide: AppStroke.md,
@@ -34,11 +48,14 @@ class PressGeometry {
       visualSide: AppStroke.md,
       faceOffset: 0.0,
       showBorder: !pressed,
+      reservedVertical: depth,
     );
   }
 
   /// Outline style: border ring always visible.
   /// Face drops down on press via faceOffset.
+  ///
+  /// reservedVertical = depth + xs (1px top border always present + depth).
   factory PressGeometry.outline({required bool pressed}) {
     return PressGeometry(
       layoutSide: AppStroke.md,
@@ -47,6 +64,7 @@ class PressGeometry {
       visualSide: pressed ? AppStroke.xs : AppStroke.md,
       faceOffset: pressed ? AppStroke.lg : 0.0,
       showBorder: true,
+      reservedVertical: depth + AppStroke.xs,
     );
   }
 
@@ -59,6 +77,7 @@ class PressGeometry {
       visualSide: 0.0,
       faceOffset: 0.0,
       showBorder: false,
+      reservedVertical: 0.0,
     );
   }
 
@@ -77,6 +96,7 @@ class PressGeometry {
       faceOffset: 0.0,
       layoutSide: side,
       showBorder: true,
+      reservedVertical: top + bottom,
     );
   }
 }
