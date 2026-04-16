@@ -1,0 +1,1 @@
+enum NavBarItemState { active, inactive }
