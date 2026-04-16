@@ -14,6 +14,9 @@ class AppCurves {
   /// Smooth ease-in-out for toggle thumb slide.
   static const Curve toggle = Curves.easeInOut;
 
+  /// Ease-out for 3D press feedback (snappy press, smooth spring-back).
+  static const Curve press = Curves.easeOut;
+
   // ── Breathing / ambient ──
   // Curves for looping or continuous ambient motion.
 

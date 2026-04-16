@@ -12,6 +12,9 @@ class AppDurations {
   /// 250ms — toggle thumb slide, nav panel transition.
   static const Duration toggle = Duration(milliseconds: 250);
 
+  /// 100ms — 3D press feedback (face drop on tap-down, spring back on tap-up).
+  static const Duration press = Duration(milliseconds: 100);
+
   // ── Breathing / ambient ──
   // Looping or continuous motion with no user trigger,
   // including the settle duration to wind the loop down.
