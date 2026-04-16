@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
-import '../../foundation/space/grid.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
