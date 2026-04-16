@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import '../../atoms/primitives/icon.dart';
 import '../../atoms/inputs/text_field.dart';
+import '../../atoms/inputs/text_field_3d.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/controller_owner_mixin.dart';
+import '../behaviors/focus_owner_mixin.dart';
+import 'search_bar_types.dart';
 
-/// Molecule: pill-shaped search bar. Shows a search icon by default, and
-/// swaps to a clear (close) icon when text is present so the user can
-/// clear the input.
+/// Molecule: search bar. Shows a search icon by default, and swaps to a
+/// clear (×) icon when text is present.
+///
+/// Two visual variants via [SearchBarVariant]:
+/// - [SearchBarVariant.pill] — flat pill-shaped input (default).
+/// - [SearchBarVariant.card] — 3D raised card input with 8px radius.
 class AppSearchBar extends StatefulWidget {
   final String? hintText;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+
+  /// Visual style. Defaults to [SearchBarVariant.pill] — no existing callers break.
+  final SearchBarVariant variant;
 
   const AppSearchBar({
     super.key,
@@ -25,6 +34,7 @@ class AppSearchBar extends StatefulWidget {
     this.focusNode,
     this.onChanged,
     this.onSubmitted,
+    this.variant = SearchBarVariant.pill,
   });
 
   @override
@@ -32,9 +42,12 @@ class AppSearchBar extends StatefulWidget {
 }
 
 class _AppSearchBarState extends State<AppSearchBar>
-    with ControllerOwnerMixin {
+    with ControllerOwnerMixin, FocusOwnerMixin {
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  FocusNode? get externalFocusNode => widget.focusNode;
 
   @override
   void onTextChanged() {
@@ -45,10 +58,12 @@ class _AppSearchBarState extends State<AppSearchBar>
   void initState() {
     super.initState();
     initController();
+    if (widget.variant == SearchBarVariant.card) initFocusOwner();
   }
 
   @override
   void dispose() {
+    if (widget.variant == SearchBarVariant.card) disposeFocusOwner();
     disposeController();
     super.dispose();
   }
@@ -58,10 +73,9 @@ class _AppSearchBarState extends State<AppSearchBar>
     widget.onChanged?.call('');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // When text is present, show clear icon; otherwise show search icon.
-    final suffixIcon = hasText
+  /// Suffix icon shared between both variants.
+  Widget _buildSuffixIcon() {
+    return hasText
         ? GestureDetector(
             onTap: _clear,
             child: Padding(
@@ -81,7 +95,17 @@ class _AppSearchBarState extends State<AppSearchBar>
               color: AppColors.textSecondary,
             ),
           );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return switch (widget.variant) {
+      SearchBarVariant.pill => _buildPill(),
+      SearchBarVariant.card => _buildCard(),
+    };
+  }
+
+  Widget _buildPill() {
     return AppTextField(
       controller: controller,
       focusNode: widget.focusNode,
@@ -89,7 +113,19 @@ class _AppSearchBarState extends State<AppSearchBar>
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
       borderRadius: AppRadius.pill,
-      suffixWidget: suffixIcon,
+      suffixWidget: _buildSuffixIcon(),
+    );
+  }
+
+  Widget _buildCard() {
+    return AppTextField3D(
+      controller: controller,
+      focusNode: effectiveFocusNode,
+      hintText: widget.hintText ?? 'Search...',
+      onChanged: widget.onChanged,
+      onSubmitted: widget.onSubmitted,
+      borderColor: isFocused ? AppColors.brand : AppColors.surfaceBorder,
+      suffixWidget: _buildSuffixIcon(),
     );
   }
 }

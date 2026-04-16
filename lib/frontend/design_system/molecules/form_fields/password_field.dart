@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../atoms/primitives/icon.dart';
 import '../../atoms/inputs/text_field.dart';
+import '../../atoms/inputs/text_field_3d.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/focus_owner_mixin.dart';
 import 'form_field.dart';
+import 'form_field_variant.dart';
 import '../behaviors/validator_mixin.dart';
 
 /// Molecule: password field with visibility toggle, label, helper text,
@@ -32,6 +35,9 @@ class AppPasswordField extends StatefulWidget {
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
 
+  /// Visual style. Defaults to [InputVariant.flat] — no existing callers break.
+  final InputVariant variant;
+
   /// Optional validator — returns null for success, or an error string.
   final String? Function(String)? validator;
 
@@ -46,6 +52,7 @@ class AppPasswordField extends StatefulWidget {
     this.controller,
     this.focusNode,
     this.onChanged,
+    this.variant = InputVariant.flat,
     this.validator,
   });
 
@@ -54,11 +61,14 @@ class AppPasswordField extends StatefulWidget {
 }
 
 class _AppPasswordFieldState extends State<AppPasswordField>
-    with ControllerOwnerMixin, ValidatorMixin {
+    with ControllerOwnerMixin, ValidatorMixin, FocusOwnerMixin {
   bool _obscured = true;
 
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  FocusNode? get externalFocusNode => widget.focusNode;
 
   @override
   String? Function(String)? get widgetValidator => widget.validator;
@@ -79,16 +89,30 @@ class _AppPasswordFieldState extends State<AppPasswordField>
   void initState() {
     super.initState();
     initController();
+    if (widget.variant == InputVariant.card) initFocusOwner();
   }
 
   @override
   void dispose() {
+    if (widget.variant == InputVariant.card) disposeFocusOwner();
     disposeController();
     super.dispose();
   }
 
+  Color get _cardBorderColor {
+    if (effectiveState != FieldState.defaultState) return effectiveState.border;
+    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+  }
+
   @override
   Widget build(BuildContext context) {
+    return switch (widget.variant) {
+      InputVariant.flat => _buildFlat(),
+      InputVariant.card => _buildCard(),
+    };
+  }
+
+  Widget _buildFlat() {
     final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
@@ -96,7 +120,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
     final eyeIcon = GestureDetector(
       onTap: isDisabled ? null : () => setState(() => _obscured = !_obscured),
       child: Padding(
-        padding: EdgeInsets.only(right: AppPadding.inputPaddingH),
+        padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
         child: AppIcon(
           _obscured ? AppIcons.eye : AppIcons.eyeOff,
           size: IconSizes.md,
@@ -123,6 +147,42 @@ class _AppPasswordFieldState extends State<AppPasswordField>
         focusedBorderColor: isDefault ? null : borderColor,
         textColor: effectiveState.text,
         hintColor: effectiveState.hint,
+        enabled: !isDisabled,
+        suffixWidget: eyeIcon,
+      ),
+    );
+  }
+
+  Widget _buildCard() {
+    final isDisabled = effectiveState == FieldState.disabled;
+
+    final eyeIcon = GestureDetector(
+      onTap: isDisabled ? null : () => setState(() => _obscured = !_obscured),
+      child: Padding(
+        padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
+        child: AppIcon(
+          _obscured ? AppIcons.eye : AppIcons.eyeOff,
+          size: IconSizes.md,
+          color: isDisabled ? AppColors.grey600 : AppColors.textSecondary,
+        ),
+      ),
+    );
+
+    return AppFormField(
+      label: widget.label,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      minLength: widget.minLength,
+      maxLength: widget.maxLength,
+      currentLength: currentLength,
+      child: AppTextField3D(
+        controller: controller,
+        focusNode: effectiveFocusNode,
+        hintText: widget.hintText,
+        onChanged: widget.onChanged,
+        obscureText: _obscured,
+        maxLength: widget.maxLength,
+        borderColor: _cardBorderColor,
         enabled: !isDisabled,
         suffixWidget: eyeIcon,
       ),

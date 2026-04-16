@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../atoms/primitives/icon.dart';
 import '../../atoms/inputs/text_field.dart';
+import '../../atoms/inputs/text_field_3d.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
-import 'form_field.dart';
+import '../behaviors/focus_owner_mixin.dart';
 import '../behaviors/validator_mixin.dart';
+import 'form_field.dart';
+import 'form_field_variant.dart';
 
 /// Molecule: standard text field with label, helper text, and state support.
 ///
-/// Composes [AppFormField] + [AppTextField].
+/// Composes [AppFormField] + [AppTextField] (flat) or [AppTextField3D] (card).
 class AppTextFieldMolecule extends StatefulWidget {
   final String? label;
   final String? helperText;
@@ -25,6 +28,9 @@ class AppTextFieldMolecule extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
+
+  /// Visual style. Defaults to [InputVariant.flat] — no existing callers break.
+  final InputVariant variant;
 
   /// Optional validator. When provided, the molecule auto-manages state:
   /// returns null for success, or an error message string for error.
@@ -44,6 +50,7 @@ class AppTextFieldMolecule extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.keyboardType,
+    this.variant = InputVariant.flat,
     this.validator,
   });
 
@@ -52,9 +59,12 @@ class AppTextFieldMolecule extends StatefulWidget {
 }
 
 class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
-    with ControllerOwnerMixin, ValidatorMixin {
+    with ControllerOwnerMixin, ValidatorMixin, FocusOwnerMixin {
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  FocusNode? get externalFocusNode => widget.focusNode;
 
   @override
   String? Function(String)? get widgetValidator => widget.validator;
@@ -75,10 +85,12 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
   void initState() {
     super.initState();
     initController();
+    if (widget.variant == InputVariant.card) initFocusOwner();
   }
 
   @override
   void dispose() {
+    if (widget.variant == InputVariant.card) disposeFocusOwner();
     disposeController();
     super.dispose();
   }
@@ -88,13 +100,26 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     widget.onChanged?.call('');
   }
 
+  /// Border color for the card variant.
+  /// Non-default states always override focus color.
+  Color get _cardBorderColor {
+    if (effectiveState != FieldState.defaultState) return effectiveState.border;
+    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+  }
+
   @override
   Widget build(BuildContext context) {
+    return switch (widget.variant) {
+      InputVariant.flat => _buildFlat(),
+      InputVariant.card => _buildCard(),
+    };
+  }
+
+  Widget _buildFlat() {
     final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
 
-    // Clear icon — shown when text is present.
     Widget? suffix;
     if (hasText) {
       suffix = GestureDetector(
@@ -129,6 +154,45 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
         focusedBorderColor: isDefault ? null : borderColor,
         textColor: effectiveState.text,
         hintColor: effectiveState.hint,
+        enabled: !isDisabled,
+        suffixWidget: suffix,
+      ),
+    );
+  }
+
+  Widget _buildCard() {
+    final isDisabled = effectiveState == FieldState.disabled;
+
+    Widget? suffix;
+    if (hasText) {
+      suffix = GestureDetector(
+        onTap: _clear,
+        child: Padding(
+          padding: const EdgeInsets.only(right: AppPadding.inputPaddingH),
+          child: AppIcon(
+            AppIcons.close,
+            size: IconSizes.md,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      );
+    }
+
+    return AppFormField(
+      label: widget.label,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      maxLength: widget.maxLength,
+      currentLength: currentLength,
+      child: AppTextField3D(
+        controller: controller,
+        focusNode: effectiveFocusNode,
+        hintText: widget.hintText,
+        onChanged: widget.onChanged,
+        onSubmitted: widget.onSubmitted,
+        keyboardType: widget.keyboardType,
+        maxLength: widget.maxLength,
+        borderColor: _cardBorderColor,
         enabled: !isDisabled,
         suffixWidget: suffix,
       ),

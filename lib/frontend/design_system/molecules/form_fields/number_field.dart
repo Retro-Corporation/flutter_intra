@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../atoms/primitives/icon.dart';
 import '../../atoms/inputs/text_field.dart';
+import '../../atoms/inputs/text_field_3d.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/opacity.dart';
@@ -12,7 +13,9 @@ import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/focus_owner_mixin.dart';
 import 'form_field.dart';
+import 'form_field_variant.dart';
 import 'number_field_types.dart';
 
 /// Molecule: numeric input with +/- stepper buttons.
@@ -42,6 +45,9 @@ class AppNumberField extends StatefulWidget {
   /// Where to place the +/- buttons. Defaults to [StepperLayout.inside].
   final StepperLayout stepperLayout;
 
+  /// Visual style. Defaults to [InputVariant.flat] — no existing callers break.
+  final InputVariant variant;
+
   const AppNumberField({
     super.key,
     this.label,
@@ -56,6 +62,7 @@ class AppNumberField extends StatefulWidget {
     this.max,
     this.value,
     this.stepperLayout = StepperLayout.inside,
+    this.variant = InputVariant.flat,
   });
 
   @override
@@ -63,9 +70,12 @@ class AppNumberField extends StatefulWidget {
 }
 
 class _AppNumberFieldState extends State<AppNumberField>
-    with ControllerOwnerMixin {
+    with ControllerOwnerMixin, FocusOwnerMixin {
   @override
   TextEditingController? get externalController => widget.controller;
+
+  @override
+  FocusNode? get externalFocusNode => widget.focusNode;
 
   @override
   void onTextChanged() {
@@ -76,10 +86,12 @@ class _AppNumberFieldState extends State<AppNumberField>
   void initState() {
     super.initState();
     initController(initialText: widget.value?.toString() ?? '');
+    if (widget.variant == InputVariant.card) initFocusOwner();
   }
 
   @override
   void dispose() {
+    if (widget.variant == InputVariant.card) disposeFocusOwner();
     disposeController();
     super.dispose();
   }
@@ -118,16 +130,26 @@ class _AppNumberFieldState extends State<AppNumberField>
       icon: icon,
       onTap: onTap,
       iconColor: color,
-      // Fill the full height of the text field so the tap target & flash
-      // area is a visible box, not just a thin strip around the icon.
       width: AppGrid.grid44,
       height: AppGrid.grid44,
       padding: padding ?? EdgeInsets.zero,
     );
   }
 
+  Color get _cardBorderColor {
+    if (widget.state != FieldState.defaultState) return widget.state.border;
+    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+  }
+
   @override
   Widget build(BuildContext context) {
+    return switch (widget.variant) {
+      InputVariant.flat => _buildFlat(),
+      InputVariant.card => _buildCard(),
+    };
+  }
+
+  Widget _buildFlat() {
     final effectiveState = widget.state;
     final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
@@ -137,12 +159,12 @@ class _AppNumberFieldState extends State<AppNumberField>
         isDisabled ? AppColors.grey600 : AppColors.textSecondary;
 
     return switch (widget.stepperLayout) {
-      StepperLayout.inside  => _buildInsideLayout(borderColor, focusedColor, isDisabled, iconColor),
-      StepperLayout.outside => _buildOutsideLayout(borderColor, focusedColor, isDisabled, iconColor),
+      StepperLayout.inside  => _buildFlatInsideLayout(borderColor, focusedColor, isDisabled, iconColor),
+      StepperLayout.outside => _buildFlatOutsideLayout(borderColor, focusedColor, isDisabled, iconColor),
     };
   }
 
-  Widget _buildInsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
+  Widget _buildFlatInsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
     final stepperButtons = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -189,8 +211,7 @@ class _AppNumberFieldState extends State<AppNumberField>
     );
   }
 
-  Widget _buildOutsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
-    // Outside buttons are rendered as separate containers next to the field.
+  Widget _buildFlatOutsideLayout(Color borderColor, Color? focusedColor, bool isDisabled, Color iconColor) {
     Widget outsideButton({
       required String icon,
       required VoidCallback? onTap,
@@ -230,6 +251,115 @@ class _AppNumberFieldState extends State<AppNumberField>
               focusedBorderColor: focusedColor,
               textColor: widget.state.text,
               hintColor: widget.state.hint,
+              enabled: !isDisabled,
+            ),
+          ),
+          const SizedBox(width: AppPadding.rem025),
+          outsideButton(
+            icon: AppIcons.minus,
+            onTap: isDisabled ? null : _decrement,
+          ),
+          const SizedBox(width: AppPadding.rem025),
+          outsideButton(
+            icon: AppIcons.add,
+            onTap: isDisabled ? null : _increment,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard() {
+    final isDisabled = widget.state == FieldState.disabled;
+    final iconColor = isDisabled ? AppColors.grey600 : AppColors.textSecondary;
+
+    return switch (widget.stepperLayout) {
+      StepperLayout.inside  => _buildCardInsideLayout(isDisabled, iconColor),
+      StepperLayout.outside => _buildCardOutsideLayout(isDisabled, iconColor),
+    };
+  }
+
+  Widget _buildCardInsideLayout(bool isDisabled, Color iconColor) {
+    final stepperButtons = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildStepperButton(
+          icon: AppIcons.minus,
+          onTap: isDisabled ? null : _decrement,
+          color: iconColor,
+        ),
+        Container(
+          width: AppStroke.xs,
+          height: AppGrid.grid44,
+          color: AppColors.surfaceBorder,
+        ),
+        _buildStepperButton(
+          icon: AppIcons.add,
+          onTap: isDisabled ? null : _increment,
+          color: iconColor,
+          padding: const EdgeInsets.only(
+            left: AppPadding.rem025,
+            right: AppPadding.inputPaddingH,
+          ),
+        ),
+      ],
+    );
+
+    return AppFormField(
+      label: widget.label,
+      helperText: widget.helperText,
+      state: widget.state,
+      child: AppTextField3D(
+        controller: controller,
+        focusNode: effectiveFocusNode,
+        hintText: widget.hintText,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d-]'))],
+        maxLength: widget.maxLength,
+        borderColor: _cardBorderColor,
+        enabled: !isDisabled,
+        suffixWidget: stepperButtons,
+      ),
+    );
+  }
+
+  Widget _buildCardOutsideLayout(bool isDisabled, Color iconColor) {
+    Widget outsideButton({
+      required String icon,
+      required VoidCallback? onTap,
+    }) {
+      return _StepperPressButton(
+        icon: icon,
+        onTap: onTap,
+        iconColor: iconColor,
+        width: AppGrid.grid44,
+        height: AppGrid.grid44,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
+        ),
+      );
+    }
+
+    return AppFormField(
+      label: widget.label,
+      helperText: widget.helperText,
+      state: widget.state,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: AppTextField3D(
+              controller: controller,
+              focusNode: effectiveFocusNode,
+              hintText: widget.hintText,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d-]')),
+              ],
+              maxLength: widget.maxLength,
+              borderColor: _cardBorderColor,
               enabled: !isDisabled,
             ),
           ),
@@ -307,7 +437,6 @@ class _StepperPressButtonState extends State<_StepperPressButton> {
     final isEnabled = widget.onTap != null;
     final showPress = _pressed && isEnabled;
 
-    // Build the pressed decoration by blending a subtle white overlay.
     BoxDecoration? effectiveDecoration;
     if (widget.decoration != null) {
       final baseColor = widget.decoration!.color ?? AppColors.surface;
