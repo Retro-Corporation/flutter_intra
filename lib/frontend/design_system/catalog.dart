@@ -58,6 +58,8 @@ class _CatalogHomeState extends State<CatalogHome> {
   final _textFieldValue = TextEditingController(text: 'Hello world');
   final _textFieldPassword = TextEditingController();
 
+  Map<SortCategory, SortOption?> _sortPanelSorts = {};
+
   late final List<_Section> _sections;
   // Track which nav sections have sub-items expanded
   late final Map<int, bool> _navSubExpanded;
@@ -90,6 +92,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Path Buttons',
         'Button Playground',
         'Pressable Surface',
+        'Nav Bar Item',
       ]),
       _Section('Molecules', [
         'Text Fields',
@@ -101,8 +104,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Icon Text Action',
         'Current Client Card',
         'All Client Card',
+        'Labeled Checkbox',
+        'Filter Button',
+        'Practitioner Nav Bar',
       ]),
-      _Section('Organisms', []),
+      _Section('Organisms', [
+        'Sort Panel',
+      ]),
       _Section('Templates', []),
     ];
     _navSubExpanded = {for (var i = 0; i < _sections.length; i++) i: false};
@@ -225,17 +233,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                   const SizedBox(height: AppGrid.grid16),
 
                   // Organisms
-                  _buildCollapsibleSection(3, [
-                    const SizedBox(height: AppGrid.grid24),
-                    Center(
-                      child: AppText(
-                        'Coming soon',
-                        style: AppTypography.body.regular,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppGrid.grid24),
-                  ]),
+                  _buildCollapsibleSection(3, _buildOrganismsContent()),
 
                   const SizedBox(height: AppGrid.grid16),
 
@@ -1737,6 +1735,52 @@ class _CatalogHomeState extends State<CatalogHome> {
           ),
         ],
       ),
+
+      _sectionDivider(),
+
+      // ── Nav Bar Item ──
+      _subSectionHeader(subs[13]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid24,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('clients — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('clients — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('workouts — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('workouts — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('profile — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('profile — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
     ];
   }
 
@@ -2130,6 +2174,136 @@ class _CatalogHomeState extends State<CatalogHome> {
               state: AllClientCardState.rosterFull,
               onTap: () {},
               onAction: () {},
+            ),
+          ],
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Labeled Checkbox ──
+      _subSectionHeader(subs[9]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      StatefulBuilder(
+        builder: (context, setState) {
+          bool checked1 = true;
+          bool checked2 = false;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LabeledCheckbox(
+                label: 'Checked',
+                isChecked: checked1,
+                onChanged: (v) => setState(() => checked1 = v),
+              ),
+              const SizedBox(height: AppGrid.grid12),
+              LabeledCheckbox(
+                label: 'Unchecked',
+                isChecked: checked2,
+                onChanged: (v) => setState(() => checked2 = v),
+              ),
+              const SizedBox(height: AppGrid.grid12),
+              LabeledCheckbox(
+                label: 'Long label — this text wraps within the available width to show Expanded behavior',
+                isChecked: false,
+                onChanged: (_) {},
+              ),
+            ],
+          );
+        },
+      ),
+
+      _sectionDivider(),
+
+      // ── Filter Button ──
+      _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.open, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // ── Practitioner Nav Bar ──
+      _subSectionHeader(subs[11]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('TABS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      StatefulBuilder(
+        builder: (context, setState) {
+          PractitionerTab selected = PractitionerTab.clients;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PractitionerNavBar(
+                selectedTab: selected,
+                onTabSelected: (tab) => setState(() => selected = tab),
+              ),
+              const SizedBox(height: AppGrid.grid8),
+              AppText(
+                'Selected: ${selected.name}',
+                style: AppTypography.caption.bold,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          );
+        },
+      ),
+    ];
+  }
+
+  // ── Organisms content ──
+
+  List<Widget> _buildOrganismsContent() {
+    final subs = _sections[3].subSections;
+    return [
+      // ── Sort Panel ──
+      _subSectionHeader(subs[0]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 320),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SortPanel(
+              selectedSorts: _sortPanelSorts,
+              onSortChanged: (updated) => setState(() => _sortPanelSorts = updated),
+              onClearAll: () => setState(() => _sortPanelSorts = {}),
+            ),
+            const SizedBox(height: AppGrid.grid8),
+            AppText(
+              'Active: ${_sortPanelSorts.entries.where((e) => e.value != null).map((e) => e.value!.label).join(', ').isEmpty ? 'none' : _sortPanelSorts.entries.where((e) => e.value != null).map((e) => e.value!.label).join(', ')}',
+              style: AppTypography.caption.bold,
+              color: AppColors.textSecondary,
             ),
           ],
         ),

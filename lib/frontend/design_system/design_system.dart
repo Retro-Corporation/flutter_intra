@@ -54,6 +54,8 @@ export 'atoms/controls/radio.dart';
 export 'atoms/controls/radio_types.dart';
 export 'atoms/controls/toggle.dart';
 export 'atoms/controls/toggle_types.dart';
+export 'atoms/controls/nav_bar_item.dart';
+export 'atoms/controls/nav_bar_item_types.dart';
 
 // Atoms — inputs
 export 'atoms/inputs/text_field.dart';
@@ -86,3 +88,16 @@ export 'molecules/cards/current_client_card.dart';
 export 'molecules/cards/current_client_card_types.dart';
 export 'molecules/cards/all_client_card.dart';
 export 'molecules/cards/all_client_card_types.dart';
+
+// Molecules — controls
+export 'molecules/controls/labeled_checkbox.dart';
+export 'molecules/controls/filter_button.dart';
+export 'molecules/controls/filter_button_types.dart';
+
+// Molecules — navigation
+export 'molecules/navigation/practitioner_nav_bar.dart';
+export 'molecules/navigation/practitioner_nav_bar_types.dart';
+
+// Organisms — sort
+export 'organisms/sort/sort_panel.dart';
+export 'organisms/sort/sort_panel_types.dart';
