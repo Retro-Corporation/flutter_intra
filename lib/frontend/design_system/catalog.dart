@@ -79,20 +79,26 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Stroke Widths',
       ], isExpanded: true),
       _Section('Atoms', [
+        // primitives/
         'Text',
         'Icons',
-        'Buttons',
-        'Checkboxes',
-        'Toggles',
         'Badges',
         'Score Badge',
         'Avatars',
-        'Text Fields',
+        // controls/
+        'Buttons',
+        'Checkboxes',
+        'Toggles',
         'Radios',
-        'Path Buttons',
-        'Button Playground',
-        'Pressable Surface',
         'Nav Bar Item',
+        // inputs/
+        'Text Fields',
+        // path/
+        'Path Buttons',
+        // behaviors/
+        'Pressable Surface',
+        // playground/
+        'Button Playground',
       ]),
       _Section('Molecules', [
         'Text Fields',
@@ -109,6 +115,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Practitioner Nav Bar',
       ]),
       _Section('Organisms', [
+        // client_list/
+        'Client List',
+        // sort/
         'Sort Panel',
       ]),
       _Section('Templates', []),
@@ -493,6 +502,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   List<Widget> _buildFoundationContent() {
     final subs = _sections[0].subSections;
     return [
+      // ── COLOR ──
+      _folderGroupHeader('COLOR'),
+
       // Semantic Colors
       _subSectionHeader(subs[0]),
       const SizedBox(height: AppGrid.grid12),
@@ -595,7 +607,8 @@ class _CatalogHomeState extends State<CatalogHome> {
       const SizedBox(height: AppGrid.grid8),
       const _GradientSwatch('Error', AppColors.errorGradient),
 
-      _sectionDivider(),
+      // ── TYPE ──
+      _folderGroupHeader('TYPE'),
 
       // Typography
       _subSectionHeader(subs[3]),
@@ -636,7 +649,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      _sectionDivider(),
+      // ── SPACE ──
+      _folderGroupHeader('SPACE'),
 
       // 4-Point Grid
       _subSectionHeader(subs[4]),
@@ -716,6 +730,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   List<Widget> _buildAtomsContent() {
     final subs = _sections[1].subSections;
     return [
+      // ── PRIMITIVES ──
+      _folderGroupHeader('PRIMITIVES'),
+
       // Text
       _subSectionHeader(subs[0]),
       const SizedBox(height: AppGrid.grid12),
@@ -856,8 +873,195 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Buttons
+      // Badges
       _subSectionHeader(subs[2]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppBadge(label: 'Text Only'),
+          AppBadge(leadingIcon: AppIcons.star, label: 'Icon + Text'),
+          AppBadge(leadingIcon: AppIcons.crown),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('FILL STYLES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: [
+          AppBadge(label: 'Filled'),
+          AppBadge(label: 'Outline', type: BadgeType.outline),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: [
+          AppBadge(label: 'Orange', color: AppColors.orange500),
+          AppBadge(label: 'Blue', color: AppColors.blue500),
+          AppBadge(label: 'Red', color: AppColors.red500),
+          AppBadge(label: 'Green', color: AppColors.green500),
+          AppBadge(label: 'Purple', color: AppColors.purple500),
+          AppBadge(label: 'Yellow', color: AppColors.yellow500),
+          AppBadge(label: 'Grey', color: AppColors.grey500),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: [
+          AppBadge(label: 'Orange', type: BadgeType.outline, color: AppColors.orange500),
+          AppBadge(label: 'Blue', type: BadgeType.outline, color: AppColors.blue500),
+          AppBadge(label: 'Red', type: BadgeType.outline, color: AppColors.red500),
+          AppBadge(label: 'Green', type: BadgeType.outline, color: AppColors.green500),
+          AppBadge(label: 'Purple', type: BadgeType.outline, color: AppColors.purple500),
+          AppBadge(label: 'Yellow', type: BadgeType.outline, color: AppColors.yellow500),
+          AppBadge(label: 'Grey', type: BadgeType.outline, color: AppColors.grey500),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('SIZES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppBadge(label: 'XS', size: BadgeSize.xs),
+          AppBadge(label: 'Small', size: BadgeSize.sm),
+          AppBadge(label: 'Medium', size: BadgeSize.md),
+          AppBadge(label: 'Large', size: BadgeSize.lg),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('ICON SLOTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid8,
+        runSpacing: AppGrid.grid8,
+        children: [
+          AppBadge(leadingIcon: AppIcons.star, label: 'Leading'),
+          AppBadge(label: 'Trailing', trailingIcon: AppIcons.close),
+          AppBadge(leadingIcon: AppIcons.star, label: 'Both', trailingIcon: AppIcons.close),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Score Badge
+      _subSectionHeader(subs[3]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('urgent', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 8.2, underlineColor: AppColors.textPrimary),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('pending review', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 4.6, underlineColor: AppColors.surfaceBorder),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('reviewed', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Avatars
+      _subSectionHeader(subs[4]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('SIZES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppAvatar(content: AvatarInitials('XS'), size: AvatarSize.xs),
+          AppAvatar(content: AvatarInitials('SM'), size: AvatarSize.sm),
+          AppAvatar(content: AvatarInitials('MD'), size: AvatarSize.md),
+          AppAvatar(content: AvatarInitials('LG'), size: AvatarSize.lg),
+          AppAvatar(content: AvatarInitials('XL'), size: AvatarSize.xl),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CONTENT TYPES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppAvatar(content: AvatarImage(AssetImage('assets/images/avatar_placeholder.png'))),
+          AppAvatar(content: AvatarInitials('TP')),
+          AppAvatar(),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          AppAvatar(content: AvatarInitials('LD'), isLoading: true),
+          AppAvatar(content: AvatarInitials('DI'), isDisabled: true),
+          AppAvatar(
+            content: AvatarInitials('LD'),
+            size: AvatarSize.lg,
+            isLoading: true,
+          ),
+        ],
+      ),
+
+
+      // ── CONTROLS ──
+      _folderGroupHeader('CONTROLS'),
+
+      // Buttons
+      _subSectionHeader(subs[5]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
@@ -953,7 +1157,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Checkboxes
-      _subSectionHeader(subs[3]),
+      _subSectionHeader(subs[6]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1023,7 +1227,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Toggles
-      _subSectionHeader(subs[4]),
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1081,213 +1285,8 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Badges
-      _subSectionHeader(subs[5]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          AppBadge(label: 'Text Only'),
-          AppBadge(leadingIcon: AppIcons.star, label: 'Icon + Text'),
-          AppBadge(leadingIcon: AppIcons.crown),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('FILL STYLES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        children: [
-          AppBadge(label: 'Filled'),
-          AppBadge(label: 'Outline', type: BadgeType.outline),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (FILLED)', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        children: [
-          AppBadge(label: 'Orange', color: AppColors.orange500),
-          AppBadge(label: 'Blue', color: AppColors.blue500),
-          AppBadge(label: 'Red', color: AppColors.red500),
-          AppBadge(label: 'Green', color: AppColors.green500),
-          AppBadge(label: 'Purple', color: AppColors.purple500),
-          AppBadge(label: 'Yellow', color: AppColors.yellow500),
-          AppBadge(label: 'Grey', color: AppColors.grey500),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('COLORS (OUTLINE)', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        children: [
-          AppBadge(label: 'Orange', type: BadgeType.outline, color: AppColors.orange500),
-          AppBadge(label: 'Blue', type: BadgeType.outline, color: AppColors.blue500),
-          AppBadge(label: 'Red', type: BadgeType.outline, color: AppColors.red500),
-          AppBadge(label: 'Green', type: BadgeType.outline, color: AppColors.green500),
-          AppBadge(label: 'Purple', type: BadgeType.outline, color: AppColors.purple500),
-          AppBadge(label: 'Yellow', type: BadgeType.outline, color: AppColors.yellow500),
-          AppBadge(label: 'Grey', type: BadgeType.outline, color: AppColors.grey500),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('SIZES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          AppBadge(label: 'XS', size: BadgeSize.xs),
-          AppBadge(label: 'Small', size: BadgeSize.sm),
-          AppBadge(label: 'Medium', size: BadgeSize.md),
-          AppBadge(label: 'Large', size: BadgeSize.lg),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('ICON SLOTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid8,
-        runSpacing: AppGrid.grid8,
-        children: [
-          AppBadge(leadingIcon: AppIcons.star, label: 'Leading'),
-          AppBadge(label: 'Trailing', trailingIcon: AppIcons.close),
-          AppBadge(leadingIcon: AppIcons.star, label: 'Both', trailingIcon: AppIcons.close),
-        ],
-      ),
-
-      _sectionDivider(),
-
-      // Score Badge
-      _subSectionHeader(subs[6]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand),
-              const SizedBox(height: AppGrid.grid4),
-              AppText('urgent', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-            ],
-          ),
-          const SizedBox(width: AppGrid.grid24),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ScoreBadge(score: 8.2, underlineColor: AppColors.textPrimary),
-              const SizedBox(height: AppGrid.grid4),
-              AppText('pending review', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-            ],
-          ),
-          const SizedBox(width: AppGrid.grid24),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ScoreBadge(score: 4.6, underlineColor: AppColors.surfaceBorder),
-              const SizedBox(height: AppGrid.grid4),
-              AppText('reviewed', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-            ],
-          ),
-        ],
-      ),
-
-      _sectionDivider(),
-
-      // Avatars
-      _subSectionHeader(subs[7]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('SIZES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          AppAvatar(content: AvatarInitials('XS'), size: AvatarSize.xs),
-          AppAvatar(content: AvatarInitials('SM'), size: AvatarSize.sm),
-          AppAvatar(content: AvatarInitials('MD'), size: AvatarSize.md),
-          AppAvatar(content: AvatarInitials('LG'), size: AvatarSize.lg),
-          AppAvatar(content: AvatarInitials('XL'), size: AvatarSize.xl),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('CONTENT TYPES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          AppAvatar(content: AvatarImage(AssetImage('assets/images/avatar_placeholder.png'))),
-          AppAvatar(content: AvatarInitials('TP')),
-          AppAvatar(),
-        ],
-      ),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('STATES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          AppAvatar(content: AvatarInitials('LD'), isLoading: true),
-          AppAvatar(content: AvatarInitials('DI'), isDisabled: true),
-          AppAvatar(
-            content: AvatarInitials('LD'),
-            size: AvatarSize.lg,
-            isLoading: true,
-          ),
-        ],
-      ),
-
-      _sectionDivider(),
-
-      // Text Fields
-      _subSectionHeader(subs[8]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('DEFAULT', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      AppTextField(controller: _textFieldDefault, hintText: 'Text box...'),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('WITH VALUE', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      AppTextField(controller: _textFieldValue),
-
-      const SizedBox(height: AppGrid.grid24),
-      AppText('PASSWORD', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
-
-      _sectionDivider(),
-
       // Radios
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[8]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1355,8 +1354,77 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // Path Buttons
+      // Nav Bar Item
+      _subSectionHeader(subs[9]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid24,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('clients — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('clients — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('workouts — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('workouts — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.active, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('profile — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.inactive, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('profile — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
+
+      // ── INPUTS ──
+      _folderGroupHeader('INPUTS'),
+
+      // Text Fields
       _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      AppTextField(controller: _textFieldDefault, hintText: 'Text box...'),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('WITH VALUE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      AppTextField(controller: _textFieldValue),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('PASSWORD', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
+
+
+      // ── PATH ──
+      _folderGroupHeader('PATH'),
+
+      // Path Buttons
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1663,14 +1731,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      _sectionDivider(),
 
-      // Button Playground
-      _subSectionHeader(subs[11]),
-      const SizedBox(height: AppGrid.grid12),
-      const _ButtonPlayground(),
-
-      _sectionDivider(),
+      // ── BEHAVIORS ──
+      _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
       _subSectionHeader(subs[12]),
@@ -1736,50 +1799,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      _sectionDivider(),
 
-      // ── Nav Bar Item ──
-      _subSectionHeader(subs[13]),
-      const SizedBox(height: AppGrid.grid12),
+      // ── PLAYGROUND ──
+      _folderGroupHeader('PLAYGROUND'),
 
-      AppText('STATES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid24,
-        runSpacing: AppGrid.grid16,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.active, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('clients — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.group, state: NavBarItemState.inactive, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('clients — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.active, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('workouts — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.body, state: NavBarItemState.inactive, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('workouts — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.active, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('profile — active', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            NavBarItem(iconPath: AppIcons.profile, state: NavBarItemState.inactive, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('profile — inactive', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-        ],
+      // Button Playground (collapsed by default)
+      _CollapsibleSubsection(
+        sub: subs[13],
+        child: const _ButtonPlayground(),
       ),
     ];
   }
@@ -1789,6 +1816,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   List<Widget> _buildMoleculesContent() {
     final subs = _sections[2].subSections;
     return [
+      // ── FORM FIELDS ──
+      _folderGroupHeader('FORM FIELDS'),
+
       // ── Text Fields ──
       _subSectionHeader(subs[0]),
       const SizedBox(height: AppGrid.grid12),
@@ -1878,6 +1908,39 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Default',
+          hintText: 'Text box...',
+          variant: InputVariant.card,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Error',
+          hintText: 'Text box...',
+          helperText: 'Something went wrong',
+          state: FieldState.error,
+          variant: InputVariant.card,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 300,
+        child: AppTextFieldMolecule(
+          label: 'Disabled',
+          hintText: 'Text box...',
+          state: FieldState.disabled,
+          variant: InputVariant.card,
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Password Fields ──
@@ -1940,6 +2003,32 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Helper Text',
+          minLength: 7,
+          variant: InputVariant.card,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 300,
+        child: AppPasswordField(
+          label: 'Password',
+          hintText: 'Password text',
+          helperText: 'Something went wrong',
+          minLength: 7,
+          state: FieldState.error,
+          variant: InputVariant.card,
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Text Areas ──
@@ -1984,6 +2073,34 @@ class _CatalogHomeState extends State<CatalogHome> {
           hintText: 'Enter a description...',
           helperText: 'This field is required',
           state: FieldState.error,
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 400,
+        child: AppTextArea(
+          label: 'Description',
+          hintText: 'Enter a description...',
+          helperText: 'Max 200 characters',
+          maxLength: 200,
+          maxLines: 4,
+          variant: InputVariant.card,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 400,
+        child: AppTextArea(
+          label: 'Notes',
+          hintText: 'Start typing...',
+          helperText: 'Grows as you type',
+          autoGrow: true,
+          minLines: 2,
+          maxLines: 8,
+          variant: InputVariant.card,
         ),
       ),
 
@@ -2049,13 +2166,43 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D — INSIDE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 200,
+        child: AppNumberField(
+          label: 'Quantity',
+          hintText: '0',
+          value: 1,
+          min: 0,
+          max: 99,
+          variant: InputVariant.card,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D — OUTSIDE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 280,
+        child: AppNumberField(
+          label: 'Quantity',
+          hintText: '0',
+          value: 1,
+          min: 0,
+          max: 99,
+          stepperLayout: StepperLayout.outside,
+          variant: InputVariant.card,
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Search Bar ──
       _subSectionHeader(subs[4]),
       const SizedBox(height: AppGrid.grid12),
 
-      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const SizedBox(
         width: 300,
@@ -2063,7 +2210,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       const SizedBox(height: AppGrid.grid24),
-      AppText('WITH VALUE', style: AppTypography.overline.semiBold),
+      AppText('PILL / WITH VALUE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
@@ -2073,7 +2220,19 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      _sectionDivider(),
+      const SizedBox(height: AppGrid.grid24),
+      AppText('CARD / 3D', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 300,
+        child: AppSearchBar(
+          hintText: 'Search...',
+          variant: SearchBarVariant.card,
+        ),
+      ),
+
+      // ── DISPLAY ──
+      _folderGroupHeader('DISPLAY'),
 
       // ── Section Header ──
       _subSectionHeader(subs[5]),
@@ -2101,7 +2260,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         onTap: () {},
       ),
 
-      _sectionDivider(),
+      // ── CARDS ──
+      _folderGroupHeader('CARDS'),
 
       // ── Current Client Card ──
       _subSectionHeader(subs[7]),
@@ -2179,7 +2339,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
-      _sectionDivider(),
+      // ── CONTROLS ──
+      _folderGroupHeader('CONTROLS'),
 
       // ── Labeled Checkbox ──
       _subSectionHeader(subs[9]),
@@ -2247,7 +2408,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
-      _sectionDivider(),
+      // ── NAVIGATION ──
+      _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
       _subSectionHeader(subs[11]),
@@ -2283,8 +2445,21 @@ class _CatalogHomeState extends State<CatalogHome> {
   List<Widget> _buildOrganismsContent() {
     final subs = _sections[3].subSections;
     return [
-      // ── Sort Panel ──
+      // ── CLIENT LIST ──
+      _folderGroupHeader('CLIENT LIST'),
+
+      // ── Client List ──
       _subSectionHeader(subs[0]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _ClientListCatalog(),
+
+      // ── SORT ──
+      _folderGroupHeader('SORT'),
+
+      // ── Sort Panel ──
+      _subSectionHeader(subs[1]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -2320,11 +2495,100 @@ class _CatalogHomeState extends State<CatalogHome> {
     );
   }
 
+  /// Renders a small folder-name label above a group of subsections so the
+  /// catalog visibly mirrors the file tree (e.g. `PRIMITIVES/`, `CONTROLS/`).
+  Widget _folderGroupHeader(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppGrid.grid8,
+        bottom: AppGrid.grid12,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AppText(
+            '$label/',
+            style: AppTypography.overline.semiBold,
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: AppGrid.grid8),
+          Expanded(
+            child: Container(
+              height: AppStroke.xs,
+              color: AppColors.surfaceBorder,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static Widget _sectionDivider() => const Divider(
         color: AppColors.surfaceBorder,
         thickness: 1,
         height: AppPadding.sectionGap * 2,
       );
+}
+
+/// A subsection with its content hidden by default. Tap the header to expand.
+/// Used for the Button Playground so the dev tool doesn't take up real estate
+/// in the Atoms section.
+class _CollapsibleSubsection extends StatefulWidget {
+  final _SubSection sub;
+  final Widget child;
+  const _CollapsibleSubsection({required this.sub, required this.child});
+
+  @override
+  State<_CollapsibleSubsection> createState() => _CollapsibleSubsectionState();
+}
+
+class _CollapsibleSubsectionState extends State<_CollapsibleSubsection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: widget.sub.key,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Row(
+              children: [
+                AppText(
+                  widget.sub.name.toUpperCase(),
+                  style: AppTypography.caption.bold,
+                ),
+                const SizedBox(width: AppGrid.grid8),
+                AnimatedRotation(
+                  turns: _expanded ? 0.25 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: const Icon(
+                    Icons.chevron_right,
+                    size: 16,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: _expanded
+                ? Padding(
+                    padding: const EdgeInsets.only(top: AppGrid.grid12),
+                    child: widget.child,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ── Nav action button ──
@@ -2864,6 +3128,283 @@ class _ButtonPlaygroundState extends State<_ButtonPlayground> {
           AppText(label, style: AppTypography.bodySmall.regular),
         ],
       ),
+    );
+  }
+}
+
+// ── Client List Catalog ──
+
+class _ClientListCatalog extends StatefulWidget {
+  const _ClientListCatalog();
+
+  @override
+  State<_ClientListCatalog> createState() => _ClientListCatalogState();
+}
+
+class _ClientListCatalogState extends State<_ClientListCatalog> {
+  final _searchController = TextEditingController();
+  Map<SortCategory, SortOption?> _activeSort = {};
+  String _scenario = 'populated'; // populated | noCurrentClients | noSearchResults | noClientsAtAll | rosterFull
+
+  // --- Mock data ---
+
+  static final _allClients = List.generate(
+    10,
+    (i) => AllClientData(
+      clientId: 'all_$i',
+      clientName: [
+        'Charlie Vetrovs',
+        'Alex Morgan',
+        'Jordan Lee',
+        'Sam Kim',
+        'Taylor Swift',
+        'Blake Chen',
+        'Riley Park',
+        'Casey Wu',
+        'Drew Hall',
+        'Quinn Adams'
+      ][i],
+      email:
+          '${['charlie', 'alex', 'jordan', 'sam', 'taylor', 'blake', 'riley', 'casey', 'drew', 'quinn'][i]}@gmail.com',
+    ),
+  );
+
+  static final _currentClients = [
+    CurrentClientData(
+        clientId: 'all_0',
+        clientName: 'Charlie Vetrovs',
+        lastSessionText: 'Last Session: 1 day ago',
+        score: 3.9,
+        status: ReviewStatus.urgent),
+    CurrentClientData(
+        clientId: 'all_1',
+        clientName: 'Alex Morgan',
+        lastSessionText: 'Last Session: 1 day ago',
+        score: 4.6,
+        status: ReviewStatus.reviewed),
+    CurrentClientData(
+        clientId: 'all_2',
+        clientName: 'Jordan Lee',
+        lastSessionText: 'Last Session: 10 hours ago',
+        score: 3.5,
+        status: ReviewStatus.urgent),
+    CurrentClientData(
+        clientId: 'all_3',
+        clientName: 'Sam Kim',
+        lastSessionText: 'Last Session: 6 days ago',
+        score: 8.2,
+        status: ReviewStatus.pendingReview),
+    CurrentClientData(
+        clientId: 'all_4',
+        clientName: 'Taylor Swift',
+        lastSessionText: 'Last Session: 1 day ago',
+        score: 3.9,
+        status: ReviewStatus.reviewed),
+    CurrentClientData(
+        clientId: 'all_5',
+        clientName: 'Blake Chen',
+        lastSessionText: 'Last Session: 8 days ago',
+        score: 5.9,
+        status: ReviewStatus.pendingReview),
+  ];
+
+  List<CurrentClientData> get _scenarioCurrent => switch (_scenario) {
+        'noClientsAtAll' || 'noCurrentClients' => [],
+        _ => _currentClients, // populated, noSearchResults, rosterFull
+      };
+
+  List<AllClientData> get _scenarioAll => switch (_scenario) {
+        'noClientsAtAll' => [],
+        _ => _allClients,
+      };
+
+  int get _scenarioMax =>
+      _scenario == 'rosterFull' ? _currentClients.length : 30;
+
+  String get _scenarioSearchText => switch (_scenario) {
+        'noSearchResults' => 'zzzzz',
+        _ => _searchController.text,
+      };
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final chipStyle = AppTypography.bodySmall.semiBold;
+    final scenarios = [
+      'populated',
+      'noCurrentClients',
+      'noSearchResults',
+      'noClientsAtAll',
+      'rosterFull'
+    ];
+    final scenarioLabels = [
+      'Populated',
+      'No Current',
+      'No Results',
+      'No Clients',
+      'Roster Full'
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Scenario picker
+        AppText('SCENARIO', style: AppTypography.overline.semiBold),
+        const SizedBox(height: AppGrid.grid8),
+        Wrap(
+          spacing: AppGrid.grid8,
+          runSpacing: AppGrid.grid8,
+          children: List.generate(scenarios.length, (i) {
+            final selected = _scenario == scenarios[i];
+            return GestureDetector(
+              onTap: () => setState(() => _scenario = scenarios[i]),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.rem075,
+                  vertical: AppGrid.grid4,
+                ),
+                decoration: BoxDecoration(
+                  color: selected ? AppColors.brand : Colors.transparent,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: Border.all(
+                    color:
+                        selected ? AppColors.brand : AppColors.surfaceBorder,
+                    width: AppStroke.xs,
+                  ),
+                ),
+                child: AppText(
+                  scenarioLabels[i],
+                  style: chipStyle,
+                  color: selected
+                      ? AppColors.textInverse
+                      : AppColors.textSecondary,
+                ),
+              ),
+            );
+          }),
+        ),
+
+        const SizedBox(height: AppGrid.grid16),
+
+        // Sort controls — chip pickers, not the SortPanel organism
+        AppText('SORT', style: AppTypography.overline.semiBold),
+        const SizedBox(height: AppGrid.grid8),
+        Wrap(
+          spacing: AppGrid.grid8,
+          runSpacing: AppGrid.grid8,
+          children: [
+            for (final opt in SortOption.values)
+              GestureDetector(
+                onTap: () => setState(() {
+                  final current = _activeSort[opt.category];
+                  _activeSort = {
+                    ..._activeSort,
+                    opt.category: current == opt ? null : opt,
+                  };
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppPadding.rem075,
+                    vertical: AppGrid.grid4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _activeSort[opt.category] == opt
+                        ? AppColors.brand
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    border: Border.all(
+                      color: _activeSort[opt.category] == opt
+                          ? AppColors.brand
+                          : AppColors.surfaceBorder,
+                      width: AppStroke.xs,
+                    ),
+                  ),
+                  child: AppText(
+                    opt.label,
+                    style: chipStyle,
+                    color: _activeSort[opt.category] == opt
+                        ? AppColors.textInverse
+                        : AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            GestureDetector(
+              onTap: () => setState(() => _activeSort = {}),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.rem075,
+                  vertical: AppGrid.grid4,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: Border.all(
+                    color: AppColors.surfaceBorder,
+                    width: AppStroke.xs,
+                  ),
+                ),
+                child: AppText(
+                  'Clear',
+                  style: chipStyle,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppGrid.grid16),
+
+        // Search field (only active for non-preset-search scenarios)
+        if (_scenario != 'noSearchResults') ...[
+          AppText('SEARCH', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
+            child: AppSearchBar(
+              controller: _searchController,
+              hintText: 'Search clients...',
+              onChanged: (_) => setState(() {}),
+              variant: SearchBarVariant.card,
+            ),
+          ),
+          const SizedBox(height: AppGrid.grid16),
+        ],
+
+        // Live preview
+        AppText('PREVIEW', style: AppTypography.overline.semiBold),
+        const SizedBox(height: AppGrid.grid8),
+        Container(
+          height: 640,
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(
+                color: AppColors.surfaceBorder, width: AppStroke.xs),
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: ClientListOrganism(
+            currentClients: _scenarioCurrent,
+            allClients: _scenarioAll,
+            maxCurrentClients: _scenarioMax,
+            searchText: _scenarioSearchText,
+            activeSort: _activeSort,
+            onCurrentClientTap: (id) {},
+            onAllClientAction: (event) {},
+            onAddClientsTap: () {},
+          ),
+        ),
+      ],
     );
   }
 }
