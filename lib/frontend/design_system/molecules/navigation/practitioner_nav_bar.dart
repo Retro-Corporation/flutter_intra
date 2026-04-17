@@ -30,22 +30,23 @@ class PractitionerNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.background,
         border: Border(
           top: BorderSide(color: AppColors.surfaceBorder, width: AppStroke.xs),
         ),
       ),
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppGrid.grid24,
         vertical: AppGrid.grid16,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: PractitionerTab.values.map((tab) => NavBarItem(
-          iconPath: _iconPath(tab),
-          state: _stateFor(tab),
-          onTap: () => onTabSelected(tab),
+        children: PractitionerTab.values.map((tab) => Expanded(
+          child: NavBarItem(
+            iconPath: _iconPath(tab),
+            state: _stateFor(tab),
+            onTap: () => onTabSelected(tab),
+          ),
         )).toList(),
       ),
     );
