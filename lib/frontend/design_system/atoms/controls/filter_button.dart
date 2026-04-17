@@ -3,8 +3,8 @@ import '../../foundation/color/colors.dart';
 import '../../foundation/space/radius.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import '../../atoms/primitives/icon.dart';
-import '../../atoms/behaviors/pressable_surface.dart';
+import '../primitives/icon.dart';
+import '../behaviors/pressable_surface.dart';
 import 'filter_button_types.dart';
 
 class FilterButton extends StatelessWidget {

@@ -95,8 +95,8 @@ export 'molecules/cards/all_client_card_types.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';
-export 'molecules/controls/filter_button.dart';
-export 'molecules/controls/filter_button_types.dart';
+export 'atoms/controls/filter_button.dart';
+export 'atoms/controls/filter_button_types.dart';
 
 // Molecules — navigation
 export 'molecules/navigation/practitioner_nav_bar.dart';

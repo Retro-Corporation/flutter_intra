@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_intra/frontend/design_system/design_system.dart';
-import 'package:flutter_intra/frontend/design_system/molecules/controls/filter_button.dart';
-import 'package:flutter_intra/frontend/design_system/molecules/controls/filter_button_types.dart';
 
 void main() {
   Widget build(FilterButtonState state, {VoidCallback? onTap}) {
