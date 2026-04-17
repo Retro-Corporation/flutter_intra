@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
-import '../../foundation/space/grid.dart';
 import '../../foundation/space/radius.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
@@ -11,10 +10,12 @@ import 'filter_button_types.dart';
 class FilterButton extends StatelessWidget {
   final FilterButtonState state;
   final VoidCallback onTap;
+  final Color backgroundColor;
 
   const FilterButton({
     required this.state,
     required this.onTap,
+    this.backgroundColor = AppColors.surface,
     super.key,
   });
 
@@ -39,12 +40,11 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PressableSurface(
-      backgroundColor: AppColors.surface,
+      backgroundColor: backgroundColor,
       borderColor: _borderColor,
       borderRadius: AppRadius.sm,
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.all(AppGrid.grid12),
+      child: Center(
         child: AppIcon(_iconPath, size: IconSizes.md, color: _iconColor),
       ),
     );
