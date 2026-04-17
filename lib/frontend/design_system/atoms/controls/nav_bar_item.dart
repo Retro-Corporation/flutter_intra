@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../foundation/color/colors.dart';
+import '../../foundation/space/grid.dart';
 import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
 import '../../icons/icon_sizes.dart';
@@ -25,14 +26,14 @@ class NavBarItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        height: 56,
+        height: AppGrid.grid56,
         child: Center(
           child: switch (state) {
             NavBarItemState.active => Stack(
                 children: [
                   Container(
                     width: 72,
-                    height: 56,
+                    height: AppGrid.grid56,
                     decoration: BoxDecoration(
                       color: AppColors.surface,
                       borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -60,12 +61,12 @@ class NavBarItem extends StatelessWidget {
                     right: 0,
                     child: Center(
                       child: Container(
-                        height: 4.0,
-                        width: 40,
-                        decoration: const BoxDecoration(
+                        height: AppGrid.grid4,
+                        width: AppGrid.grid40,
+                        decoration: BoxDecoration(
                           color: AppColors.brand,
                           borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(8),
+                            top: Radius.circular(AppRadius.sm),
                           ),
                         ),
                       ),
