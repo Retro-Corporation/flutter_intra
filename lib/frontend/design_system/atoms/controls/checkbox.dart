@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/color/color_utils.dart';
 import '../../foundation/space/grid.dart';
-import '../../foundation/opacity.dart';
 import '../../foundation/space/radius.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
 import '../../icons/app_icons.dart';
 import '../primitives/icon.dart';
 import '../behaviors/interactive_atom_mixin.dart';
 import '../behaviors/three_d_press_painter.dart';
+import '../behaviors/three_d_pressable.dart';
 import 'checkbox_types.dart';
 
 // ── Size configuration ──
@@ -134,11 +134,6 @@ class _AppCheckboxState extends State<AppCheckbox>
   @override
   bool get isInteractive => !widget.isDisabled;
 
-  Widget _wrapDisabled({required Widget child}) {
-    if (!widget.isDisabled) return child;
-    return Opacity(opacity: AppOpacity.disabled, child: child);
-  }
-
   @override
   bool get isSelfToggle => widget.selfToggle;
 
@@ -174,51 +169,49 @@ class _AppCheckboxState extends State<AppCheckbox>
 
     return Semantics(
       checked: isActive,
-      child: GestureDetector(
-        onTapDown: isInteractive ? handleTapDown : null,
-        onTapUp: isInteractive ? handleTapUp : null,
-        onTapCancel: isInteractive ? handleTapCancel : null,
-        child: _wrapDisabled(
-          child: CustomPaint(
-            painter: ThreeDPressPainter(
-              backgroundColor: colors.background,
-              borderColor: colors.border,
-              borderRadius: AppRadius.sm,
-              borderTop: geo.visualTop,
-              borderBottom: geo.visualBottom,
-              borderSide: geo.visualSide,
-              faceOffset: geo.faceOffset,
-              faceSideInset: geo.layoutSide,
-              borderSideOffset: showFilled
-                  ? 0.0
-                  : (pressed ? 1.5 : 0.0),
-              showBorder: geo.showBorder,
-            ),
-            child: SizedBox(
-              width: totalWidth,
-              height: totalHeight,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: geo.layoutSide,
-                  right: geo.layoutSide,
-                  top: geo.visualTop + geo.faceOffset,
-                  bottom: (geo.visualBottom - geo.faceOffset).clamp(
-                    0.0,
-                    double.infinity,
-                  ),
-                ),
-                child: Center(
-                  child: showFilled
-                      ? AppIcon(
-                          widget.isIndeterminate
-                              ? AppIcons.minus
-                              : AppIcons.check,
-                          size: sizeConfig.iconSize,
-                          color: colors.icon,
-                        )
-                      : null,
-                ),
+      child: ThreeDPressable(
+        isInteractive: isInteractive,
+        isDisabled: widget.isDisabled,
+        onTapDown: handleTapDown,
+        onTapUp: handleTapUp,
+        onTapCancel: handleTapCancel,
+        painter: ThreeDPressPainter(
+          backgroundColor: colors.background,
+          borderColor: colors.border,
+          borderRadius: AppRadius.sm,
+          borderTop: geo.visualTop,
+          borderBottom: geo.visualBottom,
+          borderSide: geo.visualSide,
+          faceOffset: geo.faceOffset,
+          faceSideInset: geo.layoutSide,
+          borderSideOffset: showFilled
+              ? 0.0
+              : (pressed ? 1.5 : 0.0),
+          showBorder: geo.showBorder,
+        ),
+        child: SizedBox(
+          width: totalWidth,
+          height: totalHeight,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: geo.layoutSide,
+              right: geo.layoutSide,
+              top: geo.visualTop + geo.faceOffset,
+              bottom: (geo.visualBottom - geo.faceOffset).clamp(
+                0.0,
+                double.infinity,
               ),
+            ),
+            child: Center(
+              child: showFilled
+                  ? AppIcon(
+                      widget.isIndeterminate
+                          ? AppIcons.minus
+                          : AppIcons.check,
+                      size: sizeConfig.iconSize,
+                      color: colors.icon,
+                    )
+                  : null,
             ),
           ),
         ),

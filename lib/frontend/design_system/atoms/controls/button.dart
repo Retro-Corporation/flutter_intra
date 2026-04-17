@@ -13,6 +13,7 @@ import '../primitives/icon.dart';
 import '../behaviors/interactive_atom_mixin.dart';
 import '../primitives/text.dart';
 import '../behaviors/three_d_press_painter.dart';
+import '../behaviors/three_d_pressable.dart';
 import 'button_types.dart';
 
 // ── Size configuration ──
@@ -299,40 +300,39 @@ class _AppButtonState extends State<AppButton>
     final height = sizeConfig.height;
     final width = _iconOnly ? height : 0.0;
 
-    return GestureDetector(
-      onTapDown: isInteractive ? handleTapDown : null,
-      onTapUp: isInteractive ? handleTapUp : null,
-      onTapCancel: isInteractive ? handleTapCancel : null,
-      child: CustomPaint(
-        painter: ThreeDPressPainter(
-          backgroundColor: colors.background,
-          borderColor: colors.shadow,
-          borderRadius: radius,
-          borderTop: geo.visualTop,
-          borderBottom: geo.visualBottom,
-          borderSide: geo.visualSide,
-          faceOffset: geo.faceOffset,
-          faceSideInset: geo.layoutSide,
-          showBorder: geo.showBorder,
+    return ThreeDPressable(
+      isInteractive: isInteractive,
+      onTapDown: handleTapDown,
+      onTapUp: handleTapUp,
+      onTapCancel: handleTapCancel,
+      painter: ThreeDPressPainter(
+        backgroundColor: colors.background,
+        borderColor: colors.shadow,
+        borderRadius: radius,
+        borderTop: geo.visualTop,
+        borderBottom: geo.visualBottom,
+        borderSide: geo.visualSide,
+        faceOffset: geo.faceOffset,
+        faceSideInset: geo.layoutSide,
+        showBorder: geo.showBorder,
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: height,
+          maxHeight: height,
+          minWidth: width,
         ),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: height,
-            maxHeight: height,
-            minWidth: width,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: (_iconOnly ? 0 : padX) + geo.layoutSide,
+            right: (_iconOnly ? 0 : padX) + geo.layoutSide,
+            top: geo.visualTop + geo.faceOffset,
+            bottom: (geo.visualBottom - geo.faceOffset).clamp(0.0, double.infinity),
           ),
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: (_iconOnly ? 0 : padX) + geo.layoutSide,
-              right: (_iconOnly ? 0 : padX) + geo.layoutSide,
-              top: geo.visualTop + geo.faceOffset,
-              bottom: (geo.visualBottom - geo.faceOffset).clamp(0.0, double.infinity),
-            ),
-            child: Center(
-              widthFactor: 1.0,
-              heightFactor: 1.0,
-              child: _buildContent(sizeConfig, colors),
-            ),
+          child: Center(
+            widthFactor: 1.0,
+            heightFactor: 1.0,
+            child: _buildContent(sizeConfig, colors),
           ),
         ),
       ),

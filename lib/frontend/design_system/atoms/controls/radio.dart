@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/color/color_utils.dart';
 import '../../foundation/space/grid.dart';
-import '../../foundation/opacity.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
 import '../behaviors/interactive_atom_mixin.dart';
 import '../behaviors/three_d_press_painter.dart';
+import '../behaviors/three_d_pressable.dart';
 import 'radio_types.dart';
 
 // ── Size configuration ──
@@ -93,11 +93,6 @@ class _AppRadioState extends State<AppRadio>
   @override
   bool get isInteractive => !widget.isDisabled;
 
-  Widget _wrapDisabled({required Widget child}) {
-    if (!widget.isDisabled) return child;
-    return Opacity(opacity: AppOpacity.disabled, child: child);
-  }
-
   @override
   bool get isSelfToggle => widget.selfToggle;
 
@@ -136,35 +131,33 @@ class _AppRadioState extends State<AppRadio>
 
     return Semantics(
       checked: isActive,
-      child: GestureDetector(
-        onTapDown: isInteractive ? handleTapDown : null,
-        onTapUp: isInteractive ? handleTapUp : null,
-        onTapCancel: isInteractive ? handleTapCancel : null,
-        child: _wrapDisabled(
-          child: CustomPaint(
-            painter: ThreeDPressPainter(
-              backgroundColor: backgroundColor,
-              borderColor: borderColor,
-              borderRadius: totalWidth / 2,
-              borderTop: geo.visualTop,
-              borderBottom: geo.visualBottom,
-              borderSide: geo.visualSide,
-              faceOffset: geo.faceOffset,
-              faceSideInset: geo.visualSide,
-              showBorder: true,
-              contentPainter: isActive
-                  ? (canvas, faceRect) => _paintDot(
-                        canvas,
-                        faceRect,
-                        sizeConfig.dotSize,
-                      )
-                  : null,
-            ),
-            child: SizedBox(
-              width: totalWidth,
-              height: totalHeight,
-            ),
-          ),
+      child: ThreeDPressable(
+        isInteractive: isInteractive,
+        isDisabled: widget.isDisabled,
+        onTapDown: handleTapDown,
+        onTapUp: handleTapUp,
+        onTapCancel: handleTapCancel,
+        painter: ThreeDPressPainter(
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          borderRadius: totalWidth / 2,
+          borderTop: geo.visualTop,
+          borderBottom: geo.visualBottom,
+          borderSide: geo.visualSide,
+          faceOffset: geo.faceOffset,
+          faceSideInset: geo.visualSide,
+          showBorder: true,
+          contentPainter: isActive
+              ? (canvas, faceRect) => _paintDot(
+                    canvas,
+                    faceRect,
+                    sizeConfig.dotSize,
+                  )
+              : null,
+        ),
+        child: SizedBox(
+          width: totalWidth,
+          height: totalHeight,
         ),
       ),
     );
