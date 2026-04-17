@@ -11,9 +11,7 @@ import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
-import '../behaviors/focus_owner_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
 import 'number_field_types.dart';
@@ -29,8 +27,8 @@ class AppNumberField extends StatefulWidget {
   final String? hintText;
   final FieldState state;
   final int? maxLength;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
+  final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<int>? onChanged;
 
   /// Minimum allowed value (inclusive).
@@ -38,9 +36,6 @@ class AppNumberField extends StatefulWidget {
 
   /// Maximum allowed value (inclusive).
   final int? max;
-
-  /// Initial value.
-  final int? value;
 
   /// Where to place the +/- buttons. Defaults to [StepperLayout.inside].
   final StepperLayout stepperLayout;
@@ -50,17 +45,16 @@ class AppNumberField extends StatefulWidget {
 
   const AppNumberField({
     super.key,
+    required this.controller,
+    required this.focusNode,
     this.label,
     this.helperText,
     this.hintText,
     this.state = FieldState.defaultState,
     this.maxLength,
-    this.controller,
-    this.focusNode,
     this.onChanged,
     this.min,
     this.max,
-    this.value,
     this.stepperLayout = StepperLayout.inside,
     this.variant = InputVariant.flat,
   });
@@ -69,34 +63,33 @@ class AppNumberField extends StatefulWidget {
   State<AppNumberField> createState() => _AppNumberFieldState();
 }
 
-class _AppNumberFieldState extends State<AppNumberField>
-    with ControllerOwnerMixin, FocusOwnerMixin {
-  @override
-  TextEditingController? get externalController => widget.controller;
-
-  @override
-  FocusNode? get externalFocusNode => widget.focusNode;
-
-  @override
-  void onTextChanged() {
-    setState(() {});
-  }
+class _AppNumberFieldState extends State<AppNumberField> {
+  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    initController(initialText: widget.value?.toString() ?? '');
-    if (widget.variant == InputVariant.card) initFocusOwner();
+    widget.controller.addListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.addListener(_onFocusChanged);
+    }
   }
 
   @override
   void dispose() {
-    if (widget.variant == InputVariant.card) disposeFocusOwner();
-    disposeController();
+    widget.controller.removeListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.removeListener(_onFocusChanged);
+    }
     super.dispose();
   }
 
-  int? get _currentValue => int.tryParse(controller.text);
+  void _onTextChanged() => setState(() {});
+
+  void _onFocusChanged() =>
+      setState(() => _isFocused = widget.focusNode.hasFocus);
+
+  int? get _currentValue => int.tryParse(widget.controller.text);
 
   void _increment() {
     final current = _currentValue ?? widget.min ?? 0;
@@ -113,9 +106,9 @@ class _AppNumberFieldState extends State<AppNumberField>
   }
 
   void _setValue(int v) {
-    controller.text = v.toString();
-    controller.selection = TextSelection.collapsed(
-      offset: controller.text.length,
+    widget.controller.text = v.toString();
+    widget.controller.selection = TextSelection.collapsed(
+      offset: widget.controller.text.length,
     );
     widget.onChanged?.call(v);
   }
@@ -138,7 +131,7 @@ class _AppNumberFieldState extends State<AppNumberField>
 
   Color get _cardBorderColor {
     if (widget.state != FieldState.defaultState) return widget.state.border;
-    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
   }
 
   @override
@@ -195,7 +188,7 @@ class _AppNumberFieldState extends State<AppNumberField>
       helperText: widget.helperText,
       state: widget.state,
       child: AppTextField(
-        controller: controller,
+        controller: widget.controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         keyboardType: TextInputType.number,
@@ -239,7 +232,7 @@ class _AppNumberFieldState extends State<AppNumberField>
         children: [
           Expanded(
             child: AppTextField(
-              controller: controller,
+              controller: widget.controller,
               focusNode: widget.focusNode,
               hintText: widget.hintText,
               keyboardType: TextInputType.number,
@@ -310,8 +303,8 @@ class _AppNumberFieldState extends State<AppNumberField>
       helperText: widget.helperText,
       state: widget.state,
       child: AppTextField3D(
-        controller: controller,
-        focusNode: effectiveFocusNode,
+        controller: widget.controller,
+        focusNode: widget.focusNode,
         hintText: widget.hintText,
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d-]'))],
@@ -351,8 +344,8 @@ class _AppNumberFieldState extends State<AppNumberField>
         children: [
           Expanded(
             child: AppTextField3D(
-              controller: controller,
-              focusNode: effectiveFocusNode,
+              controller: widget.controller,
+              focusNode: widget.focusNode,
               hintText: widget.hintText,
               keyboardType: TextInputType.number,
               inputFormatters: [

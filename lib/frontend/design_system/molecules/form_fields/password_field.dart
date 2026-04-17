@@ -6,9 +6,7 @@ import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
-import '../behaviors/focus_owner_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
 import '../behaviors/validator_mixin.dart';
@@ -31,8 +29,8 @@ class AppPasswordField extends StatefulWidget {
   /// Most password fields use [minLength] instead.
   final int? maxLength;
 
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
+  final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<String>? onChanged;
 
   /// Visual style. Defaults to [InputVariant.flat] — no existing callers break.
@@ -43,14 +41,14 @@ class AppPasswordField extends StatefulWidget {
 
   const AppPasswordField({
     super.key,
+    required this.controller,
+    required this.focusNode,
     this.label,
     this.helperText,
     this.hintText,
     this.state = FieldState.defaultState,
     this.minLength,
     this.maxLength,
-    this.controller,
-    this.focusNode,
     this.onChanged,
     this.variant = InputVariant.flat,
     this.validator,
@@ -61,14 +59,9 @@ class AppPasswordField extends StatefulWidget {
 }
 
 class _AppPasswordFieldState extends State<AppPasswordField>
-    with ControllerOwnerMixin, ValidatorMixin, FocusOwnerMixin {
+    with ValidatorMixin {
   bool _obscured = true;
-
-  @override
-  TextEditingController? get externalController => widget.controller;
-
-  @override
-  FocusNode? get externalFocusNode => widget.focusNode;
+  bool _isFocused = false;
 
   @override
   String? Function(String)? get widgetValidator => widget.validator;
@@ -80,28 +73,34 @@ class _AppPasswordFieldState extends State<AppPasswordField>
   String? get widgetHelperText => widget.helperText;
 
   @override
-  void onTextChanged() {
-    setState(() {});
-    runValidator(controller.text);
-  }
-
-  @override
   void initState() {
     super.initState();
-    initController();
-    if (widget.variant == InputVariant.card) initFocusOwner();
+    widget.controller.addListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.addListener(_onFocusChanged);
+    }
   }
 
   @override
   void dispose() {
-    if (widget.variant == InputVariant.card) disposeFocusOwner();
-    disposeController();
+    widget.controller.removeListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.removeListener(_onFocusChanged);
+    }
     super.dispose();
   }
 
+  void _onTextChanged() {
+    setState(() {});
+    runValidator(widget.controller.text);
+  }
+
+  void _onFocusChanged() =>
+      setState(() => _isFocused = widget.focusNode.hasFocus);
+
   Color get _cardBorderColor {
     if (effectiveState != FieldState.defaultState) return effectiveState.border;
-    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
   }
 
   @override
@@ -135,9 +134,9 @@ class _AppPasswordFieldState extends State<AppPasswordField>
       state: effectiveState,
       minLength: widget.minLength,
       maxLength: widget.maxLength,
-      currentLength: currentLength,
+      currentLength: widget.controller.text.length,
       child: AppTextField(
-        controller: controller,
+        controller: widget.controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
@@ -174,10 +173,10 @@ class _AppPasswordFieldState extends State<AppPasswordField>
       state: effectiveState,
       minLength: widget.minLength,
       maxLength: widget.maxLength,
-      currentLength: currentLength,
+      currentLength: widget.controller.text.length,
       child: AppTextField3D(
-        controller: controller,
-        focusNode: effectiveFocusNode,
+        controller: widget.controller,
+        focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
         obscureText: _obscured,

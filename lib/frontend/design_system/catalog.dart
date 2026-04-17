@@ -20,6 +20,42 @@ class DesignCatalogApp extends StatelessWidget {
   }
 }
 
+// ── Catalog-only helpers ──
+
+/// Catalog-only wrapper that creates and disposes a controller + focus node
+/// for an input-molecule demo, then passes them to [builder].
+///
+/// Exists so catalog entries can render input molecules without violating the
+/// rule that controller/focus ownership lives at the template layer in
+/// production code.
+class _CatalogInputDemo extends StatefulWidget {
+  final String initialText;
+  final Widget Function(TextEditingController controller, FocusNode focusNode) builder;
+
+  const _CatalogInputDemo({
+    required this.builder,
+    this.initialText = '',
+  });
+
+  @override
+  State<_CatalogInputDemo> createState() => _CatalogInputDemoState();
+}
+
+class _CatalogInputDemoState extends State<_CatalogInputDemo> {
+  late final _controller = TextEditingController(text: widget.initialText);
+  late final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(_controller, _focusNode);
+}
+
 // ── Section / sub-section definition ──
 
 class _SubSection {
@@ -1825,119 +1861,163 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('STATES', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Default',
-          hintText: 'Text box...',
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Default',
+            hintText: 'Text box...',
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Focused',
-          hintText: 'Text box...',
-          state: FieldState.focused,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Focused',
+            hintText: 'Text box...',
+            state: FieldState.focused,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Error',
-          hintText: 'Text box...',
-          helperText: 'Something went wrong',
-          state: FieldState.error,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Error',
+            hintText: 'Text box...',
+            helperText: 'Something went wrong',
+            state: FieldState.error,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Success',
-          hintText: 'Text box...',
-          helperText: 'Looks good!',
-          state: FieldState.success,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Success',
+            hintText: 'Text box...',
+            helperText: 'Looks good!',
+            state: FieldState.success,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Disabled',
-          hintText: 'Text box...',
-          state: FieldState.disabled,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Disabled',
+            hintText: 'Text box...',
+            state: FieldState.disabled,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Title for text box',
-          hintText: 'Text box...',
-          helperText: 'Helper Text',
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Title for text box',
+            hintText: 'Text box...',
+            helperText: 'Helper Text',
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('WITH LEADING ICON', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'With icon',
-          hintText: 'Search items...',
-          leadingIcon: AppIcons.search,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'With icon',
+            hintText: 'Search items...',
+            leadingIcon: AppIcons.search,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('WITH CHARACTER COUNT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Username',
-          hintText: 'Enter username...',
-          helperText: 'Helper Text',
-          maxLength: 20,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Username',
+            hintText: 'Enter username...',
+            helperText: 'Helper Text',
+            maxLength: 20,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Default',
-          hintText: 'Text box...',
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Default',
+            hintText: 'Text box...',
+            variant: InputVariant.card,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Error',
-          hintText: 'Text box...',
-          helperText: 'Something went wrong',
-          state: FieldState.error,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Error',
+            hintText: 'Text box...',
+            helperText: 'Something went wrong',
+            state: FieldState.error,
+            variant: InputVariant.card,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppTextFieldMolecule(
-          label: 'Disabled',
-          hintText: 'Text box...',
-          state: FieldState.disabled,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Disabled',
+            hintText: 'Text box...',
+            state: FieldState.disabled,
+            variant: InputVariant.card,
+          ),
         ),
       ),
 
@@ -1949,83 +2029,111 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('STATES', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
-          state: FieldState.focused,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+            state: FieldState.focused,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
-          state: FieldState.error,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+            state: FieldState.error,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
-          state: FieldState.success,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+            state: FieldState.success,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
-          state: FieldState.disabled,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+            state: FieldState.disabled,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Helper Text',
-          minLength: 7,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Helper Text',
+            minLength: 7,
+            variant: InputVariant.card,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppPasswordField(
-          label: 'Password',
-          hintText: 'Password text',
-          helperText: 'Something went wrong',
-          minLength: 7,
-          state: FieldState.error,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'Password text',
+            helperText: 'Something went wrong',
+            minLength: 7,
+            state: FieldState.error,
+            variant: InputVariant.card,
+          ),
         ),
       ),
 
@@ -2037,70 +2145,90 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('FIXED HEIGHT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 400,
-        child: AppTextArea(
-          label: 'Description',
-          hintText: 'Enter a description...',
-          helperText: 'Max 200 characters',
-          maxLength: 200,
-          maxLines: 4,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Description',
+            hintText: 'Enter a description...',
+            helperText: 'Max 200 characters',
+            maxLength: 200,
+            maxLines: 4,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('AUTO-GROW', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 400,
-        child: AppTextArea(
-          label: 'Notes',
-          hintText: 'Start typing...',
-          helperText: 'Grows as you type',
-          autoGrow: true,
-          minLines: 2,
-          maxLines: 8,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Notes',
+            hintText: 'Start typing...',
+            helperText: 'Grows as you type',
+            autoGrow: true,
+            minLines: 2,
+            maxLines: 8,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('ERROR STATE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 400,
-        child: AppTextArea(
-          label: 'Description',
-          hintText: 'Enter a description...',
-          helperText: 'This field is required',
-          state: FieldState.error,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Description',
+            hintText: 'Enter a description...',
+            helperText: 'This field is required',
+            state: FieldState.error,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 400,
-        child: AppTextArea(
-          label: 'Description',
-          hintText: 'Enter a description...',
-          helperText: 'Max 200 characters',
-          maxLength: 200,
-          maxLines: 4,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Description',
+            hintText: 'Enter a description...',
+            helperText: 'Max 200 characters',
+            maxLength: 200,
+            maxLines: 4,
+            variant: InputVariant.card,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid16),
-      const SizedBox(
+      SizedBox(
         width: 400,
-        child: AppTextArea(
-          label: 'Notes',
-          hintText: 'Start typing...',
-          helperText: 'Grows as you type',
-          autoGrow: true,
-          minLines: 2,
-          maxLines: 8,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Notes',
+            hintText: 'Start typing...',
+            helperText: 'Grows as you type',
+            autoGrow: true,
+            minLines: 2,
+            maxLines: 8,
+            variant: InputVariant.card,
+          ),
         ),
       ),
 
@@ -2112,87 +2240,111 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('INSIDE (DEFAULT)', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 200,
-        child: AppNumberField(
-          label: 'Quantity',
-          hintText: '0',
-          value: 1,
-          min: 0,
-          max: 99,
+        child: _CatalogInputDemo(
+          initialText: '1',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            min: 0,
+            max: 99,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('OUTSIDE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 280,
-        child: AppNumberField(
-          label: 'Quantity',
-          hintText: '0',
-          value: 1,
-          min: 0,
-          max: 99,
-          stepperLayout: StepperLayout.outside,
+        child: _CatalogInputDemo(
+          initialText: '1',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            min: 0,
+            max: 99,
+            stepperLayout: StepperLayout.outside,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('WITH HELPER TEXT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 200,
-        child: AppNumberField(
-          label: 'Players',
-          hintText: '0',
-          helperText: 'Min 2, Max 8',
-          value: 2,
-          min: 2,
-          max: 8,
+        child: _CatalogInputDemo(
+          initialText: '2',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Players',
+            hintText: '0',
+            helperText: 'Min 2, Max 8',
+            min: 2,
+            max: 8,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('DISABLED', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 200,
-        child: AppNumberField(
-          label: 'Quantity',
-          hintText: '0',
-          value: 5,
-          state: FieldState.disabled,
+        child: _CatalogInputDemo(
+          initialText: '5',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            state: FieldState.disabled,
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D — INSIDE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 200,
-        child: AppNumberField(
-          label: 'Quantity',
-          hintText: '0',
-          value: 1,
-          min: 0,
-          max: 99,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          initialText: '1',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            min: 0,
+            max: 99,
+            variant: InputVariant.card,
+          ),
         ),
       ),
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D — OUTSIDE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 280,
-        child: AppNumberField(
-          label: 'Quantity',
-          hintText: '0',
-          value: 1,
-          min: 0,
-          max: 99,
-          stepperLayout: StepperLayout.outside,
-          variant: InputVariant.card,
+        child: _CatalogInputDemo(
+          initialText: '1',
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            min: 0,
+            max: 99,
+            stepperLayout: StepperLayout.outside,
+            variant: InputVariant.card,
+          ),
         ),
       ),
 
@@ -2204,9 +2356,15 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppSearchBar(hintText: 'Search Bar...'),
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppSearchBar(
+            controller: controller,
+            focusNode: focusNode,
+            hintText: 'Search Bar...',
+          ),
+        ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
@@ -2214,20 +2372,28 @@ class _CatalogHomeState extends State<CatalogHome> {
       const SizedBox(height: AppGrid.grid8),
       SizedBox(
         width: 300,
-        child: AppSearchBar(
-          hintText: 'Search bar',
-          controller: TextEditingController(text: 'Flutter'),
+        child: _CatalogInputDemo(
+          initialText: 'Flutter',
+          builder: (controller, focusNode) => AppSearchBar(
+            controller: controller,
+            focusNode: focusNode,
+            hintText: 'Search bar',
+          ),
         ),
       ),
 
       const SizedBox(height: AppGrid.grid24),
       AppText('CARD / 3D', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: AppSearchBar(
-          hintText: 'Search...',
-          variant: SearchBarVariant.card,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppSearchBar(
+            controller: controller,
+            focusNode: focusNode,
+            hintText: 'Search...',
+            variant: SearchBarVariant.card,
+          ),
         ),
       ),
 
@@ -3143,6 +3309,7 @@ class _ClientListCatalog extends StatefulWidget {
 
 class _ClientListCatalogState extends State<_ClientListCatalog> {
   final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
   Map<SortCategory, SortOption?> _activeSort = {};
   String _scenario = 'populated'; // populated | noCurrentClients | noSearchResults | noClientsAtAll | rosterFull
 
@@ -3235,6 +3402,7 @@ class _ClientListCatalogState extends State<_ClientListCatalog> {
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -3373,6 +3541,7 @@ class _ClientListCatalogState extends State<_ClientListCatalog> {
             constraints: const BoxConstraints(maxWidth: 320),
             child: AppSearchBar(
               controller: _searchController,
+              focusNode: _searchFocusNode,
               hintText: 'Search clients...',
               onChanged: (_) => setState(() {}),
               variant: SearchBarVariant.card,

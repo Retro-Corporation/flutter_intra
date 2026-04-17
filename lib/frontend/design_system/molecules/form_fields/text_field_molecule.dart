@@ -6,9 +6,7 @@ import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import '../behaviors/controller_owner_mixin.dart';
 import '../behaviors/field_state.dart';
-import '../behaviors/focus_owner_mixin.dart';
 import '../behaviors/validator_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
@@ -23,8 +21,8 @@ class AppTextFieldMolecule extends StatefulWidget {
   final FieldState state;
   final int? maxLength;
   final String? leadingIcon;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
+  final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
@@ -39,14 +37,14 @@ class AppTextFieldMolecule extends StatefulWidget {
 
   const AppTextFieldMolecule({
     super.key,
+    required this.controller,
+    required this.focusNode,
     this.label,
     this.helperText,
     this.hintText,
     this.state = FieldState.defaultState,
     this.maxLength,
     this.leadingIcon,
-    this.controller,
-    this.focusNode,
     this.onChanged,
     this.onSubmitted,
     this.keyboardType,
@@ -59,12 +57,8 @@ class AppTextFieldMolecule extends StatefulWidget {
 }
 
 class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
-    with ControllerOwnerMixin, ValidatorMixin, FocusOwnerMixin {
-  @override
-  TextEditingController? get externalController => widget.controller;
-
-  @override
-  FocusNode? get externalFocusNode => widget.focusNode;
+    with ValidatorMixin {
+  bool _isFocused = false;
 
   @override
   String? Function(String)? get widgetValidator => widget.validator;
@@ -76,27 +70,33 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
   String? get widgetHelperText => widget.helperText;
 
   @override
-  void onTextChanged() {
-    setState(() {});
-    runValidator(controller.text);
-  }
-
-  @override
   void initState() {
     super.initState();
-    initController();
-    if (widget.variant == InputVariant.card) initFocusOwner();
+    widget.controller.addListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.addListener(_onFocusChanged);
+    }
   }
 
   @override
   void dispose() {
-    if (widget.variant == InputVariant.card) disposeFocusOwner();
-    disposeController();
+    widget.controller.removeListener(_onTextChanged);
+    if (widget.variant == InputVariant.card) {
+      widget.focusNode.removeListener(_onFocusChanged);
+    }
     super.dispose();
   }
 
+  void _onTextChanged() {
+    setState(() {});
+    runValidator(widget.controller.text);
+  }
+
+  void _onFocusChanged() =>
+      setState(() => _isFocused = widget.focusNode.hasFocus);
+
   void _clear() {
-    controller.clear();
+    widget.controller.clear();
     widget.onChanged?.call('');
   }
 
@@ -104,7 +104,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
   /// Non-default states always override focus color.
   Color get _cardBorderColor {
     if (effectiveState != FieldState.defaultState) return effectiveState.border;
-    return isFocused ? AppColors.brand : AppColors.surfaceBorder;
+    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
   }
 
   @override
@@ -121,7 +121,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     final isDisabled = effectiveState == FieldState.disabled;
 
     Widget? suffix;
-    if (hasText) {
+    if (widget.controller.text.isNotEmpty) {
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
@@ -140,9 +140,9 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       helperText: effectiveHelper,
       state: effectiveState,
       maxLength: widget.maxLength,
-      currentLength: currentLength,
+      currentLength: widget.controller.text.length,
       child: AppTextField(
-        controller: controller,
+        controller: widget.controller,
         focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
@@ -164,7 +164,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     final isDisabled = effectiveState == FieldState.disabled;
 
     Widget? suffix;
-    if (hasText) {
+    if (widget.controller.text.isNotEmpty) {
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
@@ -183,10 +183,10 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       helperText: effectiveHelper,
       state: effectiveState,
       maxLength: widget.maxLength,
-      currentLength: currentLength,
+      currentLength: widget.controller.text.length,
       child: AppTextField3D(
-        controller: controller,
-        focusNode: effectiveFocusNode,
+        controller: widget.controller,
+        focusNode: widget.focusNode,
         hintText: widget.hintText,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,

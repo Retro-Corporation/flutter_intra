@@ -68,9 +68,7 @@ export 'atoms/path/path_button_renderer.dart';
 
 // Molecule behaviors
 export 'molecules/behaviors/field_state.dart';
-export 'molecules/behaviors/controller_owner_mixin.dart';
 export 'molecules/behaviors/validator_mixin.dart';
-export 'molecules/behaviors/focus_owner_mixin.dart';
 
 // Molecules — form fields
 export 'molecules/form_fields/form_field.dart';

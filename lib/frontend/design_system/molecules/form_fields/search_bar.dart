@@ -8,8 +8,6 @@ import '../../foundation/type/typography.dart';
 import '../../foundation/space/radius.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
-import '../behaviors/controller_owner_mixin.dart';
-import '../behaviors/focus_owner_mixin.dart';
 import 'search_bar_types.dart';
 
 /// Molecule: search bar. Shows a search icon by default, and swaps to a
@@ -20,8 +18,8 @@ import 'search_bar_types.dart';
 /// - [SearchBarVariant.card] — 3D raised card input with 8px radius.
 class AppSearchBar extends StatefulWidget {
   final String? hintText;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
+  final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
@@ -30,9 +28,9 @@ class AppSearchBar extends StatefulWidget {
 
   const AppSearchBar({
     super.key,
+    required this.controller,
+    required this.focusNode,
     this.hintText,
-    this.controller,
-    this.focusNode,
     this.onChanged,
     this.onSubmitted,
     this.variant = SearchBarVariant.pill,
@@ -42,41 +40,40 @@ class AppSearchBar extends StatefulWidget {
   State<AppSearchBar> createState() => _AppSearchBarState();
 }
 
-class _AppSearchBarState extends State<AppSearchBar>
-    with ControllerOwnerMixin, FocusOwnerMixin {
-  @override
-  TextEditingController? get externalController => widget.controller;
-
-  @override
-  FocusNode? get externalFocusNode => widget.focusNode;
-
-  @override
-  void onTextChanged() {
-    setState(() {});
-  }
+class _AppSearchBarState extends State<AppSearchBar> {
+  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    initController();
-    if (widget.variant == SearchBarVariant.card) initFocusOwner();
+    widget.controller.addListener(_onTextChanged);
+    if (widget.variant == SearchBarVariant.card) {
+      widget.focusNode.addListener(_onFocusChanged);
+    }
   }
 
   @override
   void dispose() {
-    if (widget.variant == SearchBarVariant.card) disposeFocusOwner();
-    disposeController();
+    widget.controller.removeListener(_onTextChanged);
+    if (widget.variant == SearchBarVariant.card) {
+      widget.focusNode.removeListener(_onFocusChanged);
+    }
     super.dispose();
   }
 
+  void _onTextChanged() => setState(() {});
+
+  void _onFocusChanged() =>
+      setState(() => _isFocused = widget.focusNode.hasFocus);
+
   void _clear() {
-    controller.clear();
+    widget.controller.clear();
     widget.onChanged?.call('');
   }
 
   /// Suffix icon shared between both variants.
   Widget _buildSuffixIcon() {
-    return hasText
+    return widget.controller.text.isNotEmpty
         ? GestureDetector(
             onTap: _clear,
             child: Padding(
@@ -108,7 +105,7 @@ class _AppSearchBarState extends State<AppSearchBar>
 
   Widget _buildPill() {
     return AppTextField(
-      controller: controller,
+      controller: widget.controller,
       focusNode: widget.focusNode,
       hintText: widget.hintText ?? 'Search...',
       onChanged: widget.onChanged,
@@ -120,12 +117,12 @@ class _AppSearchBarState extends State<AppSearchBar>
 
   Widget _buildCard() {
     return AppTextField3D(
-      controller: controller,
-      focusNode: effectiveFocusNode,
+      controller: widget.controller,
+      focusNode: widget.focusNode,
       hintText: widget.hintText ?? 'Search...',
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
-      borderColor: isFocused ? AppColors.brand : AppColors.surfaceBorder,
+      borderColor: _isFocused ? AppColors.brand : AppColors.surfaceBorder,
       backgroundColor: AppColors.background,
       textStyle: AppTypography.body.bold,
       suffixWidget: _buildSuffixIcon(),

@@ -30,6 +30,7 @@ class ClientListTemplate extends StatefulWidget {
 
 class _ClientListTemplateState extends State<ClientListTemplate> {
   final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
   final _scrollController = ScrollController();
   Map<SortCategory, SortOption?> _activeSort = {};
   bool _sortOpen = false;
@@ -44,6 +45,7 @@ class _ClientListTemplateState extends State<ClientListTemplate> {
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -115,6 +117,7 @@ class _ClientListTemplateState extends State<ClientListTemplate> {
                           child: AppSearchBar(
                             variant: SearchBarVariant.card,
                             controller: _searchController,
+                            focusNode: _searchFocusNode,
                             hintText: 'Search clients...',
                             onChanged: (_) {},
                           ),
