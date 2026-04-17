@@ -1,8 +1,47 @@
 import 'package:flutter/material.dart';
 import '../../atoms/primitives/text.dart';
+import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/type/typography.dart';
 import '../behaviors/field_state.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Form field family — contract + visual tiers
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// A molecule belongs in `form_fields/` if and only if it satisfies all 5
+// points of the MINIMUM CONTRACT:
+//
+//   1. Holds a typed value
+//   2. Receives controller / focus externally
+//   3. Reports changes upward via callback
+//   4. Accepts an external state override
+//   5. Resolves a single `effectiveState` from an authoritative source
+//      (parent-set state wins unless `defaultState`; otherwise validator wins)
+//
+// Contract points #1–#4 live on each widget's constructor. Point #5 is
+// abstracted into `ValidatorMixin` (molecules/behaviors/validator_mixin.dart);
+// the lifecycle plumbing that drives it lives in `FormFieldMixin`
+// (molecules/behaviors/form_field_mixin.dart).
+//
+// Every form field renders within the 6-TIER VISUAL SYSTEM:
+//
+//   Tier 1 — Required visual      state → border / text / hint color, disabled
+//                                  → owned by `FieldState` (behaviors/field_state.dart)
+//   Tier 2 — State feedback       error message replaces helper text
+//                                  → owned by `ValidatorMixin.effectiveHelper`
+//   Tier 3 — Identification       label, required indicator, helper text
+//                                  → owned by this file (`AppFormField`)
+//   Tier 4 — Constraint feedback  char counter (min / max)
+//                                  → owned by this file (`AppFormField`)
+//   Tier 5 — Input affordances    suffix widgets (clear, eye, stepper, etc.)
+//                                  → per-molecule by design
+//   Tier 6 — Variant dimensions   flat / card
+//                                  → `InputVariant` enum + per-molecule switch;
+//                                    card's focus-aware border lives in
+//                                    `FormFieldMixin.cardBorderColor`
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
 /// Base molecule that wraps any input widget with a label, helper text,
 /// and optional character count. Used by all text-field molecule variants
@@ -30,6 +69,10 @@ class AppFormField extends StatelessWidget {
   /// The input widget (e.g. an [AppTextField]).
   final Widget child;
 
+  /// Whether this field is required — renders a red asterisk next to the label.
+  /// Muted to the label color when [state] is [FieldState.disabled].
+  final bool isRequired;
+
   const AppFormField({
     super.key,
     this.label,
@@ -38,6 +81,7 @@ class AppFormField extends StatelessWidget {
     this.maxLength,
     this.minLength,
     this.currentLength = 0,
+    this.isRequired = false,
     required this.child,
   });
 
@@ -62,10 +106,25 @@ class AppFormField extends StatelessWidget {
       children: [
         // ── Label ──
         if (label != null) ...[
-          AppText(
-            label!,
-            style: AppTypography.bodySmall.semiBold,
-            color: labelColor,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              AppText(
+                label!,
+                style: AppTypography.bodySmall.semiBold,
+                color: labelColor,
+              ),
+              if (isRequired)
+                AppText(
+                  ' *',
+                  style: AppTypography.bodySmall.semiBold,
+                  color: state == FieldState.disabled
+                      ? labelColor
+                      : AppColors.error,
+                ),
+            ],
           ),
           const SizedBox(height: AppPadding.rem025),
         ],

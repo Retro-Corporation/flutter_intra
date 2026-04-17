@@ -12,6 +12,8 @@ import '../../foundation/space/stroke.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/form_field_mixin.dart';
+import '../behaviors/validator_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
 import 'number_field_types.dart';
@@ -43,6 +45,12 @@ class AppNumberField extends StatefulWidget {
   /// Visual style. Defaults to [InputVariant.flat] — no existing callers break.
   final InputVariant variant;
 
+  /// Optional validator — returns null for success, or an error string.
+  final String? Function(String)? validator;
+
+  /// Whether this field is required — shows a red asterisk next to the label.
+  final bool isRequired;
+
   const AppNumberField({
     super.key,
     required this.controller,
@@ -57,37 +65,33 @@ class AppNumberField extends StatefulWidget {
     this.max,
     this.stepperLayout = StepperLayout.inside,
     this.variant = InputVariant.flat,
+    this.validator,
+    this.isRequired = false,
   });
 
   @override
   State<AppNumberField> createState() => _AppNumberFieldState();
 }
 
-class _AppNumberFieldState extends State<AppNumberField> {
-  bool _isFocused = false;
+class _AppNumberFieldState extends State<AppNumberField>
+    with ValidatorMixin, FormFieldMixin {
+  @override
+  String? Function(String)? get widgetValidator => widget.validator;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.addListener(_onFocusChanged);
-    }
-  }
+  FieldState get widgetState => widget.state;
 
   @override
-  void dispose() {
-    widget.controller.removeListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.removeListener(_onFocusChanged);
-    }
-    super.dispose();
-  }
+  String? get widgetHelperText => widget.helperText;
 
-  void _onTextChanged() => setState(() {});
+  @override
+  TextEditingController get widgetController => widget.controller;
 
-  void _onFocusChanged() =>
-      setState(() => _isFocused = widget.focusNode.hasFocus);
+  @override
+  FocusNode get widgetFocusNode => widget.focusNode;
+
+  @override
+  bool get shouldTrackFocus => widget.variant == InputVariant.card;
 
   int? get _currentValue => int.tryParse(widget.controller.text);
 
@@ -129,11 +133,6 @@ class _AppNumberFieldState extends State<AppNumberField> {
     );
   }
 
-  Color get _cardBorderColor {
-    if (widget.state != FieldState.defaultState) return widget.state.border;
-    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
-  }
-
   @override
   Widget build(BuildContext context) {
     return switch (widget.variant) {
@@ -143,7 +142,6 @@ class _AppNumberFieldState extends State<AppNumberField> {
   }
 
   Widget _buildFlat() {
-    final effectiveState = widget.state;
     final borderColor = effectiveState.border;
     final isDefault = effectiveState == FieldState.defaultState;
     final isDisabled = effectiveState == FieldState.disabled;
@@ -185,8 +183,9 @@ class _AppNumberFieldState extends State<AppNumberField> {
 
     return AppFormField(
       label: widget.label,
-      helperText: widget.helperText,
-      state: widget.state,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      isRequired: widget.isRequired,
       child: AppTextField(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -196,8 +195,8 @@ class _AppNumberFieldState extends State<AppNumberField> {
         maxLength: widget.maxLength,
         borderColor: borderColor,
         focusedBorderColor: focusedColor,
-        textColor: widget.state.text,
-        hintColor: widget.state.hint,
+        textColor: effectiveState.text,
+        hintColor: effectiveState.hint,
         enabled: !isDisabled,
         suffixWidget: stepperButtons,
       ),
@@ -225,8 +224,9 @@ class _AppNumberFieldState extends State<AppNumberField> {
 
     return AppFormField(
       label: widget.label,
-      helperText: widget.helperText,
-      state: widget.state,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      isRequired: widget.isRequired,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -242,8 +242,8 @@ class _AppNumberFieldState extends State<AppNumberField> {
               maxLength: widget.maxLength,
               borderColor: borderColor,
               focusedBorderColor: focusedColor,
-              textColor: widget.state.text,
-              hintColor: widget.state.hint,
+              textColor: effectiveState.text,
+              hintColor: effectiveState.hint,
               enabled: !isDisabled,
             ),
           ),
@@ -263,7 +263,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
   }
 
   Widget _buildCard() {
-    final isDisabled = widget.state == FieldState.disabled;
+    final isDisabled = effectiveState == FieldState.disabled;
     final iconColor = isDisabled ? AppColors.grey600 : AppColors.textSecondary;
 
     return switch (widget.stepperLayout) {
@@ -300,8 +300,9 @@ class _AppNumberFieldState extends State<AppNumberField> {
 
     return AppFormField(
       label: widget.label,
-      helperText: widget.helperText,
-      state: widget.state,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      isRequired: widget.isRequired,
       child: AppTextField3D(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -309,7 +310,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d-]'))],
         maxLength: widget.maxLength,
-        borderColor: _cardBorderColor,
+        borderColor: cardBorderColor,
         enabled: !isDisabled,
         suffixWidget: stepperButtons,
       ),
@@ -337,8 +338,9 @@ class _AppNumberFieldState extends State<AppNumberField> {
 
     return AppFormField(
       label: widget.label,
-      helperText: widget.helperText,
-      state: widget.state,
+      helperText: effectiveHelper,
+      state: effectiveState,
+      isRequired: widget.isRequired,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -352,7 +354,7 @@ class _AppNumberFieldState extends State<AppNumberField> {
                 FilteringTextInputFormatter.allow(RegExp(r'[\d-]')),
               ],
               maxLength: widget.maxLength,
-              borderColor: _cardBorderColor,
+              borderColor: cardBorderColor,
               enabled: !isDisabled,
             ),
           ),

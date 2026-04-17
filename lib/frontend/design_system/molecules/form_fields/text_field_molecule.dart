@@ -7,6 +7,7 @@ import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/form_field_mixin.dart';
 import '../behaviors/validator_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
@@ -35,6 +36,9 @@ class AppTextFieldMolecule extends StatefulWidget {
   /// The returned string replaces [helperText] when in error state.
   final String? Function(String)? validator;
 
+  /// Whether this field is required — shows a red asterisk next to the label.
+  final bool isRequired;
+
   const AppTextFieldMolecule({
     super.key,
     required this.controller,
@@ -50,6 +54,7 @@ class AppTextFieldMolecule extends StatefulWidget {
     this.keyboardType,
     this.variant = InputVariant.flat,
     this.validator,
+    this.isRequired = false,
   });
 
   @override
@@ -57,9 +62,7 @@ class AppTextFieldMolecule extends StatefulWidget {
 }
 
 class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
-    with ValidatorMixin {
-  bool _isFocused = false;
-
+    with ValidatorMixin, FormFieldMixin {
   @override
   String? Function(String)? get widgetValidator => widget.validator;
 
@@ -70,41 +73,17 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
   String? get widgetHelperText => widget.helperText;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.addListener(_onFocusChanged);
-    }
-  }
+  TextEditingController get widgetController => widget.controller;
 
   @override
-  void dispose() {
-    widget.controller.removeListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.removeListener(_onFocusChanged);
-    }
-    super.dispose();
-  }
+  FocusNode get widgetFocusNode => widget.focusNode;
 
-  void _onTextChanged() {
-    setState(() {});
-    runValidator(widget.controller.text);
-  }
-
-  void _onFocusChanged() =>
-      setState(() => _isFocused = widget.focusNode.hasFocus);
+  @override
+  bool get shouldTrackFocus => widget.variant == InputVariant.card;
 
   void _clear() {
     widget.controller.clear();
     widget.onChanged?.call('');
-  }
-
-  /// Border color for the card variant.
-  /// Non-default states always override focus color.
-  Color get _cardBorderColor {
-    if (effectiveState != FieldState.defaultState) return effectiveState.border;
-    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
   }
 
   @override
@@ -141,6 +120,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       state: effectiveState,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -184,6 +164,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
       state: effectiveState,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField3D(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -192,7 +173,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
         onSubmitted: widget.onSubmitted,
         keyboardType: widget.keyboardType,
         maxLength: widget.maxLength,
-        borderColor: _cardBorderColor,
+        borderColor: cardBorderColor,
         enabled: !isDisabled,
         suffixWidget: suffix,
       ),

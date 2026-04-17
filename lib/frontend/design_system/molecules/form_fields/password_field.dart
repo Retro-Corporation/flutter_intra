@@ -7,9 +7,10 @@ import '../../foundation/space/padding.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/form_field_mixin.dart';
+import '../behaviors/validator_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
-import '../behaviors/validator_mixin.dart';
 
 /// Molecule: password field with visibility toggle, label, helper text,
 /// and character count.
@@ -39,6 +40,9 @@ class AppPasswordField extends StatefulWidget {
   /// Optional validator — returns null for success, or an error string.
   final String? Function(String)? validator;
 
+  /// Whether this field is required — shows a red asterisk next to the label.
+  final bool isRequired;
+
   const AppPasswordField({
     super.key,
     required this.controller,
@@ -52,6 +56,7 @@ class AppPasswordField extends StatefulWidget {
     this.onChanged,
     this.variant = InputVariant.flat,
     this.validator,
+    this.isRequired = false,
   });
 
   @override
@@ -59,9 +64,8 @@ class AppPasswordField extends StatefulWidget {
 }
 
 class _AppPasswordFieldState extends State<AppPasswordField>
-    with ValidatorMixin {
+    with ValidatorMixin, FormFieldMixin {
   bool _obscured = true;
-  bool _isFocused = false;
 
   @override
   String? Function(String)? get widgetValidator => widget.validator;
@@ -73,35 +77,13 @@ class _AppPasswordFieldState extends State<AppPasswordField>
   String? get widgetHelperText => widget.helperText;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.addListener(_onFocusChanged);
-    }
-  }
+  TextEditingController get widgetController => widget.controller;
 
   @override
-  void dispose() {
-    widget.controller.removeListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.removeListener(_onFocusChanged);
-    }
-    super.dispose();
-  }
+  FocusNode get widgetFocusNode => widget.focusNode;
 
-  void _onTextChanged() {
-    setState(() {});
-    runValidator(widget.controller.text);
-  }
-
-  void _onFocusChanged() =>
-      setState(() => _isFocused = widget.focusNode.hasFocus);
-
-  Color get _cardBorderColor {
-    if (effectiveState != FieldState.defaultState) return effectiveState.border;
-    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
-  }
+  @override
+  bool get shouldTrackFocus => widget.variant == InputVariant.card;
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +117,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
       minLength: widget.minLength,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -174,6 +157,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
       minLength: widget.minLength,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField3D(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -181,7 +165,7 @@ class _AppPasswordFieldState extends State<AppPasswordField>
         onChanged: widget.onChanged,
         obscureText: _obscured,
         maxLength: widget.maxLength,
-        borderColor: _cardBorderColor,
+        borderColor: cardBorderColor,
         enabled: !isDisabled,
         suffixWidget: eyeIcon,
       ),

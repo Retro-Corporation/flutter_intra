@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../atoms/inputs/text_field.dart';
 import '../../atoms/inputs/text_field_3d.dart';
-import '../../foundation/color/colors.dart';
 import '../behaviors/field_state.dart';
+import '../behaviors/form_field_mixin.dart';
+import '../behaviors/validator_mixin.dart';
 import 'form_field.dart';
 import 'form_field_variant.dart';
-import '../behaviors/validator_mixin.dart';
 
 /// Molecule: multiline text area with label, helper text, and optional
 /// auto-grow.
@@ -38,6 +38,9 @@ class AppTextArea extends StatefulWidget {
   /// Optional validator — returns null for success, or an error string.
   final String? Function(String)? validator;
 
+  /// Whether this field is required — shows a red asterisk next to the label.
+  final bool isRequired;
+
   const AppTextArea({
     super.key,
     required this.controller,
@@ -53,15 +56,15 @@ class AppTextArea extends StatefulWidget {
     this.autoGrow = false,
     this.variant = InputVariant.flat,
     this.validator,
+    this.isRequired = false,
   });
 
   @override
   State<AppTextArea> createState() => _AppTextAreaState();
 }
 
-class _AppTextAreaState extends State<AppTextArea> with ValidatorMixin {
-  bool _isFocused = false;
-
+class _AppTextAreaState extends State<AppTextArea>
+    with ValidatorMixin, FormFieldMixin {
   @override
   String? Function(String)? get widgetValidator => widget.validator;
 
@@ -72,35 +75,13 @@ class _AppTextAreaState extends State<AppTextArea> with ValidatorMixin {
   String? get widgetHelperText => widget.helperText;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.addListener(_onFocusChanged);
-    }
-  }
+  TextEditingController get widgetController => widget.controller;
 
   @override
-  void dispose() {
-    widget.controller.removeListener(_onTextChanged);
-    if (widget.variant == InputVariant.card) {
-      widget.focusNode.removeListener(_onFocusChanged);
-    }
-    super.dispose();
-  }
+  FocusNode get widgetFocusNode => widget.focusNode;
 
-  void _onTextChanged() {
-    setState(() {});
-    runValidator(widget.controller.text);
-  }
-
-  void _onFocusChanged() =>
-      setState(() => _isFocused = widget.focusNode.hasFocus);
-
-  Color get _cardBorderColor {
-    if (effectiveState != FieldState.defaultState) return effectiveState.border;
-    return _isFocused ? AppColors.brand : AppColors.surfaceBorder;
-  }
+  @override
+  bool get shouldTrackFocus => widget.variant == InputVariant.card;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +102,7 @@ class _AppTextAreaState extends State<AppTextArea> with ValidatorMixin {
       state: effectiveState,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -147,6 +129,7 @@ class _AppTextAreaState extends State<AppTextArea> with ValidatorMixin {
       state: effectiveState,
       maxLength: widget.maxLength,
       currentLength: widget.controller.text.length,
+      isRequired: widget.isRequired,
       child: AppTextField3D(
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -155,7 +138,7 @@ class _AppTextAreaState extends State<AppTextArea> with ValidatorMixin {
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
         minLines: widget.autoGrow ? widget.minLines : widget.maxLines,
-        borderColor: _cardBorderColor,
+        borderColor: cardBorderColor,
         enabled: !isDisabled,
       ),
     );

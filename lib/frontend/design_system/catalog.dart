@@ -141,13 +141,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Password Fields',
         'Text Areas',
         'Number Fields',
-        'Search Bar',
         'Section Header',
         'Icon Text Action',
         'Current Client Card',
         'All Client Card',
         'Labeled Checkbox',
         'Filter Button',
+        'Search Bar',
         'Practitioner Nav Bar',
       ]),
       _Section('Organisms', [
@@ -2021,6 +2021,22 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('REQUIRED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextFieldMolecule(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Email',
+            hintText: 'you@example.com',
+            isRequired: true,
+          ),
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Password Fields ──
@@ -2137,6 +2153,23 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('REQUIRED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPasswordField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Password',
+            hintText: 'At least 7 characters',
+            minLength: 7,
+            isRequired: true,
+          ),
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Text Areas ──
@@ -2228,6 +2261,23 @@ class _CatalogHomeState extends State<CatalogHome> {
             minLines: 2,
             maxLines: 8,
             variant: InputVariant.card,
+          ),
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('REQUIRED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 400,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppTextArea(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Bio',
+            hintText: 'Tell us about yourself...',
+            maxLines: 4,
+            isRequired: true,
           ),
         ),
       ),
@@ -2348,10 +2398,230 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid24),
+      AppText('REQUIRED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Quantity',
+            hintText: '0',
+            min: 0,
+            max: 99,
+            isRequired: true,
+          ),
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('VALIDATOR (must be 5+)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppNumberField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Players',
+            hintText: '0',
+            helperText: 'Must be 5 or greater',
+            min: 0,
+            max: 99,
+            validator: (text) {
+              if (text.isEmpty) return null;
+              final n = int.tryParse(text);
+              if (n == null) return 'Enter a number';
+              if (n < 5) return 'Must be at least 5';
+              return null;
+            },
+          ),
+        ),
+      ),
+
+      // ── DISPLAY ──
+      _folderGroupHeader('DISPLAY'),
+
+      // ── Section Header ──
+      _subSectionHeader(subs[4]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SectionHeader(label: 'Current clients', count: '17/30'),
+      const SizedBox(height: AppGrid.grid16),
+      const SectionHeader(label: 'All clients', count: '130'),
+      const SizedBox(height: AppGrid.grid16),
+      const SectionHeader(label: 'Current clients', count: '0/30'),
+
+      _sectionDivider(),
+
+      // ── Icon Text Action ──
+      _subSectionHeader(subs[5]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      IconTextAction(
+        iconPath: AppIcons.add,
+        label: 'Add Clients',
+        onTap: () {},
+      ),
+
+      // ── CARDS ──
+      _folderGroupHeader('CARDS'),
+
+      // ── Current Client Card ──
+      _subSectionHeader(subs[6]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            CurrentClientCard(
+              clientName: 'Ryan Levin',
+              lastSessionText: 'Last Session: 1 day ago',
+              score: 3.9,
+              status: ReviewStatus.urgent,
+              onTap: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            CurrentClientCard(
+              clientName: 'Gretchen Mango',
+              lastSessionText: 'Last Session: 8 days ago',
+              score: 8.2,
+              status: ReviewStatus.pendingReview,
+              onTap: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            CurrentClientCard(
+              clientName: 'Dulce Franci',
+              lastSessionText: 'Last Session: 1 day ago',
+              score: 4.6,
+              status: ReviewStatus.reviewed,
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── All Client Card ──
+      _subSectionHeader(subs[7]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.add,
+              onTap: () {},
+              onAction: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.remove,
+              onTap: () {},
+              onAction: () {},
+            ),
+            const SizedBox(height: AppGrid.grid12),
+            AllClientCard(
+              clientName: 'Charlie Vetrovs',
+              email: 'charlie@example.com',
+              state: AllClientCardState.rosterFull,
+              onTap: () {},
+              onAction: () {},
+            ),
+          ],
+        ),
+      ),
+
+      // ── CONTROLS ──
+      _folderGroupHeader('CONTROLS'),
+
+      // ── Labeled Checkbox ──
+      _subSectionHeader(subs[8]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      StatefulBuilder(
+        builder: (context, setState) {
+          bool checked1 = true;
+          bool checked2 = false;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LabeledCheckbox(
+                label: 'Checked',
+                isChecked: checked1,
+                onChanged: (v) => setState(() => checked1 = v),
+              ),
+              const SizedBox(height: AppGrid.grid12),
+              LabeledCheckbox(
+                label: 'Unchecked',
+                isChecked: checked2,
+                onChanged: (v) => setState(() => checked2 = v),
+              ),
+              const SizedBox(height: AppGrid.grid12),
+              LabeledCheckbox(
+                label: 'Long label — this text wraps within the available width to show Expanded behavior',
+                isChecked: false,
+                onChanged: (_) {},
+              ),
+            ],
+          );
+        },
+      ),
+
+      _sectionDivider(),
+
+      // ── Filter Button ──
+      _subSectionHeader(subs[9]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.open, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
+
       _sectionDivider(),
 
       // ── Search Bar ──
-      _subSectionHeader(subs[4]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
@@ -2395,183 +2665,6 @@ class _CatalogHomeState extends State<CatalogHome> {
             variant: SearchBarVariant.card,
           ),
         ),
-      ),
-
-      // ── DISPLAY ──
-      _folderGroupHeader('DISPLAY'),
-
-      // ── Section Header ──
-      _subSectionHeader(subs[5]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      const SectionHeader(label: 'Current clients', count: '17/30'),
-      const SizedBox(height: AppGrid.grid16),
-      const SectionHeader(label: 'All clients', count: '130'),
-      const SizedBox(height: AppGrid.grid16),
-      const SectionHeader(label: 'Current clients', count: '0/30'),
-
-      _sectionDivider(),
-
-      // ── Icon Text Action ──
-      _subSectionHeader(subs[6]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('DEFAULT', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      IconTextAction(
-        iconPath: AppIcons.add,
-        label: 'Add Clients',
-        onTap: () {},
-      ),
-
-      // ── CARDS ──
-      _folderGroupHeader('CARDS'),
-
-      // ── Current Client Card ──
-      _subSectionHeader(subs[7]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360),
-        child: Column(
-          children: [
-            CurrentClientCard(
-              clientName: 'Ryan Levin',
-              lastSessionText: 'Last Session: 1 day ago',
-              score: 3.9,
-              status: ReviewStatus.urgent,
-              onTap: () {},
-            ),
-            const SizedBox(height: AppGrid.grid12),
-            CurrentClientCard(
-              clientName: 'Gretchen Mango',
-              lastSessionText: 'Last Session: 8 days ago',
-              score: 8.2,
-              status: ReviewStatus.pendingReview,
-              onTap: () {},
-            ),
-            const SizedBox(height: AppGrid.grid12),
-            CurrentClientCard(
-              clientName: 'Dulce Franci',
-              lastSessionText: 'Last Session: 1 day ago',
-              score: 4.6,
-              status: ReviewStatus.reviewed,
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-
-      _sectionDivider(),
-
-      // ── All Client Card ──
-      _subSectionHeader(subs[8]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360),
-        child: Column(
-          children: [
-            AllClientCard(
-              clientName: 'Charlie Vetrovs',
-              email: 'charlie@example.com',
-              state: AllClientCardState.add,
-              onTap: () {},
-              onAction: () {},
-            ),
-            const SizedBox(height: AppGrid.grid12),
-            AllClientCard(
-              clientName: 'Charlie Vetrovs',
-              email: 'charlie@example.com',
-              state: AllClientCardState.remove,
-              onTap: () {},
-              onAction: () {},
-            ),
-            const SizedBox(height: AppGrid.grid12),
-            AllClientCard(
-              clientName: 'Charlie Vetrovs',
-              email: 'charlie@example.com',
-              state: AllClientCardState.rosterFull,
-              onTap: () {},
-              onAction: () {},
-            ),
-          ],
-        ),
-      ),
-
-      // ── CONTROLS ──
-      _folderGroupHeader('CONTROLS'),
-
-      // ── Labeled Checkbox ──
-      _subSectionHeader(subs[9]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('STATES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      StatefulBuilder(
-        builder: (context, setState) {
-          bool checked1 = true;
-          bool checked2 = false;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LabeledCheckbox(
-                label: 'Checked',
-                isChecked: checked1,
-                onChanged: (v) => setState(() => checked1 = v),
-              ),
-              const SizedBox(height: AppGrid.grid12),
-              LabeledCheckbox(
-                label: 'Unchecked',
-                isChecked: checked2,
-                onChanged: (v) => setState(() => checked2 = v),
-              ),
-              const SizedBox(height: AppGrid.grid12),
-              LabeledCheckbox(
-                label: 'Long label — this text wraps within the available width to show Expanded behavior',
-                isChecked: false,
-                onChanged: (_) {},
-              ),
-            ],
-          );
-        },
-      ),
-
-      _sectionDivider(),
-
-      // ── Filter Button ──
-      _subSectionHeader(subs[10]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('STATES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid16,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Column(children: [
-            FilterButton(state: FilterButtonState.idle, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            FilterButton(state: FilterButtonState.open, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-        ],
       ),
 
       // ── NAVIGATION ──

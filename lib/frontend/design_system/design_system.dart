@@ -69,6 +69,7 @@ export 'atoms/path/path_button_renderer.dart';
 // Molecule behaviors
 export 'molecules/behaviors/field_state.dart';
 export 'molecules/behaviors/validator_mixin.dart';
+export 'molecules/behaviors/form_field_mixin.dart';
 
 // Molecules — form fields
 export 'molecules/form_fields/form_field.dart';
@@ -78,8 +79,6 @@ export 'molecules/form_fields/password_field.dart';
 export 'molecules/form_fields/text_area.dart';
 export 'molecules/form_fields/number_field.dart';
 export 'molecules/form_fields/number_field_types.dart';
-export 'molecules/form_fields/search_bar.dart';
-export 'molecules/form_fields/search_bar_types.dart';
 
 // Molecules — display
 export 'molecules/display/section_header.dart';
@@ -93,6 +92,8 @@ export 'molecules/cards/all_client_card_types.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';
+export 'molecules/controls/search_bar.dart';
+export 'molecules/controls/search_bar_types.dart';
 export 'atoms/controls/filter_button.dart';
 export 'atoms/controls/filter_button_types.dart';
 
