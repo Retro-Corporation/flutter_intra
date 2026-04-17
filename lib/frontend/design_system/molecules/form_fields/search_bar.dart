@@ -4,6 +4,7 @@ import '../../atoms/inputs/text_field.dart';
 import '../../atoms/inputs/text_field_3d.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/padding.dart';
+import '../../foundation/type/typography.dart';
 import '../../foundation/space/radius.dart';
 import '../../icons/app_icons.dart';
 import '../../icons/icon_sizes.dart';
@@ -125,6 +126,8 @@ class _AppSearchBarState extends State<AppSearchBar>
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
       borderColor: isFocused ? AppColors.brand : AppColors.surfaceBorder,
+      backgroundColor: AppColors.background,
+      textStyle: AppTypography.body.bold,
       suffixWidget: _buildSuffixIcon(),
     );
   }

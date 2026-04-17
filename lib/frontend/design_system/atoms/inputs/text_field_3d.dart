@@ -37,6 +37,8 @@ class AppTextField3D extends StatefulWidget {
   /// Custom suffix widget (e.g. clear icon, visibility toggle, stepper buttons).
   final Widget? suffixWidget;
 
+  final Color backgroundColor;
+  final TextStyle? textStyle;
   final bool enabled;
   final bool obscureText;
   final int maxLines;
@@ -54,6 +56,8 @@ class AppTextField3D extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.suffixWidget,
+    this.backgroundColor = AppColors.surface,
+    this.textStyle,
     this.enabled = true,
     this.obscureText = false,
     this.maxLines = 1,
@@ -132,7 +136,7 @@ class _AppTextField3DState extends State<AppTextField3D>
 
           return CustomPaint(
             painter: ThreeDPressPainter(
-              backgroundColor: AppColors.surface,
+              backgroundColor: widget.backgroundColor,
               borderColor: widget.borderColor,
               borderRadius: AppRadius.sm,
               borderTop: _unpressed.visualTop,
@@ -170,7 +174,7 @@ class _AppTextField3DState extends State<AppTextField3D>
           inputFormatters: widget.inputFormatters,
           maxLength: widget.maxLength,
           enabled: widget.enabled,
-          style: AppTypography.body.regular,
+          style: widget.textStyle ?? AppTypography.body.regular,
           cursorColor: AppColors.brand,
           buildCounter: (context,
                   {required currentLength,
@@ -179,7 +183,7 @@ class _AppTextField3DState extends State<AppTextField3D>
               null,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            hintStyle: AppTypography.body.regular
+            hintStyle: (widget.textStyle ?? AppTypography.body.regular)
                 .copyWith(color: AppColors.textSecondary),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
