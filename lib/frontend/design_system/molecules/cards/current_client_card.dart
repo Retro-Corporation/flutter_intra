@@ -52,9 +52,9 @@ class CurrentClientCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppPadding.cardPadding,
-          AppPadding.rem075,
+          AppPadding.rem05,
           AppPadding.cardPadding,
-          AppPadding.rem075,
+          AppPadding.rem05,
         ),
         child: Row(
           children: [
@@ -80,7 +80,7 @@ class CurrentClientCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: AppGrid.grid16),
+            const SizedBox(width: AppGrid.grid16),
             ScoreBadge(score: score, underlineColor: statusColor),
           ],
         ),

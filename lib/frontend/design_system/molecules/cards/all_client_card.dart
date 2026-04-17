@@ -51,10 +51,10 @@ class _AllClientCardState extends State<AllClientCard> {
 
   Widget? _actionIcon() => switch (widget.state) {
         AllClientCardState.add =>
-          AppIcon(AppIcons.add, color: AppColors.textPrimary),
+          const AppIcon(AppIcons.add, color: AppColors.textPrimary),
         AllClientCardState.rosterFull => null,
         AllClientCardState.remove =>
-          AppIcon(AppIcons.close, color: AppColors.textPrimary),
+          const AppIcon(AppIcons.close, color: AppColors.textPrimary),
       };
 
   /// Builds a single 3D press zone with GestureDetector + CustomPaint.
@@ -151,9 +151,9 @@ class _AllClientCardState extends State<AllClientCard> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppPadding.cardPadding,
-                  AppPadding.rem075,
+                  AppPadding.rem05,
                   AppPadding.cardPadding,
-                  AppPadding.rem075,
+                  AppPadding.rem05,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,9 +204,9 @@ class _AllClientCardState extends State<AllClientCard> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     AppPadding.rem15,
-                    AppPadding.rem075,
+                    AppPadding.rem05,
                     AppPadding.rem15,
-                    AppPadding.rem075,
+                    AppPadding.rem05,
                   ),
                   child: Center(child: actionIcon),
                 ),
