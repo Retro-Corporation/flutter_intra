@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../design_system.dart';
-import 'client_list_types.dart';
 
 /// Organism: cross-molecule client list with two sections.
 ///
@@ -196,7 +195,7 @@ class ClientListOrganism extends StatelessWidget {
                     style: AppTypography.bodyLarge.bold,
                     color: AppColors.brand,
                   ),
-                  SizedBox(height: AppGrid.grid8),
+                  const SizedBox(height: AppGrid.grid8),
                   IconTextAction(
                     iconPath: AppIcons.add,
                     label: 'Add Clients',
@@ -219,8 +218,9 @@ class ClientListOrganism extends StatelessWidget {
                         : client.clientName;
                 return Padding(
                   padding: EdgeInsets.only(
-                      bottom:
-                          i < filteredAll.length - 1 ? AppGrid.grid16 : 0),
+                      bottom: i < filteredAll.length - 1
+                          ? AppGrid.grid16
+                          : AppGrid.grid8),
                   child: Semantics(
                     label: semanticLabel,
                     child: AllClientCard(
