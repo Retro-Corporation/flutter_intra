@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/color/color_utils.dart';
+import '../../foundation/motion/curves.dart';
+import '../../foundation/motion/durations.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/opacity.dart';
 import '../../foundation/space/padding.dart';
@@ -240,7 +242,7 @@ class AppButton extends StatefulWidget {
 }
 
 class _AppButtonState extends State<AppButton>
-    with InteractiveAtomMixin {
+    with SingleTickerProviderStateMixin, InteractiveAtomMixin {
   @override
   bool get isInteractive => !widget.isDisabled && !widget.isLoading;
 
@@ -279,63 +281,102 @@ class _AppButtonState extends State<AppButton>
     );
   }
 
-  Widget _buildButton(_ButtonSizeConfig sizeConfig) {
-    final colors = _ResolvedColors.of(
-      widget.type,
-      widget.color,
-      pressed: pressed,
-      active: isActive,
-    );
-
-    final radius = sizeConfig.borderRadius;
-    final padX = sizeConfig.paddingX;
-
-    final geo = switch (widget.type) {
+  PressGeometry _geometryFor({required bool pressed}) {
+    return switch (widget.type) {
       ButtonType.filled  => PressGeometry.filled(pressed: pressed),
       ButtonType.outline => PressGeometry.outline(pressed: pressed),
       ButtonType.ghost   => PressGeometry.ghost(),
     };
+  }
+
+  Widget _buildButton(_ButtonSizeConfig sizeConfig) {
+    final radius = sizeConfig.borderRadius;
+    final padX = sizeConfig.paddingX;
+
+    final geoUnpressed = _geometryFor(pressed: false);
+    final geoPressed = _geometryFor(pressed: true);
 
     // Widget size is fixed — always the token height. Never changes.
     final height = sizeConfig.height;
     final width = _iconOnly ? height : 0.0;
 
-    return ThreeDPressable(
-      isInteractive: isInteractive,
-      onTapDown: handleTapDown,
-      onTapUp: handleTapUp,
-      onTapCancel: handleTapCancel,
-      painter: ThreeDPressPainter(
-        backgroundColor: colors.background,
-        borderColor: colors.shadow,
-        borderRadius: radius,
-        borderTop: geo.visualTop,
-        borderBottom: geo.visualBottom,
-        borderSide: geo.visualSide,
-        faceOffset: geo.faceOffset,
-        faceSideInset: geo.layoutSide,
-        showBorder: geo.showBorder,
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: height,
-          maxHeight: height,
-          minWidth: width,
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: (_iconOnly ? 0 : padX) + geo.layoutSide,
-            right: (_iconOnly ? 0 : padX) + geo.layoutSide,
-            top: geo.visualTop + geo.faceOffset,
-            bottom: (geo.visualBottom - geo.faceOffset).clamp(0.0, double.infinity),
-          ),
-          child: Center(
-            widthFactor: 1.0,
-            heightFactor: 1.0,
-            child: _buildContent(sizeConfig, colors),
-          ),
-        ),
-      ),
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(end: isActive ? 1.0 : 0.0),
+      duration: AppDurations.toggle,
+      curve: AppCurves.toggle,
+      builder: (context, stateT, _) {
+        return AnimatedBuilder(
+          animation: pressAnimation,
+          builder: (context, _) {
+            final pressT = pressAnimation.value;
+            final geo = PressGeometry.lerp(geoUnpressed, geoPressed, pressT);
+
+            // Color endpoints — crossfaded by [stateT] between inactive and
+            // active palettes. `pressed` stays snap-based (80ms) for ghost tint.
+            final colorsInactive = _ResolvedColors.of(
+              widget.type,
+              widget.color,
+              pressed: pressed,
+              active: false,
+            );
+            final colorsActive = _ResolvedColors.of(
+              widget.type,
+              widget.color,
+              pressed: pressed,
+              active: true,
+            );
+            final colors = _ResolvedColors(
+              background: Color.lerp(
+                  colorsInactive.background, colorsActive.background, stateT)!,
+              foreground: Color.lerp(
+                  colorsInactive.foreground, colorsActive.foreground, stateT)!,
+              border: Color.lerp(
+                  colorsInactive.border, colorsActive.border, stateT)!,
+              shadow: Color.lerp(
+                  colorsInactive.shadow, colorsActive.shadow, stateT)!,
+            );
+
+            return ThreeDPressable(
+              isInteractive: isInteractive,
+              onTapDown: handleTapDown,
+              onTapUp: handleTapUp,
+              onTapCancel: handleTapCancel,
+              painter: ThreeDPressPainter(
+                backgroundColor: colors.background,
+                borderColor: colors.shadow,
+                borderRadius: radius,
+                borderTop: geo.visualTop,
+                borderBottom: geo.visualBottom,
+                borderSide: geo.visualSide,
+                faceOffset: geo.faceOffset,
+                faceSideInset: geo.layoutSide,
+                showBorder: geo.showBorder,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: height,
+                  maxHeight: height,
+                  minWidth: width,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: (_iconOnly ? 0 : padX) + geo.layoutSide,
+                    right: (_iconOnly ? 0 : padX) + geo.layoutSide,
+                    top: geo.visualTop + geo.faceOffset,
+                    bottom: (geo.visualBottom - geo.faceOffset)
+                        .clamp(0.0, double.infinity),
+                  ),
+                  child: Center(
+                    widthFactor: 1.0,
+                    heightFactor: 1.0,
+                    child: _buildContent(sizeConfig, colors),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

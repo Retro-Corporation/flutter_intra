@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/color/color_utils.dart';
+import '../../foundation/motion/curves.dart';
+import '../../foundation/motion/durations.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
 import '../behaviors/interactive_atom_mixin.dart';
@@ -89,7 +91,7 @@ class AppRadio extends StatefulWidget {
 }
 
 class _AppRadioState extends State<AppRadio>
-    with InteractiveAtomMixin {
+    with SingleTickerProviderStateMixin, InteractiveAtomMixin {
   @override
   bool get isInteractive => !widget.isDisabled;
 
@@ -112,60 +114,80 @@ class _AppRadioState extends State<AppRadio>
   Widget build(BuildContext context) {
     final sizeConfig = _RadioSizeConfig.of(widget.size);
 
-    final geo = PressGeometry.outline(pressed: pressed);
+    final geoUnpressed = PressGeometry.outline(pressed: false);
+    final geoPressed = PressGeometry.outline(pressed: true);
 
-    // ── Colors ──
-    final Color backgroundColor;
-    final Color borderColor;
+    // Inactive / active color endpoints — crossfaded by [stateT].
+    const inactiveBg = Colors.transparent;
+    const inactiveBorder = AppColors.textPrimary;
+    final activeBg = widget.color;
+    final activeBorder = resolve700(widget.color);
 
-    if (isActive) {
-      backgroundColor = widget.color;
-      borderColor = resolve700(widget.color);
-    } else {
-      backgroundColor = Colors.transparent;
-      borderColor = AppColors.textPrimary;
-    }
-
-    final totalWidth = sizeConfig.size + (geo.layoutSide * 2);
+    final totalWidth = sizeConfig.size + (geoUnpressed.layoutSide * 2);
     final totalHeight = sizeConfig.size + PressGeometry.depth;
 
     return Semantics(
       checked: isActive,
-      child: ThreeDPressable(
-        isInteractive: isInteractive,
-        isDisabled: widget.isDisabled,
-        onTapDown: handleTapDown,
-        onTapUp: handleTapUp,
-        onTapCancel: handleTapCancel,
-        painter: ThreeDPressPainter(
-          backgroundColor: backgroundColor,
-          borderColor: borderColor,
-          borderRadius: totalWidth / 2,
-          borderTop: geo.visualTop,
-          borderBottom: geo.visualBottom,
-          borderSide: geo.visualSide,
-          faceOffset: geo.faceOffset,
-          faceSideInset: geo.visualSide,
-          showBorder: true,
-          contentPainter: isActive
-              ? (canvas, faceRect) => _paintDot(
-                    canvas,
-                    faceRect,
-                    sizeConfig.dotSize,
-                  )
-              : null,
-        ),
-        child: SizedBox(
-          width: totalWidth,
-          height: totalHeight,
-        ),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(end: isActive ? 1.0 : 0.0),
+        duration: AppDurations.toggle,
+        curve: AppCurves.toggle,
+        builder: (context, stateT, _) {
+          return AnimatedBuilder(
+            animation: pressAnimation,
+            builder: (context, _) {
+              final pressT = pressAnimation.value;
+              final geo = PressGeometry.lerp(geoUnpressed, geoPressed, pressT);
+              final backgroundColor =
+                  Color.lerp(inactiveBg, activeBg, stateT)!;
+              final borderColor =
+                  Color.lerp(inactiveBorder, activeBorder, stateT)!;
+              return ThreeDPressable(
+                isInteractive: isInteractive,
+                isDisabled: widget.isDisabled,
+                onTapDown: handleTapDown,
+                onTapUp: handleTapUp,
+                onTapCancel: handleTapCancel,
+                painter: ThreeDPressPainter(
+                  backgroundColor: backgroundColor,
+                  borderColor: borderColor,
+                  borderRadius: totalWidth / 2,
+                  borderTop: geo.visualTop,
+                  borderBottom: geo.visualBottom,
+                  borderSide: geo.visualSide,
+                  faceOffset: geo.faceOffset,
+                  faceSideInset: geo.visualSide,
+                  showBorder: true,
+                  contentPainter: stateT > 0.0
+                      ? (canvas, faceRect) => _paintDot(
+                            canvas,
+                            faceRect,
+                            sizeConfig.dotSize,
+                            alpha: stateT,
+                          )
+                      : null,
+                ),
+                child: SizedBox(
+                  width: totalWidth,
+                  height: totalHeight,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  /// Paints the radio selection dot centered on [faceRect].
-  void _paintDot(Canvas canvas, Rect faceRect, double dotSize) {
-    final dotPaint = Paint()..color = AppColors.textPrimary;
+  /// Paints the radio selection dot centered on [faceRect] with [alpha] in [0,1].
+  void _paintDot(
+    Canvas canvas,
+    Rect faceRect,
+    double dotSize, {
+    required double alpha,
+  }) {
+    final dotPaint = Paint()
+      ..color = AppColors.textPrimary.withValues(alpha: alpha);
     canvas.drawCircle(faceRect.center, dotSize / 2, dotPaint);
   }
 }

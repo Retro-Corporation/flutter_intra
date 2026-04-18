@@ -9,11 +9,14 @@ class AppDurations {
   // ── Interactive feedback ──
   // Direct response to a user action (tap, toggle, press).
 
-  /// 250ms — toggle thumb slide, nav panel transition.
+  /// 250ms — toggle state transitions. Used by the toggle thumb slide,
+  /// nav panel transition, and the active-state cross-fade on checkbox /
+  /// radio / button (color + geometry-family fade between inactive and
+  /// active palettes).
   static const Duration toggle = Duration(milliseconds: 250);
 
-  /// 100ms — 3D press feedback (face drop on tap-down, spring back on tap-up).
-  static const Duration press = Duration(milliseconds: 100);
+  /// 80ms — 3D press feedback (face drop on tap-down, spring back on tap-up).
+  static const Duration press = Duration(milliseconds: 80);
 
   // ── Breathing / ambient ──
   // Looping or continuous motion with no user trigger,

@@ -73,9 +73,10 @@ void main() {
       var painter = findPainter(tester);
       expect((painter as dynamic).contentPainter, isNull);
 
-      // Tap to select
+      // Tap to select (settle to let the state animation complete so the
+      // contentPainter is active — contentPainter is null when stateT == 0).
       await tester.tap(find.byType(AppRadio));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       painter = findPainter(tester);
       expect((painter as dynamic).contentPainter, isNotNull);
@@ -116,7 +117,7 @@ void main() {
       final gesture = await tester.startGesture(
         tester.getCenter(find.byType(AppRadio)),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       painter = findPainter(tester);
       expect((painter as dynamic).borderTop, 1.0);

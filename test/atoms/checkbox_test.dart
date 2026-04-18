@@ -38,14 +38,28 @@ void main() {
     return checkboxPaint.painter!;
   }
 
+  // The check/minus icon is always in the tree, wrapped in an Opacity that
+  // animates between 0.0 (unchecked) and 1.0 (checked/indeterminate).
+  double iconOpacity(WidgetTester tester) {
+    final opacity = tester.widget<Opacity>(
+      find
+          .ancestor(
+            of: find.byType(AppIcon),
+            matching: find.byType(Opacity),
+          )
+          .first,
+    );
+    return opacity.opacity;
+  }
+
   group('AppCheckbox rendering', () {
     testWidgets(
-      'Unchecked by default — no AppIcon in tree',
+      'Unchecked by default — icon is fully transparent',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestCheckbox());
 
-        // No check or minus icon should be rendered
-        expect(find.byType(AppIcon), findsNothing);
+        // Icon is always in tree; Opacity wrapper is 0.0 when unchecked.
+        expect(iconOpacity(tester), 0.0);
       },
     );
 
@@ -86,19 +100,19 @@ void main() {
           onChanged: values.add,
         ));
 
-        // Initially unchecked — no icon
-        expect(find.byType(AppIcon), findsNothing);
+        // Initially unchecked — icon opacity is 0
+        expect(iconOpacity(tester), 0.0);
 
-        // First tap → checked
+        // First tap → checked (settle to let the state animation complete)
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
-        expect(find.byType(AppIcon), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(iconOpacity(tester), 1.0);
         expect(values, [true]);
 
         // Second tap → unchecked
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
-        expect(find.byType(AppIcon), findsNothing);
+        await tester.pumpAndSettle();
+        expect(iconOpacity(tester), 0.0);
         expect(values, [true, false]);
       },
     );
@@ -108,16 +122,17 @@ void main() {
       (WidgetTester tester) async {
         // Start unchecked
         await tester.pumpWidget(buildTestCheckbox(selected: false));
-        expect(find.byType(AppIcon), findsNothing);
+        expect(iconOpacity(tester), 0.0);
 
         // Tap — state should NOT change (parent-controlled)
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
-        expect(find.byType(AppIcon), findsNothing);
+        await tester.pumpAndSettle();
+        expect(iconOpacity(tester), 0.0);
 
-        // Rebuild with selected: true — now it shows the icon
+        // Rebuild with selected: true — now the icon fades in
         await tester.pumpWidget(buildTestCheckbox(selected: true));
-        expect(find.byType(AppIcon), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(iconOpacity(tester), 1.0);
       },
     );
 
@@ -133,11 +148,11 @@ void main() {
 
         // Tap — should not fire callback
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(values, isEmpty);
         // Should still be unchecked
-        expect(find.byType(AppIcon), findsNothing);
+        expect(iconOpacity(tester), 0.0);
       },
     );
   });
@@ -231,7 +246,7 @@ void main() {
 
         // Press
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderTop, 4.0);
@@ -256,7 +271,7 @@ void main() {
         await tester.pumpWidget(buildTestCheckbox(selected: false));
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderTop, 1.0);

@@ -70,7 +70,7 @@ void main() {
 
         // Press
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         // Get pressed background color
         final pressedPainter = findPainter(tester);
@@ -95,7 +95,7 @@ void main() {
 
         // Simulate press (tap down without releasing)
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         // Border flips: bottom→0, top→4, sides stay 2
@@ -123,7 +123,7 @@ void main() {
 
         // Simulate press
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderBottom, 1.0);
@@ -143,7 +143,7 @@ void main() {
 
         // This previously crashed with negative EdgeInsets (-2.0 bottom padding)
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         // Verify widget still renders — find the label text
         expect(find.text('Test'), findsOneWidget);
@@ -159,7 +159,7 @@ void main() {
         await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         // Border is 1px all around
@@ -206,7 +206,7 @@ void main() {
 
         // Press
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         // Measure size after press
         final afterBox = tester.renderObject<RenderBox>(
@@ -258,7 +258,7 @@ void main() {
         await tester.pumpWidget(buildTestButton(isActive: true));
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderTop, 4.0);
@@ -280,7 +280,7 @@ void main() {
         final defaultBg = (defaultPainter as dynamic).backgroundColor as Color;
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final pressedPainter = findPainter(tester);
         final pressedBg = (pressedPainter as dynamic).backgroundColor as Color;
@@ -304,7 +304,7 @@ void main() {
         final beforeSize = beforeBox.size;
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final afterBox = tester.renderObject<RenderBox>(
           find.byType(GestureDetector),
@@ -329,9 +329,9 @@ void main() {
         final beforeBg = (beforePainter as dynamic).backgroundColor as Color;
         expect(beforeBg, AppColors.brand);
 
-        // Tap to toggle active
+        // Tap to toggle active (settle to let the 250ms state animation finish)
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         // After tap: active colors (surface background)
         final afterPainter = findPainter(tester);
@@ -340,7 +340,7 @@ void main() {
 
         // Tap again to toggle back
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final resetPainter = findPainter(tester);
         final resetBg = (resetPainter as dynamic).backgroundColor as Color;
@@ -459,7 +459,7 @@ void main() {
         await tester.pumpWidget(buildTestButton(type: ButtonType.outline));
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         final bg = (painter as dynamic).backgroundColor as Color;
@@ -510,7 +510,7 @@ void main() {
         ));
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final painter = findPainter(tester);
         expect((painter as dynamic).borderBottom, 1.0);
@@ -535,7 +535,7 @@ void main() {
         final defaultBg = (defaultPainter as dynamic).backgroundColor as Color;
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final pressedPainter = findPainter(tester);
         final pressedBg = (pressedPainter as dynamic).backgroundColor as Color;
@@ -562,7 +562,7 @@ void main() {
         final beforeSize = beforeBox.size;
 
         final gesture = await tester.press(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final afterBox = tester.renderObject<RenderBox>(
           find.byType(GestureDetector),
@@ -590,9 +590,9 @@ void main() {
         final beforeBg = (beforePainter as dynamic).backgroundColor as Color;
         expect(beforeBg, AppColors.background);
 
-        // Tap to toggle active
+        // Tap to toggle active (settle to let the 250ms state animation finish)
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         // After tap: active (grey850)
         final afterPainter = findPainter(tester);
@@ -601,7 +601,7 @@ void main() {
 
         // Tap again to toggle back
         await tester.tap(find.byType(GestureDetector));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         final resetPainter = findPainter(tester);
         final resetBg = (resetPainter as dynamic).backgroundColor as Color;
