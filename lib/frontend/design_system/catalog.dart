@@ -127,6 +127,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Toggles',
         'Radios',
         'Nav Bar Item',
+        'Filter Button',
         // inputs/
         'Text Fields',
         // path/
@@ -146,7 +147,6 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Current Client Card',
         'All Client Card',
         'Labeled Checkbox',
-        'Filter Button',
         'Search Bar',
         'Practitioner Nav Bar',
       ]),
@@ -1434,11 +1434,42 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
+      _sectionDivider(),
+
+      // Filter Button
+      _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.open, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
+
       // ── INPUTS ──
       _folderGroupHeader('INPUTS'),
 
       // Text Fields
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1460,7 +1491,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('PATH'),
 
       // Path Buttons
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1772,7 +1803,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -1841,7 +1872,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground (collapsed by default)
       _CollapsibleSubsection(
-        sub: subs[13],
+        sub: subs[14],
         child: const _ButtonPlayground(),
       ),
     ];
@@ -2589,39 +2620,8 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // ── Filter Button ──
-      _subSectionHeader(subs[9]),
-      const SizedBox(height: AppGrid.grid12),
-
-      AppText('STATES', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      Wrap(
-        spacing: AppGrid.grid16,
-        runSpacing: AppGrid.grid16,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Column(children: [
-            FilterButton(state: FilterButtonState.idle, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            FilterButton(state: FilterButtonState.open, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-          Column(children: [
-            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
-            const SizedBox(height: AppGrid.grid8),
-            AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
-          ]),
-        ],
-      ),
-
-      _sectionDivider(),
-
       // ── Search Bar ──
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
@@ -2671,7 +2671,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TABS', style: AppTypography.overline.semiBold),

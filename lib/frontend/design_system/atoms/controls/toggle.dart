@@ -7,6 +7,8 @@ import '../../foundation/motion/durations.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
 import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
+import '../behaviors/three_d_press_painter.dart';
+import '../behaviors/three_d_surface.dart';
 import 'toggle_types.dart';
 
 // ── Size configuration ──
@@ -219,10 +221,25 @@ class _AppToggleState extends State<AppToggle>
       color: widget.color,
     );
     // Thumb 3D border — static, never changes
-    final thumbGeo = PressGeometry.static(top: AppStroke.xs, side: AppStroke.md, bottom: AppStroke.xl);
+    final thumbGeo = PressGeometry.static(
+      top: AppStroke.xs,
+      side: AppStroke.md,
+      bottom: AppStroke.xl,
+    );
 
     final totalWidth = sizeConfig.trackWidth;
-    final totalHeight = sizeConfig.thumbSize + thumbGeo.visualTop + thumbGeo.visualBottom;
+    final totalHeight =
+        sizeConfig.thumbSize + thumbGeo.visualTop + thumbGeo.visualBottom;
+
+    // Thumb outer extents (including its 3D side borders).
+    final thumbOuterWidth = sizeConfig.thumbSize + (thumbGeo.visualSide * 2);
+    final thumbTravel = sizeConfig.trackWidth - thumbOuterWidth;
+
+    // Track sits behind the thumb. Vertically centered within the total
+    // height, accounting for the thumb's taller-than-track overflow and
+    // the asymmetric top/bottom 3D borders on the thumb.
+    final thumbOverflow = (sizeConfig.thumbSize - sizeConfig.trackHeight) / 2;
+    final trackTop = thumbOverflow + (thumbGeo.visualBottom / 2);
 
     return Semantics(
       toggled: _currentValue,
@@ -231,122 +248,56 @@ class _AppToggleState extends State<AppToggle>
         onHorizontalDragUpdate: _interactive ? _onDragUpdate : null,
         onHorizontalDragEnd: _interactive ? _onDragEnd : null,
         child: _wrapDisabled(
-          child: AnimatedBuilder(
-            animation: _position,
-            child: SizedBox(
-              width: totalWidth,
-              height: totalHeight,
-            ),
-            builder: (context, child) {
-              return CustomPaint(
-                painter: _TogglePainter(
-                  position: _position.value,
-                  trackColor: colors.trackColor,
-                  thumbColor: colors.thumbColor,
-                  thumbBorder: colors.thumbBorder,
-                  trackWidth: sizeConfig.trackWidth,
-                  trackHeight: sizeConfig.trackHeight,
-                  thumbSize: sizeConfig.thumbSize,
-                  thumbRadius: AppRadius.sm,
-                  thumbBorderTop: thumbGeo.visualTop,
-                  thumbBorderSide: thumbGeo.visualSide,
-                  thumbBorderBottom: thumbGeo.visualBottom,
+          child: SizedBox(
+            width: totalWidth,
+            height: totalHeight,
+            child: Stack(
+              children: [
+                // Track — plain pill fill behind the thumb.
+                Positioned(
+                  left: 0,
+                  top: trackTop,
+                  width: sizeConfig.trackWidth,
+                  height: sizeConfig.trackHeight,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.trackColor,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(AppRadius.pill),
+                      ),
+                    ),
+                  ),
                 ),
-                child: child,
-              );
-            },
+                // Thumb — visual-only 3D surface, position animated.
+                AnimatedBuilder(
+                  animation: _position,
+                  builder: (context, _) {
+                    return Positioned(
+                      left: thumbTravel * _position.value,
+                      top: 0,
+                      width: thumbOuterWidth,
+                      height: totalHeight,
+                      child: ThreeDSurface(
+                        painter: ThreeDPressPainter(
+                          backgroundColor: colors.thumbColor,
+                          borderColor: colors.thumbBorder,
+                          borderRadius: AppRadius.sm + thumbGeo.visualSide,
+                          borderTop: thumbGeo.visualTop,
+                          borderBottom: thumbGeo.visualBottom,
+                          borderSide: thumbGeo.visualSide,
+                          faceOffset: thumbGeo.faceOffset,
+                          faceSideInset: thumbGeo.layoutSide,
+                          showBorder: true,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-}
-
-// ── Custom painter for toggle ──
-
-class _TogglePainter extends CustomPainter {
-  final double position;
-  final Color trackColor;
-  final Color thumbColor;
-  final Color thumbBorder;
-  final double trackWidth;
-  final double trackHeight;
-  final double thumbSize;
-  final double thumbRadius;
-  final double thumbBorderTop;
-  final double thumbBorderSide;
-  final double thumbBorderBottom;
-
-  _TogglePainter({
-    required this.position,
-    required this.trackColor,
-    required this.thumbColor,
-    required this.thumbBorder,
-    required this.trackWidth,
-    required this.trackHeight,
-    required this.thumbSize,
-    required this.thumbRadius,
-    required this.thumbBorderTop,
-    required this.thumbBorderSide,
-    required this.thumbBorderBottom,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // The thumb (including its side borders) fits within trackWidth.
-    final thumbOuterWidth = thumbSize + (thumbBorderSide * 2);
-    final thumbTravel = trackWidth - thumbOuterWidth;
-    final thumbOverflow = (thumbSize - trackHeight) / 2;
-
-    // 1. Draw track (pill) — no border, just a fill
-    //    Shift down by half the 3D border so the pill centers in total height.
-    final trackTop = thumbOverflow + (thumbBorderBottom / 2);
-    final trackRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, trackTop, trackWidth, trackHeight),
-      const Radius.circular(AppRadius.pill),
-    );
-    canvas.drawRRect(trackRect, Paint()..color = trackColor);
-
-    // 2. Draw thumb (squircle with static 3D border)
-    final thumbOuterLeft = thumbTravel * position;
-    const thumbOuterTop = 0.0;
-
-    // 2a. Border ring via drawDRRect
-    final outerRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        thumbOuterLeft,
-        thumbOuterTop,
-        thumbOuterWidth,
-        thumbSize + thumbBorderTop + thumbBorderBottom,
-      ),
-      Radius.circular(thumbRadius + thumbBorderSide),
-    );
-    final innerRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        thumbOuterLeft + thumbBorderSide,
-        thumbOuterTop + thumbBorderTop,
-        thumbSize,
-        thumbSize,
-      ),
-      Radius.circular(thumbRadius),
-    );
-    canvas.drawDRRect(outerRect, innerRect, Paint()..color = thumbBorder);
-
-    // 2b. Thumb face
-    canvas.drawRRect(innerRect, Paint()..color = thumbColor);
-  }
-
-  @override
-  bool shouldRepaint(_TogglePainter old) =>
-      position != old.position ||
-      trackColor != old.trackColor ||
-      thumbColor != old.thumbColor ||
-      thumbBorder != old.thumbBorder ||
-      trackWidth != old.trackWidth ||
-      trackHeight != old.trackHeight ||
-      thumbSize != old.thumbSize ||
-      thumbRadius != old.thumbRadius ||
-      thumbBorderTop != old.thumbBorderTop ||
-      thumbBorderSide != old.thumbBorderSide ||
-      thumbBorderBottom != old.thumbBorderBottom;
 }
