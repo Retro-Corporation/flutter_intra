@@ -185,7 +185,10 @@ class PathButtonRenderer extends CustomPainter {
   final List<PathButtonSegment> segments;
   final Color color;
   final double pulseExpansion;
-  final bool pressed;
+
+  /// Press animation progress: 0.0 = fully unpressed, 1.0 = fully pressed.
+  /// Drives shadow fade and ring recentering continuously.
+  final double pressT;
   final double visualTop;
   final double visualBottom;
 
@@ -195,7 +198,7 @@ class PathButtonRenderer extends CustomPainter {
     required this.segments,
     required this.color,
     required this.pulseExpansion,
-    required this.pressed,
+    required this.pressT,
     required this.visualTop,
     required this.visualBottom,
   });
@@ -219,10 +222,14 @@ class PathButtonRenderer extends CustomPainter {
     final shadowColor = state.shadowColor(color);
 
     // ── 1. Draw 3D shadow (behind main face) ──
-    if (!pressed) {
+    // Shadow alpha fades with press progress — fully visible at rest,
+    // fully transparent when pressed. Matches the snap-in/fade-out feel
+    // that [InteractiveAtomMixin] drives for every pressable atom.
+    final shadowAlpha = 1.0 - pressT;
+    if (shadowAlpha > 0.0) {
       delegate.drawShadow(
         canvas, shape, cx, restCenterY, faceHalf,
-        Paint()..color = shadowColor,
+        Paint()..color = shadowColor.withValues(alpha: shadowAlpha),
       );
     }
 
@@ -235,10 +242,10 @@ class PathButtonRenderer extends CustomPainter {
 
     // ── 3. Draw segmented ring (moves with face) ──
     // When unpressed, the shadow inside the ring gap makes the face look
-    // shifted up. Offset the ring down by half the border so it visually
-    // centers on the face+shadow unit. When pressed (no shadow), ring and
-    // face share the exact same center.
-    final ringCenterY = pressed ? centerY : centerY + pathBorderBottom / 2;
+    // shifted up; offset the ring down by half the border so it visually
+    // centers on the face+shadow unit. The offset lerps to zero as pressT
+    // reaches 1 so ring and face converge on the same center under press.
+    final ringCenterY = centerY + (1.0 - pressT) * pathBorderBottom / 2;
     _drawSegmentedRing(canvas, cx, ringCenterY, delegate);
   }
 
@@ -317,7 +324,7 @@ class PathButtonRenderer extends CustomPainter {
       state != old.state ||
       color != old.color ||
       pulseExpansion != old.pulseExpansion ||
-      pressed != old.pressed ||
+      pressT != old.pressT ||
       visualTop != old.visualTop ||
       visualBottom != old.visualBottom ||
       _segmentStatusChanged(segments, old.segments);

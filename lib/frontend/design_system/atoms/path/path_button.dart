@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../../foundation/motion/breath.dart';
 import '../../foundation/color/colors.dart';
@@ -7,7 +8,7 @@ import '../../icons/icon_sizes.dart';
 import '../primitives/icon.dart';
 import 'path_button_geometry.dart';
 import 'path_button_renderer.dart';
-import '../behaviors/press_state_mixin.dart';
+import '../behaviors/interactive_atom_mixin.dart';
 
 // ── AppPathButton ──
 
@@ -46,7 +47,7 @@ class AppPathButton extends StatefulWidget {
 }
 
 class _AppPathButtonState extends State<AppPathButton>
-    with SingleTickerProviderStateMixin, PressStateMixin {
+    with TickerProviderStateMixin, InteractiveAtomMixin {
   late AnimationController _pulseController;
   late Animation<double> _breathAnimation;
   bool _pulseStopped = false;
@@ -54,8 +55,18 @@ class _AppPathButtonState extends State<AppPathButton>
   @override
   bool get isInteractive => widget.state.isInteractive;
 
+  // Path button does not toggle — satisfy the mixin contract with no-ops.
   @override
-  void onTapAction() {
+  bool get isSelfToggle => false;
+
+  @override
+  bool? get parentValue => null;
+
+  @override
+  void notifyToggleChanged(bool _) {}
+
+  @override
+  void onAfterTap() {
     if (widget.state.isPulsing && !_pulseStopped) {
       _pulseStopped = true;
       _pulseController.animateTo(
@@ -105,16 +116,8 @@ class _AppPathButtonState extends State<AppPathButton>
     final outerSize = widget.shape.outerSize;
     final pulseExpand = widget.shape.pulseExpand;
 
-    final double visualTop;
-    final double visualBottom;
-    if (pressed) {
-      visualTop = pathBorderBottom;
-      visualBottom = 0.0;
-    } else {
-      visualTop = pathBorderTop;
-      visualBottom = pathBorderBottom;
-    }
-
+    // Widget height is fixed regardless of press state — the face drops
+    // within this reserved envelope.
     final totalHeight = outerSize + pathBorderBottom;
 
     return Semantics(
@@ -125,7 +128,7 @@ class _AppPathButtonState extends State<AppPathButton>
         onTapUp: isInteractive ? handleTapUp : null,
         onTapCancel: isInteractive ? handleTapCancel : null,
         child: AnimatedBuilder(
-          animation: _breathAnimation,
+          animation: Listenable.merge([_breathAnimation, pressAnimation]),
           child: Center(
             child: AppIcon(
               widget.icon,
@@ -134,6 +137,14 @@ class _AppPathButtonState extends State<AppPathButton>
             ),
           ),
           builder: (context, child) {
+            final pressT = pressAnimation.value;
+            // Face slides from flush-top (unpressed) to bottom-of-envelope
+            // (pressed). Same endpoints as before, now smoothly interpolated.
+            final visualTop =
+                ui.lerpDouble(pathBorderTop, pathBorderBottom, pressT)!;
+            final visualBottom =
+                ui.lerpDouble(pathBorderBottom, 0.0, pressT)!;
+
             return CustomPaint(
               painter: PathButtonRenderer(
                 shape: widget.shape,
@@ -141,7 +152,7 @@ class _AppPathButtonState extends State<AppPathButton>
                 segments: widget.segments,
                 color: widget.color,
                 pulseExpansion: _breathAnimation.value,
-                pressed: pressed,
+                pressT: pressT,
                 visualTop: visualTop,
                 visualBottom: visualBottom,
               ),

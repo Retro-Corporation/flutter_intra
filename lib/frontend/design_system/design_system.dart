@@ -32,7 +32,6 @@ export 'icons/icon_sizes.dart';
 
 // Atom behaviors
 export 'atoms/behaviors/interactive_atom_mixin.dart';
-export 'atoms/behaviors/press_state_mixin.dart';
 export 'atoms/behaviors/three_d_press_painter.dart';
 export 'atoms/behaviors/three_d_pressable.dart';
 export 'atoms/behaviors/three_d_surface.dart';
