@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
+import '../../foundation/motion/curves.dart';
+import '../../foundation/motion/durations.dart';
 import '../../foundation/press/three_d_press_geometry.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
@@ -42,9 +44,36 @@ class AllClientCard extends StatefulWidget {
   State<AllClientCard> createState() => _AllClientCardState();
 }
 
-class _AllClientCardState extends State<AllClientCard> {
+class _AllClientCardState extends State<AllClientCard>
+    with TickerProviderStateMixin {
   bool _leftPressed = false;
   bool _rightPressed = false;
+
+  late final AnimationController _leftController = AnimationController(
+    vsync: this,
+    duration: AppDurations.press,
+  );
+  late final AnimationController _rightController = AnimationController(
+    vsync: this,
+    duration: AppDurations.press,
+  );
+  late final CurvedAnimation _leftAnim = CurvedAnimation(
+    parent: _leftController,
+    curve: AppCurves.press,
+  );
+  late final CurvedAnimation _rightAnim = CurvedAnimation(
+    parent: _rightController,
+    curve: AppCurves.press,
+  );
+
+  @override
+  void dispose() {
+    _leftAnim.dispose();
+    _rightAnim.dispose();
+    _leftController.dispose();
+    _rightController.dispose();
+    super.dispose();
+  }
 
   /// Extra border width on the touching edge when a zone is pressed.
   static const double _touchBorderExtra = 3.0;
@@ -57,17 +86,23 @@ class _AllClientCardState extends State<AllClientCard> {
           const AppIcon(AppIcons.close, color: AppColors.textPrimary),
       };
 
-  /// Builds a single 3D press zone with GestureDetector + CustomPaint.
+  /// Builds a single 3D press zone with GestureDetector + animated CustomPaint.
+  ///
+  /// [pressAnim] drives the 3D geometry lerp between unpressed and pressed.
+  /// [onPressChanged] flips the discrete bool used for cross-zone corner
+  /// rounding (snap at 80ms is fine) and starts/reverses the animation.
+  /// [touchingEdge] is which side of this zone touches the sibling zone —
+  /// that side's border thickens by [_touchBorderExtra * pressAnim.value].
   Widget _buildZone({
-    required bool pressed,
+    required Animation<double> pressAnim,
     required BorderRadius corners,
     required VoidCallback onTap,
     required void Function(bool) onPressChanged,
     required Widget child,
-    double? borderSideLeft,
-    double? borderSideRight,
+    _TouchingEdge? touchingEdge,
   }) {
-    final geo = PressGeometry.outline(pressed: pressed);
+    final geoUnpressed = PressGeometry.outline(pressed: false);
+    final geoPressed = PressGeometry.outline(pressed: true);
 
     return GestureDetector(
       onTapDown: (_) => onPressChanged(true),
@@ -76,31 +111,44 @@ class _AllClientCardState extends State<AllClientCard> {
         onTap();
       },
       onTapCancel: () => onPressChanged(false),
-      child: CustomPaint(
-        painter: ThreeDPressPainter(
-          backgroundColor: AppColors.surface,
-          borderColor: AppColors.surfaceBorder,
-          borderRadius: AppRadius.sm,
-          borderRadiusGeometry: corners,
-          borderTop: geo.visualTop,
-          borderBottom: geo.visualBottom,
-          borderSide: geo.visualSide,
-          borderSideLeft: borderSideLeft,
-          borderSideRight: borderSideRight,
-          faceOffset: geo.faceOffset,
-          faceSideInset: geo.layoutSide,
-          showBorder: geo.showBorder,
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: geo.layoutSide,
-            right: geo.layoutSide,
-            top: geo.visualTop + geo.faceOffset,
-            bottom: (geo.reservedVertical - geo.visualTop - geo.faceOffset)
-                .clamp(0.0, double.infinity),
-          ),
-          child: child,
-        ),
+      child: AnimatedBuilder(
+        animation: pressAnim,
+        child: child,
+        builder: (context, innerChild) {
+          final t = pressAnim.value;
+          final geo = PressGeometry.lerp(geoUnpressed, geoPressed, t);
+          final thickening = _touchBorderExtra * t;
+          final double? borderSideLeft =
+              touchingEdge == _TouchingEdge.left ? geo.visualSide + thickening : null;
+          final double? borderSideRight =
+              touchingEdge == _TouchingEdge.right ? geo.visualSide + thickening : null;
+          return CustomPaint(
+            painter: ThreeDPressPainter(
+              backgroundColor: AppColors.surface,
+              borderColor: AppColors.surfaceBorder,
+              borderRadius: AppRadius.sm,
+              borderRadiusGeometry: corners,
+              borderTop: geo.visualTop,
+              borderBottom: geo.visualBottom,
+              borderSide: geo.visualSide,
+              borderSideLeft: borderSideLeft,
+              borderSideRight: borderSideRight,
+              faceOffset: geo.faceOffset,
+              faceSideInset: geo.layoutSide,
+              showBorder: geo.showBorder,
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: geo.layoutSide,
+                right: geo.layoutSide,
+                top: geo.visualTop + geo.faceOffset,
+                bottom: (geo.reservedVertical - geo.visualTop - geo.faceOffset)
+                    .clamp(0.0, double.infinity),
+              ),
+              child: innerChild,
+            ),
+          );
+        },
       ),
     );
   }
@@ -129,13 +177,6 @@ class _AllClientCardState extends State<AllClientCard> {
       );
     }
 
-    // --- Left zone border sides ---
-    // When left is pressed, its right (touching) edge gets extra border.
-    final double? leftBorderRight =
-        (_leftPressed && hasRightZone)
-            ? PressGeometry.outline(pressed: true).visualSide + _touchBorderExtra
-            : null;
-
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -143,11 +184,18 @@ class _AllClientCardState extends State<AllClientCard> {
           // Left zone: profile navigation
           Expanded(
             child: _buildZone(
-              pressed: _leftPressed,
+              pressAnim: _leftAnim,
               corners: leftCorners,
               onTap: widget.onTap,
-              onPressChanged: (p) => setState(() => _leftPressed = p),
-              borderSideRight: leftBorderRight,
+              onPressChanged: (p) {
+                setState(() => _leftPressed = p);
+                if (p) {
+                  _leftController.value = 1.0;
+                } else {
+                  _leftController.reverse();
+                }
+              },
+              touchingEdge: hasRightZone ? _TouchingEdge.right : null,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppPadding.cardPadding,
@@ -184,7 +232,7 @@ class _AllClientCardState extends State<AllClientCard> {
             Transform.translate(
               offset: const Offset(-AppStroke.md, 0),
               child: _buildZone(
-                pressed: _rightPressed,
+                pressAnim: _rightAnim,
                 corners: _leftPressed
                     ? BorderRadius.only(
                         topRight: Radius.circular(AppRadius.sm),
@@ -196,11 +244,15 @@ class _AllClientCardState extends State<AllClientCard> {
                         bottomRight: Radius.circular(AppRadius.sm),
                       ),
                 onTap: widget.onAction,
-                onPressChanged: (p) => setState(() => _rightPressed = p),
-                borderSideLeft: _rightPressed
-                    ? PressGeometry.outline(pressed: true).visualSide +
-                        _touchBorderExtra
-                    : null,
+                onPressChanged: (p) {
+                  setState(() => _rightPressed = p);
+                  if (p) {
+                    _rightController.value = 1.0;
+                  } else {
+                    _rightController.reverse();
+                  }
+                },
+                touchingEdge: _TouchingEdge.left,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     AppPadding.rem15,
@@ -218,3 +270,6 @@ class _AllClientCardState extends State<AllClientCard> {
     );
   }
 }
+
+/// Which edge of a zone touches the sibling zone in the Row.
+enum _TouchingEdge { left, right }

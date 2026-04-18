@@ -99,4 +99,23 @@ class PressGeometry {
       reservedVertical: top + bottom,
     );
   }
+
+  static double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
+
+  /// Linear interpolation between two geometries at [t] in [0, 1].
+  ///
+  /// Numeric fields lerp directly; [showBorder] snaps at t >= 0.5;
+  /// [reservedVertical] is kept constant (must match between [a] and [b] —
+  /// pressed/unpressed of the same style type always reserve the same space).
+  static PressGeometry lerp(PressGeometry a, PressGeometry b, double t) {
+    return PressGeometry(
+      visualTop: _lerpDouble(a.visualTop, b.visualTop, t),
+      visualBottom: _lerpDouble(a.visualBottom, b.visualBottom, t),
+      visualSide: _lerpDouble(a.visualSide, b.visualSide, t),
+      faceOffset: _lerpDouble(a.faceOffset, b.faceOffset, t),
+      layoutSide: _lerpDouble(a.layoutSide, b.layoutSide, t),
+      showBorder: t < 0.5 ? a.showBorder : b.showBorder,
+      reservedVertical: a.reservedVertical,
+    );
+  }
 }
