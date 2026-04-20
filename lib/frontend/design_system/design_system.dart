@@ -51,6 +51,7 @@ export 'atoms/primitives/dot_indicator.dart';
 export 'atoms/primitives/scheme_option_row.dart';
 export 'atoms/primitives/thumbnail.dart';
 export 'atoms/primitives/thumbnail_types.dart';
+export 'atoms/primitives/static_display_field.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
@@ -87,6 +88,8 @@ export 'molecules/form_fields/password_field.dart';
 export 'molecules/form_fields/text_area.dart';
 export 'molecules/form_fields/number_field.dart';
 export 'molecules/form_fields/number_field_types.dart';
+export 'molecules/form_fields/equipment_field.dart';
+export 'molecules/form_fields/equipment_field_types.dart';
 
 // Molecules — display
 export 'molecules/display/section_header.dart';
@@ -98,6 +101,8 @@ export 'molecules/cards/current_client_card_types.dart';
 export 'molecules/cards/all_client_card.dart';
 export 'molecules/cards/all_client_card_types.dart';
 export 'molecules/cards/exercise_card_skeleton.dart';
+export 'molecules/cards/empty_exercise_list.dart';
+export 'molecules/cards/exercise_flow_carousel.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';
@@ -125,3 +130,7 @@ export 'organisms/client_list/client_list_types.dart';
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
 export 'organisms/client_account/frequency_picker_types.dart';
+export 'organisms/client_account/rest_timer_picker_panel.dart';
+export 'organisms/client_account/rest_timer_picker_types.dart';
+export 'organisms/client_account/set_scheme_picker_panel.dart';
+export 'organisms/client_account/set_scheme_picker_types.dart';

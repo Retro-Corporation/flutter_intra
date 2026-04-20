@@ -56,6 +56,31 @@ class _CatalogInputDemoState extends State<_CatalogInputDemo> {
   Widget build(BuildContext context) => widget.builder(_controller, _focusNode);
 }
 
+/// Catalog-only wrapper that owns the currentIndex state for an
+/// [ExerciseFlowCarousel] demo. Exists so carousel entries can be rendered
+/// interactively without pushing index state into [_CatalogHomeState].
+class _CarouselDemo extends StatefulWidget {
+  final List<String?> thumbnails;
+
+  const _CarouselDemo({required this.thumbnails});
+
+  @override
+  State<_CarouselDemo> createState() => _CarouselDemoState();
+}
+
+class _CarouselDemoState extends State<_CarouselDemo> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExerciseFlowCarousel(
+      thumbnails: widget.thumbnails,
+      currentIndex: _currentIndex,
+      onIndexChanged: (i) => setState(() => _currentIndex = i),
+    );
+  }
+}
+
 // ── Section / sub-section definition ──
 
 class _SubSection {
@@ -124,6 +149,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Scheme Option Row',
         'Dot Indicator',
         'Thumbnail',
+        'Static Display Field',
         // controls/
         'Buttons',
         'Checkboxes',
@@ -146,6 +172,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Password Fields',
         'Text Areas',
         'Number Fields',
+        'Equipment Field',
         'Section Header',
         'Icon Text Action',
         'Current Client Card',
@@ -156,6 +183,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Practitioner Nav Bar',
         'Sub Tab Bar',
         'Exercise Card Skeleton',
+        'Empty Exercise List',
+        'Exercise Flow Carousel',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -164,6 +193,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Sort Panel',
         // client_account/
         'Frequency Picker',
+        'Rest Timer',
+        'Set Scheme Picker',
       ]),
       _Section('Templates', []),
     ];
@@ -1193,11 +1224,29 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
+      _sectionDivider(),
+
+      // Static Display Field
+      _subSectionHeader(subs[8]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 200,
+        child: AppStaticDisplayField(value: 'Doorway'),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 200,
+        child: AppStaticDisplayField(value: 'No Equipment'),
+      ),
+
       // ── CONTROLS ──
       _folderGroupHeader('CONTROLS'),
 
       // Buttons
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
@@ -1293,7 +1342,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Checkboxes
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1363,7 +1412,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Toggles
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1422,7 +1471,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1491,7 +1540,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Nav Bar Item
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1537,7 +1586,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Filter Button
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1598,7 +1647,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Sub Tab Item
-      _subSectionHeader(subs[14]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1639,7 +1688,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('INPUTS'),
 
       // Text Fields
-      _subSectionHeader(subs[15]),
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1661,7 +1710,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('PATH'),
 
       // Path Buttons
-      _subSectionHeader(subs[16]),
+      _subSectionHeader(subs[17]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1973,7 +2022,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
-      _subSectionHeader(subs[17]),
+      _subSectionHeader(subs[18]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -2042,7 +2091,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground (collapsed by default)
       _CollapsibleSubsection(
-        sub: subs[18],
+        sub: subs[19],
         child: const _ButtonPlayground(),
       ),
     ];
@@ -2642,11 +2691,77 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      _sectionDivider(),
+
+      // ── Equipment Field ──
+      _subSectionHeader(subs[4]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('NUMBERED (3D)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: _CatalogInputDemo(
+          initialText: '45',
+          builder: (controller, focusNode) => EquipmentField(
+            label: 'Weight',
+            type: EquipmentFieldType.numbered,
+            controller: controller,
+            focusNode: focusNode,
+            unit: 'lb',
+          ),
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('SELECTABLE (3D)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: EquipmentField(
+          label: 'Equipment',
+          type: EquipmentFieldType.selectable,
+          selectedValue: null,
+          onDropdownTap: () {},
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 200,
+        child: EquipmentField(
+          label: 'Equipment',
+          type: EquipmentFieldType.selectable,
+          selectedValue: 'Resistance Bands',
+          onDropdownTap: () {},
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('STATIC DISPLAY', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      SizedBox(
+        width: 200,
+        child: EquipmentField(
+          label: 'Equipment',
+          type: EquipmentFieldType.staticDisplay,
+          staticValue: 'Doorway',
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      SizedBox(
+        width: 200,
+        child: EquipmentField(
+          label: 'Equipment',
+          type: EquipmentFieldType.staticDisplay,
+          staticValue: 'No Equipment',
+        ),
+      ),
+
       // ── DISPLAY ──
       _folderGroupHeader('DISPLAY'),
 
       // ── Section Header ──
-      _subSectionHeader(subs[4]),
+      _subSectionHeader(subs[5]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -2660,7 +2775,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Icon Text Action ──
-      _subSectionHeader(subs[5]),
+      _subSectionHeader(subs[6]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -2675,7 +2790,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('CARDS'),
 
       // ── Current Client Card ──
-      _subSectionHeader(subs[6]),
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -2714,7 +2829,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── All Client Card ──
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[8]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -2754,7 +2869,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('CONTROLS'),
 
       // ── Labeled Checkbox ──
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -2791,7 +2906,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Search Bar ──
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
@@ -2840,7 +2955,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Dropdown ──
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       const _DropdownCatalogDemo(),
@@ -2849,7 +2964,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TABS', style: AppTypography.overline.semiBold),
@@ -2876,7 +2991,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       // ── Sub Tab Bar ──
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('all enabled', style: AppTypography.overline.semiBold),
@@ -2905,7 +3020,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       // ── Exercise Card Skeleton ──
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
       AppText('SINGLE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -2927,6 +3042,44 @@ class _CatalogHomeState extends State<CatalogHome> {
             ExerciseCardSkeleton(),
           ],
         ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Empty Exercise List ──
+      _subSectionHeader(subs[15]),
+      const SizedBox(height: AppGrid.grid12),
+
+      SizedBox(
+        width: double.infinity,
+        height: 400,
+        child: EmptyExerciseList(onAddExercise: () {}),
+      ),
+
+      _sectionDivider(),
+
+      // ── Exercise Flow Carousel ──
+      _subSectionHeader(subs[16]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('3 ITEMS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CarouselDemo(
+        thumbnails: [null, null, null],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('5 ITEMS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CarouselDemo(
+        thumbnails: [null, null, null, null, null],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('10 ITEMS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CarouselDemo(
+        thumbnails: [null, null, null, null, null, null, null, null, null, null],
       ),
     ];
   }
@@ -2987,6 +3140,26 @@ class _CatalogHomeState extends State<CatalogHome> {
         constraints: const BoxConstraints(maxWidth: 360),
         child: const _FrequencyPickerDemo(),
       ),
+
+      // ── Rest Timer ──
+      _subSectionHeader(subs[3]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: const _RestTimerPickerDemo(),
+      ),
+
+      // ── Set Scheme Picker ──
+      _subSectionHeader(subs[4]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      // CATALOG ONLY — height is constrained here to simulate the template's
+      // Overlay positioning (top: buttonBottom + 20, bottom: 20). In production
+      // the template provides these bounds via Positioned; no ConstrainedBox needed.
+      const _SetSchemePickerDemo(),
     ];
   }
 
@@ -4039,6 +4212,119 @@ class _SchemeOptionRowDemoState extends State<_SchemeOptionRowDemo> {
           onTap: () => setState(() => _selectedIndex = _selectedIndex == 1 ? null : 1),
         ),
       ],
+    );
+  }
+}
+
+// ── Frequency Picker Catalog ──
+
+class _FrequencyPickerDemo extends StatefulWidget {
+  const _FrequencyPickerDemo();
+
+  @override
+  State<_FrequencyPickerDemo> createState() => _FrequencyPickerDemoState();
+}
+
+class _FrequencyPickerDemoState extends State<_FrequencyPickerDemo> {
+  final _controller = TextEditingController(text: '2');
+  final _focusNode = FocusNode();
+  FrequencyUnit _unit = FrequencyUnit.weekly;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FrequencyPickerPanel(
+      amountController: _controller,
+      amountFocusNode: _focusNode,
+      selectedUnit: _unit,
+      onUnitChanged: (unit) => setState(() => _unit = unit),
+    );
+  }
+}
+
+// ── Rest Timer Picker Catalog ──
+
+class _RestTimerPickerDemo extends StatefulWidget {
+  const _RestTimerPickerDemo();
+
+  @override
+  State<_RestTimerPickerDemo> createState() => _RestTimerPickerDemoState();
+}
+
+class _RestTimerPickerDemoState extends State<_RestTimerPickerDemo> {
+  final _controller = TextEditingController(text: '45');
+  final _focusNode = FocusNode();
+  DurationUnit _unit = DurationUnit.seconds;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RestTimerPickerPanel(
+      amountController: _controller,
+      amountFocusNode: _focusNode,
+      selectedUnit: _unit,
+      onUnitChanged: (unit) => setState(() => _unit = unit),
+    );
+  }
+}
+
+// ── Set Scheme Picker Catalog ──
+
+class _SetSchemePickerDemo extends StatefulWidget {
+  const _SetSchemePickerDemo();
+
+  @override
+  State<_SetSchemePickerDemo> createState() => _SetSchemePickerDemoState();
+}
+
+class _SetSchemePickerDemoState extends State<_SetSchemePickerDemo> {
+  // CATALOG ONLY — stub groups. Real scheme groups come from the data layer.
+  static final _groups = [
+    SetSchemeGroup(name: 'Strength', schemes: [
+      const SetScheme(id: 's1', label: '3-6 / 1min x 4'),
+      const SetScheme(id: 's2', label: '1min x 4'),
+    ]),
+    SetSchemeGroup(name: 'Hypertrophy', schemes: [
+      const SetScheme(id: 'h1', label: '8-12 × 3'),
+      const SetScheme(id: 'h2', label: '2:30min x 4'),
+    ]),
+    SetSchemeGroup(name: 'Endurance', schemes: [
+      const SetScheme(id: 'e1', label: '15 × 2'),
+      const SetScheme(id: 'e2', label: '4min x 4'),
+    ]),
+  ];
+
+  String? _selectedId = 's1';
+
+  @override
+  Widget build(BuildContext context) {
+    // CATALOG ONLY — ConstrainedBox simulates the template's Overlay bounds.
+    // In production the template uses Positioned(top: buttonBottom + grid20,
+    // bottom: grid20) which provides the same constraint naturally.
+    final screenHeight = MediaQuery.of(context).size.height;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 320,
+        maxHeight: screenHeight - AppGrid.grid20,
+      ),
+      child: SetSchemePickerPanel(
+        groups: _groups,
+        selectedId: _selectedId,
+        onSelected: (scheme) => setState(() => _selectedId = scheme.id),
+        onCreateNew: () {},
+      ),
     );
   }
 }
