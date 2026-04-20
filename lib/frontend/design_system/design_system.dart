@@ -36,6 +36,7 @@ export 'atoms/behaviors/three_d_press_painter.dart';
 export 'atoms/behaviors/three_d_pressable.dart';
 export 'atoms/behaviors/three_d_surface.dart';
 export 'atoms/behaviors/pressable_surface.dart';
+export 'atoms/behaviors/dashed_border.dart';
 
 // Atoms — primitives
 export 'atoms/primitives/text.dart';
@@ -46,7 +47,10 @@ export 'atoms/primitives/avatar.dart';
 export 'atoms/primitives/avatar_types.dart';
 export 'atoms/primitives/score_badge.dart';
 export 'atoms/primitives/score_badge_types.dart';
+export 'atoms/primitives/dot_indicator.dart';
 export 'atoms/primitives/scheme_option_row.dart';
+export 'atoms/primitives/thumbnail.dart';
+export 'atoms/primitives/thumbnail_types.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
@@ -93,6 +97,7 @@ export 'molecules/cards/current_client_card.dart';
 export 'molecules/cards/current_client_card_types.dart';
 export 'molecules/cards/all_client_card.dart';
 export 'molecules/cards/all_client_card_types.dart';
+export 'molecules/cards/exercise_card_skeleton.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';

@@ -122,6 +122,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Score Badge',
         'Avatars',
         'Scheme Option Row',
+        'Dot Indicator',
         // controls/
         'Buttons',
         'Checkboxes',
@@ -153,6 +154,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Dropdown',
         'Practitioner Nav Bar',
         'Sub Tab Bar',
+        'Exercise Card Skeleton',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -1138,11 +1140,25 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       const _SchemeOptionRowDemo(),
 
+      _sectionDivider(),
+
+      // Dot Indicator
+      _subSectionHeader(subs[6]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      DotIndicator(count: 4, currentIndex: 0, onJump: (_) {}),
+      const SizedBox(height: AppGrid.grid16),
+      DotIndicator(count: 4, currentIndex: 2, onJump: (_) {}),
+      const SizedBox(height: AppGrid.grid16),
+      DotIndicator(count: 8, currentIndex: 7, onJump: (_) {}),
+
       // ── CONTROLS ──
       _folderGroupHeader('CONTROLS'),
 
       // Buttons
-      _subSectionHeader(subs[6]),
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
@@ -1238,7 +1254,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Checkboxes
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[8]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1308,7 +1324,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Toggles
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1367,7 +1383,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1436,7 +1452,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Nav Bar Item
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1482,7 +1498,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Filter Button
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1543,7 +1559,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Sub Tab Item
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1584,7 +1600,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('INPUTS'),
 
       // Text Fields
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1606,7 +1622,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('PATH'),
 
       // Path Buttons
-      _subSectionHeader(subs[14]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1918,7 +1934,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
-      _subSectionHeader(subs[15]),
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -1987,7 +2003,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground (collapsed by default)
       _CollapsibleSubsection(
-        sub: subs[16],
+        sub: subs[17],
         child: const _ButtonPlayground(),
       ),
     ];
@@ -2847,6 +2863,31 @@ class _CatalogHomeState extends State<CatalogHome> {
           SubTabBarTab(label: 'Exposure', isEnabled: false),
         ],
         initialIndex: 1,
+      ),
+
+      // ── Exercise Card Skeleton ──
+      _subSectionHeader(subs[13]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('SINGLE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 360),
+        child: ExerciseCardSkeleton(),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      AppText('STACKED × 3', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            ExerciseCardSkeleton(),
+            SizedBox(height: AppGrid.grid12),
+            ExerciseCardSkeleton(),
+            SizedBox(height: AppGrid.grid12),
+            ExerciseCardSkeleton(),
+          ],
+        ),
       ),
     ];
   }

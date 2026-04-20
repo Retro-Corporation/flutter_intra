@@ -130,6 +130,7 @@ class _ClientListTemplateState extends State<ClientListTemplate> {
                           aspectRatio: 1,
                           child: FilterButton(
                             state: _filterButtonState,
+                            icon: AppIcons.filter,
                             onTap: () => setState(() => _sortOpen = !_sortOpen),
                             backgroundColor: AppColors.background,
                           ),
