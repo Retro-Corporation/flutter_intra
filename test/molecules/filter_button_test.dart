@@ -7,32 +7,39 @@ void main() {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FilterButton(state: state, onTap: onTap ?? () {}),
+          child: FilterButton(
+            state: state,
+            onTap: onTap ?? () {},
+            icon: AppIcons.filter,
+          ),
         ),
       ),
     );
   }
 
   group('FilterButton states', () {
-    testWidgets('idle state: renders AppIcon with filter path', (tester) async {
+    testWidgets('idle state: icon color is textPrimary', (tester) async {
       await tester.pumpWidget(build(FilterButtonState.idle));
       final icon = tester.widget<AppIcon>(find.byType(AppIcon));
-      expect(icon.icon, AppIcons.filter);
-      expect(icon.color, AppColors.textSecondary);
-    });
-
-    testWidgets('open state: renders AppIcon with filterFilled path', (tester) async {
-      await tester.pumpWidget(build(FilterButtonState.open));
-      final icon = tester.widget<AppIcon>(find.byType(AppIcon));
-      expect(icon.icon, AppIcons.filterFilled);
       expect(icon.color, AppColors.textPrimary);
     });
 
-    testWidgets('sorted state: renders AppIcon with filterFilled path', (tester) async {
+    testWidgets('open state: icon color is textPrimary', (tester) async {
+      await tester.pumpWidget(build(FilterButtonState.open));
+      final icon = tester.widget<AppIcon>(find.byType(AppIcon));
+      expect(icon.color, AppColors.textPrimary);
+    });
+
+    testWidgets('sorted state: icon color is brand', (tester) async {
       await tester.pumpWidget(build(FilterButtonState.sorted));
       final icon = tester.widget<AppIcon>(find.byType(AppIcon));
-      expect(icon.icon, AppIcons.filterFilled);
       expect(icon.color, AppColors.brand);
+    });
+
+    testWidgets('renders the icon path passed in', (tester) async {
+      await tester.pumpWidget(build(FilterButtonState.idle));
+      final icon = tester.widget<AppIcon>(find.byType(AppIcon));
+      expect(icon.icon, AppIcons.filter);
     });
   });
 

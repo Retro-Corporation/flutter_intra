@@ -17,6 +17,7 @@ class AppIcons {
   static const link = '$_base/link.svg';
   static const refresh = '$_base/refresh.svg';
   static const search = '$_base/search.svg';
+  static const select = '$_base/select.svg';
   static const share = '$_base/share.svg';
   static const sort = '$_base/sort.svg';
 
@@ -228,6 +229,7 @@ class AppIcons {
     'refresh': refresh,
     'repeat': repeat,
     'search': search,
+    'select': select,
     'setting': setting,
     'share': share,
     'sidebar': sidebar,

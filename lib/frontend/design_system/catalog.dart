@@ -121,6 +121,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Badges',
         'Score Badge',
         'Avatars',
+        'Scheme Option Row',
         // controls/
         'Buttons',
         'Checkboxes',
@@ -128,6 +129,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Radios',
         'Nav Bar Item',
         'Filter Button',
+        'Sub Tab Item',
         // inputs/
         'Text Fields',
         // path/
@@ -148,7 +150,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         'All Client Card',
         'Labeled Checkbox',
         'Search Bar',
+        'Dropdown',
         'Practitioner Nav Bar',
+        'Sub Tab Bar',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -1006,34 +1010,68 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[3]),
       const SizedBox(height: AppGrid.grid12),
 
-      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      AppText('sm', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       Row(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand),
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.sm, variant: ScoreBadgeVariant.plain),
               const SizedBox(height: AppGrid.grid4),
-              AppText('urgent', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              AppText('plain', style: AppTypography.caption.bold, color: AppColors.textSecondary),
             ],
           ),
           const SizedBox(width: AppGrid.grid24),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ScoreBadge(score: 8.2, underlineColor: AppColors.textPrimary),
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.sm, variant: ScoreBadgeVariant.trendUp),
               const SizedBox(height: AppGrid.grid4),
-              AppText('pending review', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              AppText('trendUp', style: AppTypography.caption.bold, color: AppColors.textSecondary),
             ],
           ),
           const SizedBox(width: AppGrid.grid24),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ScoreBadge(score: 4.6, underlineColor: AppColors.surfaceBorder),
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.sm, variant: ScoreBadgeVariant.trendDown),
               const SizedBox(height: AppGrid.grid4),
-              AppText('reviewed', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              AppText('trendDown', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('md', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.md, variant: ScoreBadgeVariant.plain),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('plain', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.md, variant: ScoreBadgeVariant.trendUp),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('trendUp', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.md, variant: ScoreBadgeVariant.trendDown),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('trendDown', style: AppTypography.caption.bold, color: AppColors.textSecondary),
             ],
           ),
         ],
@@ -1092,12 +1130,19 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
+      _sectionDivider(),
+
+      // Scheme Option Row
+      _subSectionHeader(subs[5]),
+      const SizedBox(height: AppGrid.grid12),
+
+      const _SchemeOptionRowDemo(),
 
       // ── CONTROLS ──
       _folderGroupHeader('CONTROLS'),
 
       // Buttons
-      _subSectionHeader(subs[5]),
+      _subSectionHeader(subs[6]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
@@ -1193,7 +1238,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Checkboxes
-      _subSectionHeader(subs[6]),
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1263,7 +1308,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Toggles
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[8]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1322,7 +1367,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[9]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1391,7 +1436,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Nav Bar Item
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1437,7 +1482,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Filter Button
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1448,20 +1493,90 @@ class _CatalogHomeState extends State<CatalogHome> {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Column(children: [
-            FilterButton(state: FilterButtonState.idle, onTap: () {}),
+            FilterButton(state: FilterButtonState.idle, icon: AppIcons.filter, onTap: () {}),
             const SizedBox(height: AppGrid.grid8),
             AppText('idle', style: AppTypography.caption.bold, color: AppColors.textSecondary),
           ]),
           Column(children: [
-            FilterButton(state: FilterButtonState.open, onTap: () {}),
+            FilterButton(state: FilterButtonState.open, icon: AppIcons.filter, onTap: () {}),
             const SizedBox(height: AppGrid.grid8),
             AppText('open', style: AppTypography.caption.bold, color: AppColors.textSecondary),
           ]),
           Column(children: [
-            FilterButton(state: FilterButtonState.sorted, onTap: () {}),
+            FilterButton(state: FilterButtonState.sorted, icon: AppIcons.filter, onTap: () {}),
             const SizedBox(height: AppGrid.grid8),
             AppText('sorted', style: AppTypography.caption.bold, color: AppColors.textSecondary),
           ]),
+        ],
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      AppText('icon override', style: AppTypography.bodySmall.bold, color: AppColors.textSecondary),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, icon: AppIcons.select, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('select', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, icon: AppIcons.edit, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('edit', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, label: 'Swap', icon: AppIcons.refresh, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('swap (label above)', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+          Column(children: [
+            FilterButton(state: FilterButtonState.idle, label: 'Swap', icon: AppIcons.refresh, labelBelow: true, onTap: () {}),
+            const SizedBox(height: AppGrid.grid8),
+            AppText('swap (label below)', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          ]),
+        ],
+      ),
+
+      _sectionDivider(),
+
+      // Sub Tab Item
+      _subSectionHeader(subs[12]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                SubTabItem(label: 'Exercise', isActive: true, isEnabled: true, onTap: () {}),
+                const SizedBox(height: AppGrid.grid8),
+                AppText('active + enabled', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                SubTabItem(label: 'Overview', isActive: false, isEnabled: true, onTap: () {}),
+                const SizedBox(height: AppGrid.grid8),
+                AppText('inactive + enabled', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                SubTabItem(label: 'Capacity', isActive: false, isEnabled: false, onTap: () {}),
+                const SizedBox(height: AppGrid.grid8),
+                AppText('disabled', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+              ],
+            ),
+          ),
         ],
       ),
 
@@ -1469,7 +1584,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('INPUTS'),
 
       // Text Fields
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1491,7 +1606,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('PATH'),
 
       // Path Buttons
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -1803,7 +1918,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -1872,7 +1987,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground (collapsed by default)
       _CollapsibleSubsection(
-        sub: subs[14],
+        sub: subs[16],
         child: const _ButtonPlayground(),
       ),
     ];
@@ -2667,11 +2782,19 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      _sectionDivider(),
+
+      // ── Dropdown ──
+      _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+
+      const _DropdownCatalogDemo(),
+
       // ── NAVIGATION ──
       _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TABS', style: AppTypography.overline.semiBold),
@@ -2695,6 +2818,35 @@ class _CatalogHomeState extends State<CatalogHome> {
             ],
           );
         },
+      ),
+
+      // ── Sub Tab Bar ──
+      _subSectionHeader(subs[12]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('all enabled', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _SubTabBarDemo(
+        tabs: [
+          SubTabBarTab(label: 'Overview'),
+          SubTabBarTab(label: 'Exercise'),
+          SubTabBarTab(label: 'Capacity'),
+          SubTabBarTab(label: 'Exposure'),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid16),
+
+      AppText('mostly disabled', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _SubTabBarDemo(
+        tabs: [
+          SubTabBarTab(label: 'Overview', isEnabled: false),
+          SubTabBarTab(label: 'Exercise'),
+          SubTabBarTab(label: 'Capacity', isEnabled: false),
+          SubTabBarTab(label: 'Exposure', isEnabled: false),
+        ],
+        initialIndex: 1,
       ),
     ];
   }
@@ -3665,6 +3817,133 @@ class _ClientListCatalogState extends State<_ClientListCatalog> {
             onAllClientAction: (event) {},
             onAddClientsTap: () {},
           ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Dropdown catalog demo ──
+
+/// Shows all three [AppDropdown] variants, each with a populated and a
+/// Shows all AppDropdown style + variant combinations with populated and
+/// placeholder states side by side.
+class _DropdownCatalogDemo extends StatelessWidget {
+  const _DropdownCatalogDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── OUTLINE ──
+          AppText('OUTLINE', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid12),
+
+          AppText('plain', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.plain, value: '2x - day', placeholder: 'Choose frequency', onTap: () {}),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.plain, value: null, placeholder: 'Choose frequency', onTap: () {}),
+
+          const SizedBox(height: AppGrid.grid16),
+          AppText('label only', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.labelOnly, label: 'Rest timer', value: '45 sec', placeholder: 'Set timer', onTap: () {}),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.labelOnly, label: 'Rest timer', value: null, placeholder: 'Set timer', onTap: () {}),
+
+          const SizedBox(height: AppGrid.grid16),
+          AppText('icon label', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.iconLabel, label: 'Set scheme', iconPath: AppIcons.crown, value: '3-6 × 4 - Controlled', placeholder: 'Select set scheme', onTap: () {}),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.outline, variant: AppDropdownVariant.iconLabel, label: 'Set scheme', iconPath: AppIcons.crown, value: null, placeholder: 'Select set scheme', onTap: () {}),
+
+          const SizedBox(height: AppGrid.grid24),
+
+          // ── FILLED ──
+          AppText('FILLED', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid12),
+
+          AppText('plain', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.filled, variant: AppDropdownVariant.plain, color: AppColors.brand, value: '3-6 × 4 - Controlled', placeholder: 'Select set scheme', onTap: () {}),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.filled, variant: AppDropdownVariant.plain, color: AppColors.brand, value: null, placeholder: 'Select set scheme', onTap: () {}),
+
+          const SizedBox(height: AppGrid.grid16),
+          AppText('icon label', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(style: AppDropdownStyle.filled, variant: AppDropdownVariant.iconLabel, color: AppColors.brand, label: 'Set scheme', iconPath: AppIcons.crown, value: '3-6 × 4 - Controlled', placeholder: 'Select set scheme', onTap: () {}),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Sub Tab Bar demo ──
+
+class _SubTabBarDemo extends StatefulWidget {
+  final List<SubTabBarTab> tabs;
+  final int initialIndex;
+
+  const _SubTabBarDemo({
+    required this.tabs,
+    this.initialIndex = 0,
+  });
+
+  @override
+  State<_SubTabBarDemo> createState() => _SubTabBarDemoState();
+}
+
+class _SubTabBarDemoState extends State<_SubTabBarDemo> {
+  late int _activeIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeIndex = widget.initialIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SubTabBar(
+      tabs: widget.tabs,
+      activeIndex: _activeIndex,
+      onChanged: (index) => setState(() => _activeIndex = index),
+    );
+  }
+}
+
+// ── Scheme Option Row demo ──
+
+class _SchemeOptionRowDemo extends StatefulWidget {
+  const _SchemeOptionRowDemo();
+
+  @override
+  State<_SchemeOptionRowDemo> createState() => _SchemeOptionRowDemoState();
+}
+
+class _SchemeOptionRowDemoState extends State<_SchemeOptionRowDemo> {
+  int? _selectedIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SchemeOptionRow(
+          label: '3-6 / 1min x 4',
+          isSelected: _selectedIndex == 0,
+          onTap: () => setState(() => _selectedIndex = _selectedIndex == 0 ? null : 0),
+        ),
+        const SizedBox(height: AppGrid.grid4),
+        SchemeOptionRow(
+          label: '8-12 \u00d7 3',
+          isSelected: _selectedIndex == 1,
+          onTap: () => setState(() => _selectedIndex = _selectedIndex == 1 ? null : 1),
         ),
       ],
     );
