@@ -5,7 +5,7 @@ import '../../foundation/press/three_d_press_geometry.dart';
 import 'three_d_press_painter.dart';
 
 /// Controls which press geometry [PressableSurface] uses.
-enum PressableStyle { outline }
+enum PressableStyle { outline, filled }
 
 /// Atom behavior: a pressable surface that renders the 3D press effect.
 ///
@@ -74,6 +74,7 @@ class _PressableSurfaceState extends State<PressableSurface>
   PressGeometry _geometryFor({required bool pressed}) {
     return switch (widget.style) {
       PressableStyle.outline => PressGeometry.outline(pressed: pressed),
+      PressableStyle.filled  => PressGeometry.filled(pressed: pressed),
     };
   }
 
