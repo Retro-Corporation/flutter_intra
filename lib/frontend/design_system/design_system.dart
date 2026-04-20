@@ -121,3 +121,7 @@ export 'organisms/sort/sort_panel_types.dart';
 // Organisms — client list
 export 'organisms/client_list/client_list_organism.dart';
 export 'organisms/client_list/client_list_types.dart';
+
+// Organisms — client account
+export 'organisms/client_account/frequency_picker_panel.dart';
+export 'organisms/client_account/frequency_picker_types.dart';
