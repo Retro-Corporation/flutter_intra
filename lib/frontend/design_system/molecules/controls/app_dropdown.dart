@@ -53,6 +53,10 @@ class AppDropdown extends StatelessWidget {
   /// Required for [AppDropdownVariant.iconLabel].
   final String? iconPath;
 
+  /// When true, renders the outline border in [AppColors.brand] to indicate
+  /// the picker it triggers is currently open. Has no effect on filled style.
+  final bool isOpen;
+
   const AppDropdown({
     super.key,
     required this.style,
@@ -63,6 +67,7 @@ class AppDropdown extends StatelessWidget {
     this.color,
     this.label,
     this.iconPath,
+    this.isOpen = false,
   })  : assert(
           style == AppDropdownStyle.outline || color != null,
           'color is required when style is filled',
@@ -82,7 +87,8 @@ class AppDropdown extends StatelessWidget {
       };
 
   Color get _borderColor => switch (style) {
-        AppDropdownStyle.outline => AppColors.surfaceBorder,
+        AppDropdownStyle.outline =>
+          isOpen ? AppColors.brand : AppColors.surfaceBorder,
         AppDropdownStyle.filled => resolve700(color!),
       };
 
