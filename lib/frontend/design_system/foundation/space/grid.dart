@@ -47,6 +47,7 @@ class AppGrid {
   static const double grid92 = 5.75 * AppScale.root;
   static const double grid96 = 6 * AppScale.root;
   static const double grid100 = 6.25 * AppScale.root;
+  static const double grid128 = 8 * AppScale.root;
   static const double grid160 = 10 * AppScale.root;
   static const double grid240 = 15 * AppScale.root;
 }
