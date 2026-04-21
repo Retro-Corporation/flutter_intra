@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'design_system.dart';
 import 'templates/client_list_template.dart';
+import 'templates/exercise_plan_template.dart';
 
 /// Run with: flutter run -t lib/frontend/design_system/templates_catalog.dart
 void main() => runApp(const TemplatesCatalogApp());
@@ -26,6 +27,7 @@ class TemplatesCatalogHome extends StatelessWidget {
   // _HelloWorldTemplate is defined at the bottom of this file as a smoke test.
   static final Map<String, WidgetBuilder> _templates = {
     'Hello World': (_) => const _TemplateShell(child: _HelloWorldTemplate()),
+    'Client Account — Exercise Plan': (_) => const _TemplateShell(child: ExercisePlanTemplate()),
     'Client List': (_) => _TemplateShell(
       child: ClientListTemplate(
         currentClients: _mockCurrentClients,
