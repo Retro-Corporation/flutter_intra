@@ -81,6 +81,30 @@ class _CarouselDemoState extends State<_CarouselDemo> {
   }
 }
 
+/// Catalog-only wrapper that owns the selected state for an
+/// [ExerciseThumbnailCard] demo so users can tap to toggle selection.
+class _ThumbnailCardToggleDemo extends StatefulWidget {
+  const _ThumbnailCardToggleDemo();
+
+  @override
+  State<_ThumbnailCardToggleDemo> createState() =>
+      _ThumbnailCardToggleDemoState();
+}
+
+class _ThumbnailCardToggleDemoState extends State<_ThumbnailCardToggleDemo> {
+  bool _selected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExerciseThumbnailCard(
+      size: ExerciseThumbnailCardSize.large,
+      label: 'Tap to toggle',
+      selected: _selected,
+      onTap: () => setState(() => _selected = !_selected),
+    );
+  }
+}
+
 // ── Section / sub-section definition ──
 
 class _SubSection {
@@ -186,6 +210,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Exercise Card Read',
         'Empty Exercise List',
         'Exercise Flow Carousel',
+        'Exercise Thumbnail Card',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -199,6 +224,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Equipment Picker',
         'Exercise Card Edit',
         'Exercise Plan Page Header',
+        'Category Filter',
       ]),
       _Section('Templates', []),
     ];
@@ -1110,6 +1136,40 @@ class _CatalogHomeState extends State<CatalogHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.md, variant: ScoreBadgeVariant.trendDown),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('trendDown', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('lg', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.lg, variant: ScoreBadgeVariant.plain),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('plain', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.lg, variant: ScoreBadgeVariant.trendUp),
+              const SizedBox(height: AppGrid.grid4),
+              AppText('trendUp', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+            ],
+          ),
+          const SizedBox(width: AppGrid.grid24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ScoreBadge(score: 3.5, underlineColor: AppColors.brand, size: ScoreBadgeSize.lg, variant: ScoreBadgeVariant.trendDown),
               const SizedBox(height: AppGrid.grid4),
               AppText('trendDown', style: AppTypography.caption.bold, color: AppColors.textSecondary),
             ],
@@ -3064,9 +3124,12 @@ class _CatalogHomeState extends State<CatalogHome> {
           scoreVariant: ScoreBadgeVariant.trendUp,
           exerciseName: 'Exercise name',
           muscleGroup: 'Shoulder flexion',
-          reps: 'Rep 3',
-          setCount: 'Set 4',
-          equipment: 'Dumbell 15lb',
+          repLabel: 'Rep',
+          repValue: '3',
+          setLabel: 'Set',
+          setValue: '4',
+          equipmentLabel: 'Dumbell',
+          equipmentValue: '15lb',
           onTap: () {},
         ),
       ),
@@ -3082,9 +3145,31 @@ class _CatalogHomeState extends State<CatalogHome> {
           scoreVariant: ScoreBadgeVariant.plain,
           exerciseName: 'Exercise name',
           muscleGroup: 'Shoulder flexion',
-          reps: 'Rep 3',
-          setCount: 'Set 4',
-          equipment: 'Dumbell 15lb',
+          repLabel: 'Rep',
+          repValue: '3',
+          setLabel: 'Set',
+          setValue: '4',
+          equipmentLabel: 'Dumbell',
+          equipmentValue: '15lb',
+          onTap: () {},
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid16),
+      AppText('HOLD TYPE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: ExerciseCardRead(
+          score: 2.4,
+          scoreColor: AppColors.surfaceBorder,
+          scoreVariant: ScoreBadgeVariant.plain,
+          exerciseName: 'Plank',
+          muscleGroup: 'Core stability',
+          repLabel: 'Hold',
+          repValue: toMmss(30),
+          setLabel: 'Set',
+          setValue: '3',
           onTap: () {},
         ),
       ),
@@ -3102,9 +3187,12 @@ class _CatalogHomeState extends State<CatalogHome> {
               scoreVariant: ScoreBadgeVariant.trendUp,
               exerciseName: 'Exercise name',
               muscleGroup: 'Shoulder flexion',
-              reps: 'Rep 3',
-              setCount: 'Set 4',
-              equipment: 'Dumbell 15lb',
+              repLabel: 'Rep',
+              repValue: '3',
+              setLabel: 'Set',
+              setValue: '4',
+              equipmentLabel: 'Dumbell',
+              equipmentValue: '15lb',
               onTap: () {},
             ),
             SizedBox(height: AppGrid.grid12),
@@ -3114,9 +3202,12 @@ class _CatalogHomeState extends State<CatalogHome> {
               scoreVariant: ScoreBadgeVariant.plain,
               exerciseName: 'Exercise name',
               muscleGroup: 'Shoulder flexion',
-              reps: 'Rep 3',
-              setCount: 'Set 4',
-              equipment: 'Dumbell 15lb',
+              repLabel: 'Rep',
+              repValue: '3',
+              setLabel: 'Set',
+              setValue: '4',
+              equipmentLabel: 'Dumbell',
+              equipmentValue: '15lb',
               onTap: () {},
             ),
             SizedBox(height: AppGrid.grid12),
@@ -3126,9 +3217,12 @@ class _CatalogHomeState extends State<CatalogHome> {
               scoreVariant: ScoreBadgeVariant.trendDown,
               exerciseName: 'Exercise name',
               muscleGroup: 'Shoulder flexion',
-              reps: 'Hold 1:30',
-              setCount: 'Set 4',
-              equipment: 'Dumbell 15lb',
+              repLabel: 'Hold',
+              repValue: toMmss(90),
+              setLabel: 'Set',
+              setValue: '4',
+              equipmentLabel: 'Dumbell',
+              equipmentValue: '15lb',
               onTap: () {},
             ),
           ],
@@ -3146,9 +3240,12 @@ class _CatalogHomeState extends State<CatalogHome> {
           scoreVariant: ScoreBadgeVariant.trendUp,
           exerciseName: 'Exercise name',
           muscleGroup: 'Shoulder flexion',
-          reps: 'Rep 6',
-          setCount: 'Set 4',
-          equipment: 'Dumbell 15lb',
+          repLabel: 'Rep',
+          repValue: '6',
+          setLabel: 'Set',
+          setValue: '4',
+          equipmentLabel: 'Dumbell',
+          equipmentValue: '15lb',
           isSelected: true,
           onTap: () {},
         ),
@@ -3191,6 +3288,61 @@ class _CatalogHomeState extends State<CatalogHome> {
       const _CarouselDemo(
         thumbnails: [null, null, null, null, null, null, null, null, null, null],
       ),
+
+      _sectionDivider(),
+
+      // ── Exercise Thumbnail Card ──
+      _subSectionHeader(subs[18]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('SMALL (EXERCISES & SETS)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        children: [
+          ExerciseThumbnailCard(
+            size: ExerciseThumbnailCardSize.small,
+            onTap: () {},
+          ),
+          ExerciseThumbnailCard(
+            size: ExerciseThumbnailCardSize.small,
+            selected: true,
+            onTap: () {},
+          ),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('LARGE (TEMPLATES)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Wrap(
+        spacing: AppGrid.grid16,
+        runSpacing: AppGrid.grid16,
+        children: [
+          ExerciseThumbnailCard(
+            size: ExerciseThumbnailCardSize.large,
+            label: 'ACL Rehab',
+            onTap: () {},
+          ),
+          ExerciseThumbnailCard(
+            size: ExerciseThumbnailCardSize.large,
+            label: 'ACL Rehab',
+            selected: true,
+            onTap: () {},
+          ),
+          ExerciseThumbnailCard(
+            size: ExerciseThumbnailCardSize.large,
+            label: 'Hamstring Strain',
+            onTap: () {},
+          ),
+        ],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('INTERACTIVE (TAP TO TOGGLE)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _ThumbnailCardToggleDemo(),
     ];
   }
 
@@ -3300,6 +3452,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         child: const _ExerciseCardEditDemo(isSelected: true),
       ),
 
+      const SizedBox(height: AppGrid.grid16),
+      AppText('HOLD TYPE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: const _ExerciseCardEditDemo(type: ExerciseType.hold),
+      ),
+
       _sectionDivider(),
 
       // ── Exercise Plan Page Header ──
@@ -3311,6 +3471,16 @@ class _CatalogHomeState extends State<CatalogHome> {
         constraints: const BoxConstraints(maxWidth: 420),
         child: const _ExercisePlanPageHeaderDemo(),
       ),
+
+      // ── CATEGORY FILTER ──
+      _folderGroupHeader('CATEGORY FILTER'),
+
+      // ── Category Filter ──
+      _subSectionHeader(subs[8]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CategoryFilterDemo(),
     ];
   }
 
@@ -4442,18 +4612,18 @@ class _SetSchemePickerDemo extends StatefulWidget {
 
 class _SetSchemePickerDemoState extends State<_SetSchemePickerDemo> {
   // CATALOG ONLY — stub groups. Real scheme groups come from the data layer.
-  static final _groups = [
+  static const _groups = [
     SetSchemeGroup(name: 'Strength', schemes: [
-      const SetScheme(id: 's1', label: '3-6 / 1min x 4'),
-      const SetScheme(id: 's2', label: '1min x 4'),
+      SetScheme(id: 's1', reps: 3, holdSeconds: 30, sets: 2),
+      SetScheme(id: 's2', reps: 6, holdSeconds: 60, sets: 4),
     ]),
     SetSchemeGroup(name: 'Hypertrophy', schemes: [
-      const SetScheme(id: 'h1', label: '8-12 × 3'),
-      const SetScheme(id: 'h2', label: '2:30min x 4'),
+      SetScheme(id: 'h1', reps: 6, holdSeconds: 90, sets: 3),
+      SetScheme(id: 'h2', reps: 9, holdSeconds: 150, sets: 4),
     ]),
     SetSchemeGroup(name: 'Endurance', schemes: [
-      const SetScheme(id: 'e1', label: '15 × 2'),
-      const SetScheme(id: 'e2', label: '4min x 4'),
+      SetScheme(id: 'e1', reps: 10, holdSeconds: 150, sets: 4),
+      SetScheme(id: 'e2', reps: 15, holdSeconds: 180, sets: 6),
     ]),
   ];
 
@@ -4520,7 +4690,11 @@ class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
 
 class _ExerciseCardEditDemo extends StatefulWidget {
   final bool isSelected;
-  const _ExerciseCardEditDemo({this.isSelected = false});
+  final ExerciseType type;
+  const _ExerciseCardEditDemo({
+    this.isSelected = false,
+    this.type = ExerciseType.rep,
+  });
 
   @override
   State<_ExerciseCardEditDemo> createState() => _ExerciseCardEditDemoState();
@@ -4528,16 +4702,35 @@ class _ExerciseCardEditDemo extends StatefulWidget {
 
 class _ExerciseCardEditDemoState extends State<_ExerciseCardEditDemo> {
   // CATALOG ONLY — template owns controllers and focus nodes in production.
-  final _repController = TextEditingController(text: '6');
-  final _repFocusNode = FocusNode();
+  TextEditingController? _repController;
+  FocusNode? _repFocusNode;
+  TextEditingController? _holdController;
+  FocusNode? _holdFocusNode;
   final _setsController = TextEditingController(text: '4');
   final _setsFocusNode = FocusNode();
   int _carouselIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    switch (widget.type) {
+      case ExerciseType.rep:
+        _repController = TextEditingController(text: '6');
+        _repFocusNode = FocusNode();
+        break;
+      case ExerciseType.hold:
+        _holdController = TextEditingController(text: toMmss(30));
+        _holdFocusNode = FocusNode();
+        break;
+    }
+  }
+
+  @override
   void dispose() {
-    _repController.dispose();
-    _repFocusNode.dispose();
+    _repController?.dispose();
+    _repFocusNode?.dispose();
+    _holdController?.dispose();
+    _holdFocusNode?.dispose();
     _setsController.dispose();
     _setsFocusNode.dispose();
     super.dispose();
@@ -4554,8 +4747,11 @@ class _ExerciseCardEditDemoState extends State<_ExerciseCardEditDemo> {
       scoreVariant: ScoreBadgeVariant.trendUp,
       exerciseName: 'Exercise name',
       muscleGroup: 'Shoulder flexion',
+      type: widget.type,
       repController: _repController,
       repFocusNode: _repFocusNode,
+      holdController: _holdController,
+      holdFocusNode: _holdFocusNode,
       setsController: _setsController,
       setsFocusNode: _setsFocusNode,
       equipmentLabel: 'Equipment',
@@ -4601,6 +4797,66 @@ class _ExercisePlanPageHeaderDemoState
       activeTabIndex: _activeTab,
       onBack: () {},
       onTabChanged: (i) => setState(() => _activeTab = i),
+    );
+  }
+}
+
+class _CategoryFilterDemo extends StatefulWidget {
+  const _CategoryFilterDemo();
+
+  @override
+  State<_CategoryFilterDemo> createState() => _CategoryFilterDemoState();
+}
+
+class _CategoryFilterDemoState extends State<_CategoryFilterDemo> {
+  String? _overall;
+  String? _bodyPart;
+  String? _outcome;
+
+  static const _overallChips = <CategoryChip>[
+    CategoryChip(label: 'Templates', iconAsset: AppIcons.listView),
+    CategoryChip(label: 'Bundles'),
+    CategoryChip(label: 'Community', iconAsset: AppIcons.group),
+    CategoryChip(label: 'Core'),
+    CategoryChip(label: 'Full body'),
+    CategoryChip(label: 'Back'),
+    CategoryChip(label: 'Lower body'),
+    CategoryChip(label: 'Upper body'),
+  ];
+
+  static const _bodyParts = <String>[
+    'Hips', 'Shoulders', 'Knees', 'Elbows',
+    'Spine', 'Neck', 'Wrist + Hand', 'Ankle + Foot',
+  ];
+
+  static const _outcomes = <String>[
+    'Mobility', 'Strength', 'Endurance', 'Stability + Motor Control', 'Power',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CategoryFilterOrganism(
+          overallChips: _overallChips,
+          bodyPartChips: _bodyParts,
+          outcomeChips: _outcomes,
+          onFilterChanged: (overall, bodyPart, outcome) {
+            setState(() {
+              _overall = overall;
+              _bodyPart = bodyPart;
+              _outcome = outcome;
+            });
+          },
+        ),
+        const SizedBox(height: AppGrid.grid12),
+        AppText(
+          'Selected — overall: ${_overall ?? 'none'} | bodyPart: ${_bodyPart ?? 'none'} | outcome: ${_outcome ?? 'none'}',
+          style: AppTypography.caption.bold,
+          color: AppColors.textSecondary,
+        ),
+      ],
     );
   }
 }

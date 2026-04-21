@@ -15,7 +15,7 @@ import '../../foundation/type/typography.dart';
 /// Molecule: read-only exercise card for the exercise list.
 ///
 /// Displays score, exercise name, muscle group badge, and three
-/// metrics (rep range, set count, equipment). Composes [ScoreBadge]
+/// metrics (rep/hold, set count, equipment). Composes [ScoreBadge]
 /// and [AppText] atoms — no interaction state of its own.
 ///
 /// Wrap in a [GestureDetector] or supply [onTap] to make it tappable.
@@ -31,10 +31,26 @@ class ExerciseCardRead extends StatelessWidget {
   /// Muscle group label shown as a full-width pill badge (e.g. "Shoulder flexion").
   final String muscleGroup;
 
-  /// Rep count or hold duration (e.g. "Rep 3" or "Hold 1:30").
-  final String reps;
-  final String setCount;
-  final String equipment;
+  /// First metric label — e.g. "Rep" or "Hold".
+  final String repLabel;
+
+  /// First metric value — e.g. "6" or "00:45".
+  final String repValue;
+
+  /// Second metric label — e.g. "Set".
+  final String setLabel;
+
+  /// Second metric value — e.g. "4".
+  final String setValue;
+
+  /// Equipment label (e.g. "Dumbell"). When longer than 4 characters, it's
+  /// truncated internally to 4 + "...". When both [equipmentLabel] and
+  /// [equipmentValue] are null, the equipment slot is omitted entirely.
+  final String? equipmentLabel;
+
+  /// Equipment measurement value (e.g. "15lb"). Null is allowed.
+  final String? equipmentValue;
+
   final VoidCallback onTap;
 
   /// When true, renders the card's border in [AppColors.textPrimary]
@@ -48,12 +64,25 @@ class ExerciseCardRead extends StatelessWidget {
     required this.scoreVariant,
     required this.exerciseName,
     required this.muscleGroup,
-    required this.reps,
-    required this.setCount,
-    required this.equipment,
+    required this.repLabel,
+    required this.repValue,
+    required this.setLabel,
+    required this.setValue,
+    this.equipmentLabel,
+    this.equipmentValue,
     required this.onTap,
     this.isSelected = false,
   });
+
+  String get _truncatedEquipmentLabel {
+    if (equipmentLabel == null) return '';
+    return equipmentLabel!.length > 4
+        ? '${equipmentLabel!.substring(0, 4)}...'
+        : equipmentLabel!;
+  }
+
+  bool get _hasEquipment =>
+      equipmentLabel != null || equipmentValue != null;
 
   @override
   Widget build(BuildContext context) {
@@ -120,26 +149,23 @@ class ExerciseCardRead extends StatelessWidget {
                   ),
                 ),
 
-                // ── Metrics row ──
+                // ── Metrics row — three label/value groups distributed
+                // by spaceBetween. Equipment group is Flexible so its
+                // value (not the label) is the thing that clips on
+                // pathologically narrow viewports.
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AppText(
-                      reps,
-                      style: AppTypography.bodySmall.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                    const Spacer(),
-                    AppText(
-                      setCount,
-                      style: AppTypography.bodySmall.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                    const Spacer(),
-                    AppText(
-                      equipment,
-                      style: AppTypography.bodySmall.bold,
-                      color: AppColors.textPrimary,
-                    ),
+                    _MetricGroup(label: repLabel, value: repValue),
+                    _MetricGroup(label: setLabel, value: setValue),
+                    if (_hasEquipment)
+                      Flexible(
+                        child: _MetricGroup(
+                          label: _truncatedEquipmentLabel,
+                          value: equipmentValue,
+                          ellipsizeValue: true,
+                        ),
+                      ),
                   ],
                 ),
               ],
@@ -149,6 +175,51 @@ class ExerciseCardRead extends StatelessWidget {
         ],
         ),
       ),
+    );
+  }
+}
+
+/// One label/value pair in the metrics row. File-private — its structure
+/// only makes sense inside [ExerciseCardRead] (CCP).
+class _MetricGroup extends StatelessWidget {
+  final String label;
+  final String? value;
+  final bool ellipsizeValue;
+
+  const _MetricGroup({
+    required this.label,
+    this.value,
+    this.ellipsizeValue = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelText = AppText(
+      label,
+      style: AppTypography.bodySmall.bold,
+      color: AppColors.textPrimary,
+      maxLines: 1,
+    );
+
+    if (value == null) {
+      return labelText;
+    }
+
+    final valueText = AppText(
+      value!,
+      style: AppTypography.bodySmall.bold,
+      color: AppColors.textPrimary,
+      maxLines: 1,
+      overflow: ellipsizeValue ? TextOverflow.ellipsis : null,
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        labelText,
+        const SizedBox(width: AppGrid.grid4),
+        if (ellipsizeValue) Flexible(child: valueText) else valueText,
+      ],
     );
   }
 }

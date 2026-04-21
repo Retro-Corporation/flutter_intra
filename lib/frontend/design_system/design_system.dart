@@ -69,6 +69,8 @@ export 'atoms/controls/sub_tab_item.dart';
 // Atoms — inputs
 export 'atoms/inputs/text_field.dart';
 export 'atoms/inputs/text_field_3d.dart';
+export 'atoms/inputs/formatters/hold_duration_format.dart';
+export 'atoms/inputs/formatters/hold_duration_formatter.dart';
 
 // Atoms — path
 export 'atoms/path/path_button.dart';
@@ -93,6 +95,7 @@ export 'molecules/form_fields/equipment_field_types.dart';
 
 // Molecules — display
 export 'molecules/display/section_header.dart';
+export 'molecules/display/icon_section_header.dart';
 export 'molecules/display/icon_text_action.dart';
 
 // Molecules — cards
@@ -104,6 +107,8 @@ export 'molecules/cards/exercise_card_skeleton.dart';
 export 'molecules/cards/exercise_card_read.dart';
 export 'molecules/cards/empty_exercise_list.dart';
 export 'molecules/cards/exercise_flow_carousel.dart';
+export 'molecules/cards/exercise_thumbnail_card.dart';
+export 'molecules/cards/exercise_thumbnail_card_types.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';
@@ -142,3 +147,13 @@ export 'organisms/client_account/equipment_picker_panel.dart';
 export 'organisms/client_account/equipment_picker_types.dart';
 export 'organisms/client_account/exercise_card_edit.dart';
 export 'organisms/client_account/exercise_plan_page_header.dart';
+export 'organisms/client_account/exercise_types.dart';
+
+// Organisms — category filter
+export 'organisms/category_filter/category_filter_organism.dart';
+export 'organisms/category_filter/category_filter_types.dart';
+
+// Organisms — exercise list
+export 'organisms/exercise_list/exercise_section_row_types.dart';
+export 'organisms/exercise_list/exercise_section_row_organism.dart';
+export 'organisms/exercise_list/add_exercise_skeleton_organism.dart';

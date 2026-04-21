@@ -10,9 +10,12 @@ Widget build({
   ScoreBadgeVariant scoreVariant = ScoreBadgeVariant.plain,
   String exerciseName = 'Shoulder Press',
   String muscleGroup = 'Shoulder flexion',
-  String reps = 'Rep 3',
-  String setCount = 'Sets 4',
-  String equipment = 'Barbell',
+  String repLabel = 'Rep',
+  String repValue = '3',
+  String setLabel = 'Set',
+  String setValue = '4',
+  String? equipmentLabel = 'Barbell',
+  String? equipmentValue,
   VoidCallback? onTap,
 }) {
   return MaterialApp(
@@ -23,9 +26,12 @@ Widget build({
         scoreVariant: scoreVariant,
         exerciseName: exerciseName,
         muscleGroup: muscleGroup,
-        reps: reps,
-        setCount: setCount,
-        equipment: equipment,
+        repLabel: repLabel,
+        repValue: repValue,
+        setLabel: setLabel,
+        setValue: setValue,
+        equipmentLabel: equipmentLabel,
+        equipmentValue: equipmentValue,
         onTap: onTap ?? () {},
       ),
     ),
@@ -46,22 +52,41 @@ void main() {
       expect(find.text('Shoulder flexion'), findsOneWidget);
     });
 
-    testWidgets('renders reps metric', (tester) async {
-      await tester.pumpWidget(build(reps: 'Rep 3'));
+    testWidgets('renders rep label and value', (tester) async {
+      await tester.pumpWidget(build(repLabel: 'Rep', repValue: '3'));
 
-      expect(find.text('Rep 3'), findsOneWidget);
+      expect(find.text('Rep'), findsOneWidget);
+      expect(find.text('3'), findsOneWidget);
     });
 
-    testWidgets('renders set count metric', (tester) async {
-      await tester.pumpWidget(build(setCount: 'Sets 4'));
+    testWidgets('renders set label and value', (tester) async {
+      await tester.pumpWidget(build(setLabel: 'Set', setValue: '4'));
 
-      expect(find.text('Sets 4'), findsOneWidget);
+      expect(find.text('Set'), findsOneWidget);
+      expect(find.text('4'), findsOneWidget);
     });
 
-    testWidgets('renders equipment metric', (tester) async {
-      await tester.pumpWidget(build(equipment: 'Barbell'));
+    testWidgets('renders equipment label (truncated to 4 chars when long)',
+        (tester) async {
+      // "Barbell" (7 chars) is truncated to "Barb..." internally.
+      await tester.pumpWidget(build(equipmentLabel: 'Barbell'));
 
-      expect(find.text('Barbell'), findsOneWidget);
+      expect(find.text('Barb...'), findsOneWidget);
+    });
+
+    testWidgets('renders short equipment label in full', (tester) async {
+      await tester.pumpWidget(build(equipmentLabel: 'Bar'));
+
+      expect(find.text('Bar'), findsOneWidget);
+    });
+
+    testWidgets('omits equipment slot when both label and value are null',
+        (tester) async {
+      await tester.pumpWidget(build(equipmentLabel: null, equipmentValue: null));
+
+      // Only rep and set groups render — no equipment text
+      expect(find.text('Rep'), findsOneWidget);
+      expect(find.text('Set'), findsOneWidget);
     });
 
     testWidgets('renders ScoreBadge', (tester) async {
