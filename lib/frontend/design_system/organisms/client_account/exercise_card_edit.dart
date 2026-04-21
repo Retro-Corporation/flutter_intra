@@ -80,6 +80,10 @@ class ExerciseCardEdit extends StatefulWidget {
   final VoidCallback onDelete;
   final VoidCallback onSwap;
 
+  /// When true, renders the card's outer border in [AppColors.textPrimary]
+  /// to indicate a selected state (e.g. Select mode in the Exercise Plan).
+  final bool isSelected;
+
   const ExerciseCardEdit({
     super.key,
     required this.thumbnails,
@@ -105,6 +109,7 @@ class ExerciseCardEdit extends StatefulWidget {
     this.staticEquipmentValue,
     required this.onDelete,
     required this.onSwap,
+    this.isSelected = false,
   });
 
   @override
@@ -164,7 +169,12 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
+        border: Border.all(
+          color: widget.isSelected
+              ? AppColors.textPrimary
+              : AppColors.surfaceBorder,
+          width: AppStroke.xs,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppGrid.grid20),

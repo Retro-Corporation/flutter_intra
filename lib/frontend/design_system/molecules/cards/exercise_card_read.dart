@@ -37,6 +37,10 @@ class ExerciseCardRead extends StatelessWidget {
   final String equipment;
   final VoidCallback onTap;
 
+  /// When true, renders the card's border in [AppColors.textPrimary]
+  /// to indicate a selected state (e.g. Select mode in the Exercise Plan).
+  final bool isSelected;
+
   const ExerciseCardRead({
     super.key,
     required this.score,
@@ -48,6 +52,7 @@ class ExerciseCardRead extends StatelessWidget {
     required this.setCount,
     required this.equipment,
     required this.onTap,
+    this.isSelected = false,
   });
 
   @override
@@ -55,7 +60,8 @@ class ExerciseCardRead extends StatelessWidget {
     return PressableSurface(
       onTap: onTap,
       backgroundColor: AppColors.surface,
-      borderColor: AppColors.surfaceBorder,
+      borderColor:
+          isSelected ? AppColors.textPrimary : AppColors.surfaceBorder,
       borderRadius: AppRadius.md,
       child: Padding(
         padding: const EdgeInsets.all(AppPadding.rem075),

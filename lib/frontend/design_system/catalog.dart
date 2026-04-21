@@ -3135,6 +3135,25 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid16),
+      AppText('SELECTED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: ExerciseCardRead(
+          score: 2.4,
+          scoreColor: AppColors.brand,
+          scoreVariant: ScoreBadgeVariant.trendUp,
+          exerciseName: 'Exercise name',
+          muscleGroup: 'Shoulder flexion',
+          reps: 'Rep 6',
+          setCount: 'Set 4',
+          equipment: 'Dumbell 15lb',
+          isSelected: true,
+          onTap: () {},
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Empty Exercise List ──
@@ -3271,6 +3290,14 @@ class _CatalogHomeState extends State<CatalogHome> {
       ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 360),
         child: const _ExerciseCardEditDemo(),
+      ),
+
+      const SizedBox(height: AppGrid.grid16),
+      AppText('SELECTED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: const _ExerciseCardEditDemo(isSelected: true),
       ),
 
       _sectionDivider(),
@@ -4492,7 +4519,8 @@ class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
 // ── Exercise Card Edit Catalog ──
 
 class _ExerciseCardEditDemo extends StatefulWidget {
-  const _ExerciseCardEditDemo();
+  final bool isSelected;
+  const _ExerciseCardEditDemo({this.isSelected = false});
 
   @override
   State<_ExerciseCardEditDemo> createState() => _ExerciseCardEditDemoState();
@@ -4533,6 +4561,7 @@ class _ExerciseCardEditDemoState extends State<_ExerciseCardEditDemo> {
       equipmentLabel: 'Equipment',
       equipmentType: EquipmentFieldType.staticDisplay,
       staticEquipmentValue: 'No equipment',
+      isSelected: widget.isSelected,
       onDelete: () {},
       onSwap: () {},
     );
