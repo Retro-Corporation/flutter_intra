@@ -24,6 +24,10 @@ class FilterButton extends StatelessWidget {
   /// When true, [label] renders below the box. When false (default), above.
   final bool labelBelow;
 
+  /// Size of the button box. Defaults to [AppGrid.grid40] (40px).
+  /// Pass [AppGrid.grid48] to match the height of 3D input fields.
+  final double? boxSize;
+
   const FilterButton({
     required this.state,
     required this.onTap,
@@ -31,6 +35,7 @@ class FilterButton extends StatelessWidget {
     this.backgroundColor = AppColors.surface,
     this.label,
     this.labelBelow = false,
+    this.boxSize,
     super.key,
   });
 
@@ -54,9 +59,10 @@ class FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = boxSize ?? AppGrid.grid40;
     final box = SizedBox(
-      height: AppGrid.grid40,
-      width: AppGrid.grid40,
+      height: size,
+      width: size,
       child: PressableSurface(
         backgroundColor: backgroundColor,
         borderColor: _borderColor,
