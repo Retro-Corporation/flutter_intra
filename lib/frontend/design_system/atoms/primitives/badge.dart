@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
-import '../../foundation/color/color_utils.dart';
 import '../../foundation/opacity.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/space/padding.dart';
@@ -75,7 +74,8 @@ class _BadgeSizeConfig {
 class _ResolvedColors {
   final Color background;
   final Color foreground;
-  final Color border;
+  /// Null when the badge has no border (e.g. filled variant).
+  final Color? border;
 
   const _ResolvedColors({
     required this.background,
@@ -94,7 +94,7 @@ _ResolvedColors _resolveFilled(Color color) {
   return _ResolvedColors(
     background: color.withValues(alpha: AppOpacity.badgeSelected),
     foreground: fg,
-    border: resolve700(color),
+    border: null,
   );
 }
 
@@ -105,6 +105,7 @@ _ResolvedColors _resolveOutline(Color color) {
     border: _outlineBorderColor,
   );
 }
+
 
 // ── AppBadge ──
 
@@ -191,7 +192,9 @@ class AppBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: colors.border, width: AppStroke.sm),
+        border: colors.border == null
+            ? null
+            : Border.all(color: colors.border!, width: AppStroke.sm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

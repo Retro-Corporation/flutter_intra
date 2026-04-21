@@ -119,7 +119,7 @@ void main() {
 
   group('AppBadge color resolution', () {
     testWidgets(
-      'Filled badge background matches color prop',
+      'Filled badge background applies badgeSelected opacity to color prop',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestBadge(
           label: 'Test',
@@ -128,12 +128,15 @@ void main() {
 
         final container = findBadgeContainer(tester);
         final decoration = container.decoration as BoxDecoration;
-        expect(decoration.color, AppColors.blue500);
+        expect(
+          decoration.color,
+          AppColors.blue500.withValues(alpha: AppOpacity.badgeSelected),
+        );
       },
     );
 
     testWidgets(
-      'Filled badge border matches 700 shade',
+      'Filled badge has no border',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestBadge(
           label: 'Test',
@@ -142,8 +145,7 @@ void main() {
 
         final container = findBadgeContainer(tester);
         final decoration = container.decoration as BoxDecoration;
-        final border = decoration.border as Border;
-        expect(border.top.color, AppColors.blue700);
+        expect(decoration.border, isNull);
       },
     );
 
