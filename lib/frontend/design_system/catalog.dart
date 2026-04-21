@@ -211,6 +211,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Empty Exercise List',
         'Exercise Flow Carousel',
         'Exercise Thumbnail Card',
+        'Icon Section Header',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -219,12 +220,13 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Sort Panel',
         // client_account/
         'Frequency Picker',
-        'Rest Timer',
         'Set Scheme Picker',
         'Equipment Picker',
         'Exercise Card Edit',
         'Exercise Plan Page Header',
         'Category Filter',
+        'Exercise Section Row',
+        'Add Exercise Skeleton',
       ]),
       _Section('Templates', []),
     ];
@@ -3343,6 +3345,35 @@ class _CatalogHomeState extends State<CatalogHome> {
       AppText('INTERACTIVE (TAP TO TOGGLE)', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const _ThumbnailCardToggleDemo(),
+
+      _sectionDivider(),
+
+      // ── Icon Section Header ──
+      _subSectionHeader(subs[19]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        width: 320,
+        child: IconSectionHeader(label: 'No icon'),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 320,
+        child: IconSectionHeader(
+          label: 'Saved Templates',
+          iconPath: AppIcons.star,
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const SizedBox(
+        width: 320,
+        child: IconSectionHeader(
+          label: 'Kingdom Basics Templates',
+          iconPath: AppIcons.crown,
+        ),
+      ),
     ];
   }
 
@@ -3403,18 +3434,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         child: const _FrequencyPickerDemo(),
       ),
 
-      // ── Rest Timer ──
-      _subSectionHeader(subs[3]),
-      const SizedBox(height: AppGrid.grid12),
-      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
-      const SizedBox(height: AppGrid.grid8),
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360),
-        child: const _RestTimerPickerDemo(),
-      ),
-
       // ── Set Scheme Picker ──
-      _subSectionHeader(subs[4]),
+      _subSectionHeader(subs[3]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3426,7 +3447,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Equipment Picker ──
-      _subSectionHeader(subs[5]),
+      _subSectionHeader(subs[4]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3435,7 +3456,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Card Edit ──
-      _subSectionHeader(subs[6]),
+      _subSectionHeader(subs[5]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3463,7 +3484,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Plan Page Header ──
-      _subSectionHeader(subs[7]),
+      _subSectionHeader(subs[6]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3476,11 +3497,107 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('CATEGORY FILTER'),
 
       // ── Category Filter ──
-      _subSectionHeader(subs[8]),
+      _subSectionHeader(subs[7]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const _CategoryFilterDemo(),
+
+      // ── EXERCISE LIST ──
+      _folderGroupHeader('EXERCISE LIST'),
+
+      // ── Exercise Section Row ──
+      _subSectionHeader(subs[8]),
+      const SizedBox(height: AppGrid.grid12),
+
+      Builder(
+        builder: (context) {
+          const templateItems = [
+            ExerciseItem(id: 't1', label: 'ACL Rehab'),
+            ExerciseItem(id: 't2', label: 'Hamstring Strain'),
+            ExerciseItem(id: 't3', label: 'Rotator Cuff'),
+            ExerciseItem(id: 't4', label: 'Knee Stability'),
+          ];
+          const gridItems = [
+            ExerciseItem(id: 'e1'),
+            ExerciseItem(id: 'e2'),
+            ExerciseItem(id: 'e3'),
+            ExerciseItem(id: 'e4'),
+            ExerciseItem(id: 'e5'),
+            ExerciseItem(id: 'e6'),
+            ExerciseItem(id: 'e7'),
+            ExerciseItem(id: 'e8'),
+          ];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText('TEMPLATE ROW — STAR', style: AppTypography.overline.semiBold),
+              const SizedBox(height: AppGrid.grid8),
+              ExerciseSectionRowOrganism(
+                title: 'Saved Templates',
+                layout: ExerciseSectionLayout.templateRow,
+                items: templateItems,
+                onCardTap: (_) {},
+                iconPath: AppIcons.star,
+              ),
+              const SizedBox(height: AppGrid.grid24),
+              AppText('EXERCISE GRID — STAR', style: AppTypography.overline.semiBold),
+              const SizedBox(height: AppGrid.grid8),
+              ExerciseSectionRowOrganism(
+                title: 'Saved Exercises',
+                layout: ExerciseSectionLayout.exerciseGrid,
+                items: gridItems,
+                onCardTap: (_) {},
+                iconPath: AppIcons.star,
+              ),
+              const SizedBox(height: AppGrid.grid24),
+              AppText('EXERCISE GRID — CROWN', style: AppTypography.overline.semiBold),
+              const SizedBox(height: AppGrid.grid8),
+              ExerciseSectionRowOrganism(
+                title: 'Kingdom Basics',
+                layout: ExerciseSectionLayout.exerciseGrid,
+                items: gridItems,
+                onCardTap: (_) {},
+                iconPath: AppIcons.crown,
+              ),
+              const SizedBox(height: AppGrid.grid24),
+              AppText('TEMPLATE ROW — CROWN', style: AppTypography.overline.semiBold),
+              const SizedBox(height: AppGrid.grid8),
+              ExerciseSectionRowOrganism(
+                title: 'Kingdom Templates',
+                layout: ExerciseSectionLayout.templateRow,
+                items: templateItems,
+                onCardTap: (_) {},
+                iconPath: AppIcons.crown,
+              ),
+              const SizedBox(height: AppGrid.grid24),
+              AppText('WITH SELECTION', style: AppTypography.overline.semiBold),
+              const SizedBox(height: AppGrid.grid8),
+              ExerciseSectionRowOrganism(
+                title: 'With selection',
+                layout: ExerciseSectionLayout.templateRow,
+                items: templateItems,
+                onCardTap: (_) {},
+                iconPath: AppIcons.star,
+                selectedIds: const ['t1'],
+              ),
+            ],
+          );
+        },
+      ),
+
+      _sectionDivider(),
+
+      // ── Add Exercise Skeleton ──
+      _subSectionHeader(subs[9]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('PHONE VIEWPORT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const SizedBox(
+        height: 600,
+        width: 360,
+        child: AddExerciseSkeletonOrganism(),
+      ),
     ];
   }
 
@@ -4561,38 +4678,6 @@ class _FrequencyPickerDemoState extends State<_FrequencyPickerDemo> {
   @override
   Widget build(BuildContext context) {
     return FrequencyPickerPanel(
-      amountController: _controller,
-      amountFocusNode: _focusNode,
-      selectedUnit: _unit,
-      onUnitChanged: (unit) => setState(() => _unit = unit),
-    );
-  }
-}
-
-// ── Rest Timer Picker Catalog ──
-
-class _RestTimerPickerDemo extends StatefulWidget {
-  const _RestTimerPickerDemo();
-
-  @override
-  State<_RestTimerPickerDemo> createState() => _RestTimerPickerDemoState();
-}
-
-class _RestTimerPickerDemoState extends State<_RestTimerPickerDemo> {
-  final _controller = TextEditingController(text: '45');
-  final _focusNode = FocusNode();
-  DurationUnit _unit = DurationUnit.seconds;
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RestTimerPickerPanel(
       amountController: _controller,
       amountFocusNode: _focusNode,
       selectedUnit: _unit,
