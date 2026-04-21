@@ -101,6 +101,7 @@ export 'molecules/cards/current_client_card_types.dart';
 export 'molecules/cards/all_client_card.dart';
 export 'molecules/cards/all_client_card_types.dart';
 export 'molecules/cards/exercise_card_skeleton.dart';
+export 'molecules/cards/exercise_card_read.dart';
 export 'molecules/cards/empty_exercise_list.dart';
 export 'molecules/cards/exercise_flow_carousel.dart';
 
@@ -127,6 +128,9 @@ export 'organisms/sort/sort_panel_types.dart';
 export 'organisms/client_list/client_list_organism.dart';
 export 'organisms/client_list/client_list_types.dart';
 
+// Templates
+export 'templates/exercise_plan_template.dart';
+
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
 export 'organisms/client_account/frequency_picker_types.dart';
@@ -134,3 +138,7 @@ export 'organisms/client_account/rest_timer_picker_panel.dart';
 export 'organisms/client_account/rest_timer_picker_types.dart';
 export 'organisms/client_account/set_scheme_picker_panel.dart';
 export 'organisms/client_account/set_scheme_picker_types.dart';
+export 'organisms/client_account/equipment_picker_panel.dart';
+export 'organisms/client_account/equipment_picker_types.dart';
+export 'organisms/client_account/exercise_card_edit.dart';
+export 'organisms/client_account/exercise_plan_page_header.dart';

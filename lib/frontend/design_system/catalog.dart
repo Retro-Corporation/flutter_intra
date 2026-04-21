@@ -183,6 +183,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Practitioner Nav Bar',
         'Sub Tab Bar',
         'Exercise Card Skeleton',
+        'Exercise Card Read',
         'Empty Exercise List',
         'Exercise Flow Carousel',
       ]),
@@ -195,6 +196,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Frequency Picker',
         'Rest Timer',
         'Set Scheme Picker',
+        'Equipment Picker',
+        'Exercise Card Edit',
+        'Exercise Plan Page Header',
       ]),
       _Section('Templates', []),
     ];
@@ -3046,8 +3050,95 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       _sectionDivider(),
 
-      // ── Empty Exercise List ──
+      // ── Exercise Card Read ──
       _subSectionHeader(subs[15]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('PLAIN', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: ExerciseCardRead(
+          score: 2.4,
+          scoreColor: AppColors.brand,
+          scoreVariant: ScoreBadgeVariant.trendUp,
+          exerciseName: 'Exercise name',
+          muscleGroup: 'Shoulder flexion',
+          reps: 'Rep 3',
+          setCount: 'Set 4',
+          equipment: 'Dumbell 15lb',
+          onTap: () {},
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid16),
+      AppText('NO TREND', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: ExerciseCardRead(
+          score: 2.4,
+          scoreColor: AppColors.surfaceBorder,
+          scoreVariant: ScoreBadgeVariant.plain,
+          exerciseName: 'Exercise name',
+          muscleGroup: 'Shoulder flexion',
+          reps: 'Rep 3',
+          setCount: 'Set 4',
+          equipment: 'Dumbell 15lb',
+          onTap: () {},
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid16),
+      AppText('STACKED × 3', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          children: [
+            ExerciseCardRead(
+              score: 2.4,
+              scoreColor: AppColors.brand,
+              scoreVariant: ScoreBadgeVariant.trendUp,
+              exerciseName: 'Exercise name',
+              muscleGroup: 'Shoulder flexion',
+              reps: 'Rep 3',
+              setCount: 'Set 4',
+              equipment: 'Dumbell 15lb',
+              onTap: () {},
+            ),
+            SizedBox(height: AppGrid.grid12),
+            ExerciseCardRead(
+              score: 2.4,
+              scoreColor: AppColors.surfaceBorder,
+              scoreVariant: ScoreBadgeVariant.plain,
+              exerciseName: 'Exercise name',
+              muscleGroup: 'Shoulder flexion',
+              reps: 'Rep 3',
+              setCount: 'Set 4',
+              equipment: 'Dumbell 15lb',
+              onTap: () {},
+            ),
+            SizedBox(height: AppGrid.grid12),
+            ExerciseCardRead(
+              score: 2.4,
+              scoreColor: AppColors.error,
+              scoreVariant: ScoreBadgeVariant.trendDown,
+              exerciseName: 'Exercise name',
+              muscleGroup: 'Shoulder flexion',
+              reps: 'Hold 1:30',
+              setCount: 'Set 4',
+              equipment: 'Dumbell 15lb',
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Empty Exercise List ──
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
 
       SizedBox(
@@ -3059,7 +3150,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Flow Carousel ──
-      _subSectionHeader(subs[16]),
+      _subSectionHeader(subs[17]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('3 ITEMS', style: AppTypography.overline.semiBold),
@@ -3160,6 +3251,39 @@ class _CatalogHomeState extends State<CatalogHome> {
       // Overlay positioning (top: buttonBottom + 20, bottom: 20). In production
       // the template provides these bounds via Positioned; no ConstrainedBox needed.
       const _SetSchemePickerDemo(),
+
+      _sectionDivider(),
+
+      // ── Equipment Picker ──
+      _subSectionHeader(subs[5]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _EquipmentPickerDemo(),
+
+      _sectionDivider(),
+
+      // ── Exercise Card Edit ──
+      _subSectionHeader(subs[6]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: const _ExerciseCardEditDemo(),
+      ),
+
+      _sectionDivider(),
+
+      // ── Exercise Plan Page Header ──
+      _subSectionHeader(subs[7]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: const _ExercisePlanPageHeaderDemo(),
+      ),
     ];
   }
 
@@ -4325,6 +4449,129 @@ class _SetSchemePickerDemoState extends State<_SetSchemePickerDemo> {
         onSelected: (scheme) => setState(() => _selectedId = scheme.id),
         onCreateNew: () {},
       ),
+    );
+  }
+}
+
+// ── Equipment Picker Catalog ──
+
+class _EquipmentPickerDemo extends StatefulWidget {
+  const _EquipmentPickerDemo();
+
+  @override
+  State<_EquipmentPickerDemo> createState() => _EquipmentPickerDemoState();
+}
+
+class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
+  // CATALOG ONLY — stub options. Real options come from the exercise's
+  // related equipment list in the data layer.
+  static const _options = [
+    EquipmentOption(id: 'e1', label: 'Resistance Bands'),
+    EquipmentOption(id: 'e2', label: 'Pull-up Bar'),
+    EquipmentOption(id: 'e3', label: 'Doorway'),
+    EquipmentOption(id: 'e4', label: 'No Equipment'),
+  ];
+
+  String? _selectedId = 'e1';
+
+  @override
+  Widget build(BuildContext context) {
+    // CATALOG ONLY — ConstrainedBox simulates the template's Overlay bounds.
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 260),
+      child: EquipmentPickerPanel(
+        title: 'Related equipment',
+        options: _options,
+        selectedId: _selectedId,
+        onSelected: (option) => setState(() => _selectedId = option.id),
+      ),
+    );
+  }
+}
+
+// ── Exercise Card Edit Catalog ──
+
+class _ExerciseCardEditDemo extends StatefulWidget {
+  const _ExerciseCardEditDemo();
+
+  @override
+  State<_ExerciseCardEditDemo> createState() => _ExerciseCardEditDemoState();
+}
+
+class _ExerciseCardEditDemoState extends State<_ExerciseCardEditDemo> {
+  // CATALOG ONLY — template owns controllers and focus nodes in production.
+  final _repController = TextEditingController(text: '6');
+  final _repFocusNode = FocusNode();
+  final _setsController = TextEditingController(text: '4');
+  final _setsFocusNode = FocusNode();
+  int _carouselIndex = 0;
+
+  @override
+  void dispose() {
+    _repController.dispose();
+    _repFocusNode.dispose();
+    _setsController.dispose();
+    _setsFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExerciseCardEdit(
+      thumbnails: const [null, null, null, null, null],
+      currentIndex: _carouselIndex,
+      onIndexChanged: (i) => setState(() => _carouselIndex = i),
+      score: 2.4,
+      scoreColor: AppColors.brand,
+      scoreVariant: ScoreBadgeVariant.trendUp,
+      exerciseName: 'Exercise name',
+      muscleGroup: 'Shoulder flexion',
+      repController: _repController,
+      repFocusNode: _repFocusNode,
+      setsController: _setsController,
+      setsFocusNode: _setsFocusNode,
+      equipmentLabel: 'Equipment',
+      equipmentType: EquipmentFieldType.staticDisplay,
+      staticEquipmentValue: 'No equipment',
+      onDelete: () {},
+      onSwap: () {},
+    );
+  }
+}
+
+// ── Exercise Plan Page Header demo ──
+
+class _ExercisePlanPageHeaderDemo extends StatefulWidget {
+  const _ExercisePlanPageHeaderDemo();
+
+  @override
+  State<_ExercisePlanPageHeaderDemo> createState() =>
+      _ExercisePlanPageHeaderDemoState();
+}
+
+class _ExercisePlanPageHeaderDemoState
+    extends State<_ExercisePlanPageHeaderDemo> {
+  int _activeTab = 0;
+
+  static const _tabs = [
+    SubTabBarTab(label: 'Overview'),
+    SubTabBarTab(label: 'Exercise'),
+    SubTabBarTab(label: 'Capacity'),
+    SubTabBarTab(label: 'Exposure'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ExercisePlanPageHeader(
+      clientName: 'Roger Bergson',
+      clientEmail: 'Tavoncpowell@gmail.com',
+      score: 3.5,
+      scoreColor: AppColors.brand,
+      scoreVariant: ScoreBadgeVariant.plain,
+      tabs: _tabs,
+      activeTabIndex: _activeTab,
+      onBack: () {},
+      onTabChanged: (i) => setState(() => _activeTab = i),
     );
   }
 }
