@@ -20,7 +20,7 @@ class AppColors {
   static const brandDark = orange700;
 
   // Text
-  static const textPrimary = Color(0xFFFFFFFF);
+  static const textPrimary = Color(0xFFE6E6E6);
   static const textSecondary = grey500;
   static const textInverse = Color(0xFF000000);
 
