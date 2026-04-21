@@ -91,11 +91,21 @@ class ExercisePlanPageHeader extends StatelessWidget {
           ),
         ),
 
+        const SizedBox(height: AppGrid.grid20),
+
         // ── Row 2: tab bar ──
-        SubTabBar(
-          tabs: tabs,
-          activeIndex: activeTabIndex,
-          onChanged: onTabChanged,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppPadding.rem1,
+            0,
+            AppPadding.rem1,
+            AppGrid.grid32,
+          ),
+          child: SubTabBar(
+            tabs: tabs,
+            activeIndex: activeTabIndex,
+            onChanged: onTabChanged,
+          ),
         ),
       ],
     );

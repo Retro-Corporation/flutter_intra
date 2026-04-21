@@ -116,10 +116,16 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
   final Map<String, FocusNode> _repFocusNodes = {};
   final Map<String, TextEditingController> _setsControllers = {};
   final Map<String, FocusNode> _setsFocusNodes = {};
-  final Map<String, TextEditingController?> _equipmentNumericControllers = {};
-  final Map<String, FocusNode?> _equipmentNumericFocusNodes = {};
+  final Map<String, TextEditingController> _equipmentNumericControllers = {};
+  final Map<String, FocusNode> _equipmentNumericFocusNodes = {};
   final Map<String, int> _flowIndices = {};
   final Map<String, String?> _selectedEquipmentIds = {};
+
+  // ── Overlay anchor keys ──
+  final _frequencyDropdownKey = GlobalKey();
+  final _restTimerDropdownKey = GlobalKey();
+  final _setSchemeButtonKey = GlobalKey();
+  double _overlayAnchorTop = 200.0;
 
   // ── Page state ──
   int _activeTabIndex = 1;
@@ -168,6 +174,13 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     ];
     _selectedSchemeId = 'strength_1';
 
+    const dumbellOptions = [
+      EquipmentOption(id: 'dumbell_10', label: '10 lb'),
+      EquipmentOption(id: 'dumbell_15', label: '15 lb'),
+      EquipmentOption(id: 'dumbell_20', label: '20 lb'),
+      EquipmentOption(id: 'dumbell_25', label: '25 lb'),
+    ];
+
     _exercises = [
       _MockExercise(
         id: 'ex_1',
@@ -176,17 +189,13 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.trendUp,
         exerciseName: 'Shoulder Press',
         muscleGroup: 'Shoulder flexion',
-        reps: '3-6',
+        reps: '6',
         setCount: '4',
         equipment: 'Dumbell 15lb',
         thumbnails: const [null, null, null, null],
         equipmentLabel: 'Dumbell',
         equipmentType: EquipmentFieldType.numbered,
-        equipmentOptions: const [
-          EquipmentOption(id: 'dumbell_10', label: '10 lb'),
-          EquipmentOption(id: 'dumbell_15', label: '15 lb'),
-          EquipmentOption(id: 'dumbell_20', label: '20 lb'),
-        ],
+        equipmentOptions: dumbellOptions,
       ),
       _MockExercise(
         id: 'ex_2',
@@ -195,16 +204,13 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Bicep Curl',
         muscleGroup: 'Shoulder flexion',
-        reps: '3-6',
+        reps: '6',
         setCount: '4',
         equipment: 'Dumbell 15lb',
         thumbnails: const [null, null, null, null, null],
         equipmentLabel: 'Dumbell',
         equipmentType: EquipmentFieldType.numbered,
-        equipmentOptions: const [
-          EquipmentOption(id: 'dumbell_10', label: '10 lb'),
-          EquipmentOption(id: 'dumbell_15', label: '15 lb'),
-        ],
+        equipmentOptions: dumbellOptions,
       ),
       _MockExercise(
         id: 'ex_3',
@@ -213,18 +219,118 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Lateral Raise',
         muscleGroup: 'Shoulder flexion',
-        reps: '3-6',
+        reps: '6',
         setCount: '4',
         equipment: 'Dumbell 15lb',
         thumbnails: const [null, null, null, null],
         equipmentLabel: 'Dumbell',
         equipmentType: EquipmentFieldType.numbered,
-        equipmentOptions: const [
-          EquipmentOption(id: 'dumbell_10', label: '10 lb'),
-          EquipmentOption(id: 'dumbell_15', label: '15 lb'),
-          EquipmentOption(id: 'dumbell_20', label: '20 lb'),
-          EquipmentOption(id: 'dumbell_25', label: '25 lb'),
-        ],
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_4',
+        score: 3.1,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Tricep Pushdown',
+        muscleGroup: 'Elbow extension',
+        reps: '12',
+        setCount: '3',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_5',
+        score: 4.2,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Chest Press',
+        muscleGroup: 'Shoulder flexion',
+        reps: '10',
+        setCount: '4',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_6',
+        score: 5.5,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Leg Press',
+        muscleGroup: 'Knee extension',
+        reps: '15',
+        setCount: '3',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_7',
+        score: 2.8,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Romanian Deadlift',
+        muscleGroup: 'Hip hinge',
+        reps: '8',
+        setCount: '4',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_8',
+        score: 3.7,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Cable Row',
+        muscleGroup: 'Shoulder extension',
+        reps: '12',
+        setCount: '3',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_9',
+        score: 4.9,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Face Pull',
+        muscleGroup: 'Shoulder abduction',
+        reps: '15',
+        setCount: '3',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
+      ),
+      _MockExercise(
+        id: 'ex_10',
+        score: 6.1,
+        scoreColor: AppColors.textSecondary,
+        scoreVariant: ScoreBadgeVariant.plain,
+        exerciseName: 'Incline Curl',
+        muscleGroup: 'Elbow flexion',
+        reps: '12',
+        setCount: '3',
+        equipment: 'Dumbell 15lb',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Dumbell',
+        equipmentType: EquipmentFieldType.numbered,
+        equipmentOptions: dumbellOptions,
       ),
     ];
 
@@ -242,8 +348,9 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     _setsControllers[id] = TextEditingController(text: initialSets)
       ..addListener(_savePlan);
     _setsFocusNodes[id] = FocusNode();
-    _equipmentNumericControllers[id] = null;
-    _equipmentNumericFocusNodes[id] = null;
+    _equipmentNumericControllers[id] = TextEditingController(text: '15')
+      ..addListener(_savePlan);
+    _equipmentNumericFocusNodes[id] = FocusNode();
     _flowIndices[id] = 0;
     _selectedEquipmentIds[id] = null;
   }
@@ -302,8 +409,27 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     return null;
   }
 
-  void _openOverlay(_ActiveOverlay overlay) =>
-      setState(() => _activeOverlay = overlay);
+  void _openOverlay(_ActiveOverlay overlay) {
+    final safeTop = MediaQuery.of(context).padding.top;
+    final GlobalKey? key = switch (overlay) {
+      _OverlayFrequency() => _frequencyDropdownKey,
+      _OverlayRestTimer() => _restTimerDropdownKey,
+      _OverlaySetScheme() => _setSchemeButtonKey,
+      _ => null,
+    };
+    double top = _overlayAnchorTop;
+    if (key != null) {
+      final box = key.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null) {
+        final global = box.localToGlobal(Offset.zero);
+        top = global.dy + box.size.height + AppGrid.grid20 - safeTop;
+      }
+    }
+    setState(() {
+      _activeOverlay = overlay;
+      _overlayAnchorTop = top;
+    });
+  }
 
   void _dismissOverlay() =>
       setState(() => _activeOverlay = const _OverlayNone());
@@ -317,7 +443,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
             ? _selectedExerciseIds.remove(id)
             : _selectedExerciseIds.add(id);
       });
-    } else if (_isEditMode) {
+    } else {
       setState(() {
         _expandedExerciseIds.contains(id)
             ? _expandedExerciseIds.remove(id)
@@ -366,12 +492,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        _buildPlanSettings(),
-                        _buildTabContent(),
-                      ],
-                    ),
+                    child: _buildTabContent(),
                   ),
                 ),
               ],
@@ -387,7 +508,12 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   Widget _buildPlanSettings() {
     return Padding(
-      padding: const EdgeInsets.all(AppPadding.rem1),
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.rem1,
+        0,
+        AppPadding.rem1,
+        AppPadding.rem1,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -405,13 +531,14 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                         const SizedBox(width: AppGrid.grid8),
                         AppText(
                           'Frequency',
-                          style: AppTypography.body.regular,
-                          color: AppColors.textSecondary,
+                          style: AppTypography.bodySmall.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppGrid.grid8),
+                    const SizedBox(height: AppGrid.grid4),
                     AppDropdown(
+                      key: _frequencyDropdownKey,
                       style: AppDropdownStyle.outline,
                       variant: AppDropdownVariant.plain,
                       value: _buildFrequencyLabel(),
@@ -433,13 +560,14 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                         const SizedBox(width: AppGrid.grid8),
                         AppText(
                           'Rest timer',
-                          style: AppTypography.body.regular,
-                          color: AppColors.textSecondary,
+                          style: AppTypography.bodySmall.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppGrid.grid8),
+                    const SizedBox(height: AppGrid.grid4),
                     AppDropdown(
+                      key: _restTimerDropdownKey,
                       style: AppDropdownStyle.outline,
                       variant: AppDropdownVariant.plain,
                       value: _buildRestTimerLabel(),
@@ -453,7 +581,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
             ],
           ),
 
-          const SizedBox(height: AppGrid.grid16),
+          const SizedBox(height: AppGrid.grid20),
 
           // Row 2: set scheme + select/edit buttons
           Row(
@@ -469,22 +597,27 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                         const SizedBox(width: AppGrid.grid8),
                         AppText(
                           'Set scheme',
-                          style: AppTypography.body.regular,
-                          color: AppColors.textSecondary,
+                          style: AppTypography.bodySmall.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppGrid.grid8),
-                    AppButton(
-                      type: ButtonType.filled,
-                      color: AppColors.brand,
-                      label: _getSchemeLabel() ?? 'Select set scheme',
-                      onPressed: () => _openOverlay(const _OverlaySetScheme()),
+                    const SizedBox(height: AppGrid.grid4),
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        key: _setSchemeButtonKey,
+                        type: ButtonType.filled,
+                        color: AppColors.brand,
+                        label: _getSchemeLabel() ?? 'Select set scheme',
+                        onPressed: () =>
+                            _openOverlay(const _OverlaySetScheme()),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: AppGrid.grid8),
+              const SizedBox(width: AppGrid.grid12),
               FilterButton(
                 state: _isSelectMode
                     ? FilterButtonState.sorted
@@ -497,17 +630,21 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                   if (!_isSelectMode) _selectedExerciseIds.clear();
                 }),
               ),
-              const SizedBox(width: AppGrid.grid8),
+              const SizedBox(width: AppGrid.grid12),
               FilterButton(
                 state: _isEditMode
                     ? FilterButtonState.sorted
                     : FilterButtonState.idle,
-                icon: AppIcons.edit,
+                icon: _isEditMode ? AppIcons.editFilled : AppIcons.edit,
                 label: 'Edit',
                 labelBelow: false,
                 onTap: () => setState(() {
                   _isEditMode = !_isEditMode;
-                  if (!_isEditMode) _expandedExerciseIds.clear();
+                  if (_isEditMode) {
+                    _expandedExerciseIds.addAll(_exercises.map((e) => e.id));
+                  } else {
+                    _expandedExerciseIds.clear();
+                  }
                 }),
               ),
             ],
@@ -527,118 +664,127 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
   }
 
   Widget _buildExerciseTab() {
-    if (_isLoading) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem1),
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: AppGrid.grid12),
-              child: ExerciseCardSkeleton(),
+    return Column(
+      children: [
+        _buildPlanSettings(),
+        if (_isLoading)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem1),
+            child: Column(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.only(bottom: AppGrid.grid12),
+                  child: ExerciseCardSkeleton(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: AppGrid.grid12),
+                  child: ExerciseCardSkeleton(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: AppGrid.grid12),
+                  child: ExerciseCardSkeleton(),
+                ),
+              ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: AppGrid.grid12),
-              child: ExerciseCardSkeleton(),
+          )
+        else if (_exercises.isEmpty)
+          SizedBox(
+            height: 400,
+            child: EmptyExerciseList(onAddExercise: _onAddExercise),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem1),
+            child: Column(
+              children: [
+                for (final ex in _exercises) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppGrid.grid12),
+                    child: _buildExerciseCard(ex),
+                  ),
+                  if (_isEditMode)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppGrid.grid12),
+                      child: AppButton(
+                        type: ButtonType.ghost,
+                        label: '+ Add Exercise',
+                        color: AppColors.textPrimary,
+                        onPressed: _onAddExercise,
+                      ),
+                    ),
+                ],
+              ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: AppGrid.grid12),
-              child: ExerciseCardSkeleton(),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_exercises.isEmpty) {
-      return SizedBox(
-        height: 400,
-        child: EmptyExerciseList(onAddExercise: _onAddExercise),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem1),
-      child: Column(
-        children: [
-          for (final ex in _exercises)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppGrid.grid12),
-              child: _buildExerciseCard(ex),
-            ),
-          if (_isEditMode)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppGrid.grid16),
-              child: AppButton(
-                type: ButtonType.ghost,
-                label: '+ Add Exercise',
-                onPressed: _onAddExercise,
-              ),
-            ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
   // ── Exercise cards ────────────────────────────────────────────────────────
 
   Widget _buildExerciseCard(_MockExercise ex) {
-    final isExpanded = _isEditMode && _expandedExerciseIds.contains(ex.id);
+    final isExpanded = _expandedExerciseIds.contains(ex.id);
+    final isSelected = _isSelectMode && _selectedExerciseIds.contains(ex.id);
+    final editCard = ExerciseCardEdit(
+      thumbnails: ex.thumbnails,
+      currentIndex: _flowIndices[ex.id] ?? 0,
+      onIndexChanged: (i) => setState(() => _flowIndices[ex.id] = i),
+      score: ex.score,
+      scoreColor: ex.scoreColor,
+      scoreVariant: ex.scoreVariant,
+      exerciseName: ex.exerciseName,
+      muscleGroup: ex.muscleGroup,
+      repController: _repControllers[ex.id]!,
+      repFocusNode: _repFocusNodes[ex.id]!,
+      setsController: _setsControllers[ex.id]!,
+      setsFocusNode: _setsFocusNodes[ex.id]!,
+      equipmentLabel: ex.equipmentLabel,
+      equipmentType: ex.equipmentType,
+      equipmentController: _equipmentNumericControllers[ex.id],
+      equipmentFocusNode: _equipmentNumericFocusNodes[ex.id],
+      equipmentUnit: ex.equipmentUnit,
+      selectedEquipmentValue: _selectedEquipmentIds[ex.id],
+      onEquipmentDropdownTap: () =>
+          _openOverlay(_OverlayEquipment(ex.id)),
+      isEquipmentDropdownOpen: switch (_activeOverlay) {
+        _OverlayEquipment(exerciseId: final id) => id == ex.id,
+        _ => false,
+      },
+      isSelected: isSelected,
+      onDelete: () => _onDeleteExercise(ex.id),
+      onSwap: () => debugPrint('swap pressed for ${ex.id}'),
+    );
     return AnimatedSize(
       duration: AppDurations.toggle,
       curve: Curves.easeInOut,
       child: isExpanded
-          ? ExerciseCardEdit(
-              thumbnails: ex.thumbnails,
-              currentIndex: _flowIndices[ex.id] ?? 0,
-              onIndexChanged: (i) => setState(() => _flowIndices[ex.id] = i),
-              score: ex.score,
-              scoreColor: ex.scoreColor,
-              scoreVariant: ex.scoreVariant,
-              exerciseName: ex.exerciseName,
-              muscleGroup: ex.muscleGroup,
-              repController: _repControllers[ex.id]!,
-              repFocusNode: _repFocusNodes[ex.id]!,
-              setsController: _setsControllers[ex.id]!,
-              setsFocusNode: _setsFocusNodes[ex.id]!,
-              equipmentLabel: ex.equipmentLabel,
-              equipmentType: ex.equipmentType,
-              equipmentController: _equipmentNumericControllers[ex.id],
-              equipmentFocusNode: _equipmentNumericFocusNodes[ex.id],
-              equipmentUnit: ex.equipmentUnit,
-              selectedEquipmentValue: _selectedEquipmentIds[ex.id],
-              onEquipmentDropdownTap: () =>
-                  _openOverlay(_OverlayEquipment(ex.id)),
-              isEquipmentDropdownOpen: switch (_activeOverlay) {
-                _OverlayEquipment(exerciseId: final id) => id == ex.id,
-                _ => false,
-              },
-              onDelete: () => _onDeleteExercise(ex.id),
-              onSwap: () => debugPrint('swap pressed for ${ex.id}'),
-            )
+          ? (_isEditMode
+              ? editCard
+              : TapRegion(
+                  onTapOutside: (_) {
+                    if (_activeOverlay is _OverlayNone) {
+                      setState(() => _expandedExerciseIds.remove(ex.id));
+                    }
+                  },
+                  child: editCard,
+                ))
           : _buildSelectableReadCard(ex),
     );
   }
 
   Widget _buildSelectableReadCard(_MockExercise ex) {
     final isSelected = _isSelectMode && _selectedExerciseIds.contains(ex.id);
-    return Container(
-      decoration: isSelected
-          ? BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: AppColors.brand, width: AppStroke.md),
-            )
-          : null,
-      child: ExerciseCardRead(
-        score: ex.score,
-        scoreColor: ex.scoreColor,
-        scoreVariant: ex.scoreVariant,
-        exerciseName: ex.exerciseName,
-        muscleGroup: ex.muscleGroup,
-        reps: ex.reps,
-        setCount: ex.setCount,
-        equipment: ex.equipment,
-        onTap: () => _onCardTap(ex.id),
-      ),
+    return ExerciseCardRead(
+      score: ex.score,
+      scoreColor: ex.scoreColor,
+      scoreVariant: ex.scoreVariant,
+      exerciseName: ex.exerciseName,
+      muscleGroup: ex.muscleGroup,
+      reps: 'Rep ${ex.reps}',
+      setCount: 'Set ${ex.setCount}',
+      equipment: ex.equipment,
+      isSelected: isSelected,
+      onTap: () => _onCardTap(ex.id),
     );
   }
 
@@ -682,17 +828,29 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         ),
     };
 
+    final isSetScheme = overlay is _OverlaySetScheme;
+
     return [
+      // Layer 1: transparent backdrop — translucent Listener does not enter the
+      // gesture arena, so a tap on another dropdown trigger both dismisses the
+      // open panel and opens the new one in a single tap.
       Positioned.fill(
-        child: Align(
-          alignment: const Alignment(0, -0.1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppPadding.rem1),
-            child: TapRegion(
-              onTapOutside: (_) => _dismissOverlay(),
-              child: panel,
-            ),
-          ),
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) => _dismissOverlay(),
+          child: const SizedBox.expand(),
+        ),
+      ),
+      // Layer 2: panel at computed position — absorbs its own taps
+      Positioned(
+        top: _overlayAnchorTop,
+        left: AppPadding.rem1,
+        right: AppPadding.rem1,
+        bottom: isSetScheme ? AppGrid.grid20 : null,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {},
+          child: panel,
         ),
       ),
     ];
