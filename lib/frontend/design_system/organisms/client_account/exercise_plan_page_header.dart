@@ -84,7 +84,7 @@ class ExercisePlanPageHeader extends StatelessWidget {
               ScoreBadge(
                 score: score,
                 underlineColor: scoreColor,
-                size: ScoreBadgeSize.md,
+                size: ScoreBadgeSize.lg,
                 variant: scoreVariant,
               ),
             ],

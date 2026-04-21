@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/color/color_utils.dart';
+import '../../foundation/opacity.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
@@ -91,7 +92,7 @@ _ResolvedColors _resolveFilled(Color color) {
       ? AppColors.textInverse
       : AppColors.textPrimary;
   return _ResolvedColors(
-    background: color,
+    background: color.withValues(alpha: AppOpacity.badgeSelected),
     foreground: fg,
     border: resolve700(color),
   );

@@ -129,11 +129,30 @@ class _FrequencyPickerPanelState extends State<FrequencyPickerPanel>
     _unitOverlayEntry = OverlayEntry(
       builder: (_) => Stack(
         children: [
-          // Barrier — tapping anywhere outside closes the dropdown.
+          // Barrier — translucent Listener does not enter the gesture arena,
+          // so a tap on another input (amount field, other panel's dropdown)
+          // both dismisses this sub-dropdown and reaches its target in one tap.
+          //
+          // If the tap lands on the dropdown button itself, skip the close —
+          // the button's own onTap toggles. Otherwise the barrier would close
+          // first and the button would re-open on pointer-up.
           Positioned.fill(
-            child: GestureDetector(
-              onTap: _closeUnitDropdown,
-              behavior: HitTestBehavior.opaque,
+            child: Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (event) {
+                final buttonBox = _whenButtonKey.currentContext
+                    ?.findRenderObject() as RenderBox?;
+                if (buttonBox != null) {
+                  final local = buttonBox.globalToLocal(event.position);
+                  final size = buttonBox.size;
+                  final onButton = local.dx >= 0 &&
+                      local.dy >= 0 &&
+                      local.dx <= size.width &&
+                      local.dy <= size.height;
+                  if (onButton) return;
+                }
+                _closeUnitDropdown();
+              },
               child: const SizedBox.expand(),
             ),
           ),
@@ -211,71 +230,88 @@ class _FrequencyPickerPanelState extends State<FrequencyPickerPanel>
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           padding: EdgeInsets.all(AppGrid.grid16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Amount column
-              SizedBox(
-                width: AppGrid.grid80,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Amount column
+                SizedBox(
+                  width: AppGrid.grid80,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        'Amount',
+                        style: AppTypography.bodySmall.semiBold,
+                        color: AppColors.textSecondary,
+                      ),
+                      SizedBox(height: AppGrid.grid8),
+                      AppTextField3D(
+                        controller: widget.amountController,
+                        focusNode: widget.amountFocusNode,
+                        borderColor: _amountBorderColor,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          _MinOneFormatter(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: AppGrid.grid16),
+                // Dash separator — invisible label + spacer mirrors the side
+                // columns so the dash centers over the input row, not the full
+                // column (which would be skewed by the label row above).
+                Column(
                   children: [
-                    AppText(
-                      'Amount',
-                      style: AppTypography.bodySmall.semiBold,
-                      color: AppColors.textSecondary,
+                    Opacity(
+                      opacity: 0,
+                      child: AppText(
+                        'A',
+                        style: AppTypography.bodySmall.semiBold,
+                      ),
                     ),
                     SizedBox(height: AppGrid.grid8),
-                    AppTextField3D(
-                      controller: widget.amountController,
-                      focusNode: widget.amountFocusNode,
-                      borderColor: _amountBorderColor,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        _MinOneFormatter(),
-                      ],
+                    Expanded(
+                      child: Center(
+                        child: AppText(
+                          '–',
+                          style: AppTypography.body.regular,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(width: AppGrid.grid16),
-              // Dash separator
-              Padding(
-                padding: EdgeInsets.only(bottom: AppGrid.grid8),
-                child: AppText(
-                  '–',
-                  style: AppTypography.body.regular,
-                  color: AppColors.textPrimary,
+                SizedBox(width: AppGrid.grid16),
+                // When column
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        'When',
+                        style: AppTypography.bodySmall.semiBold,
+                        color: AppColors.textSecondary,
+                      ),
+                      SizedBox(height: AppGrid.grid8),
+                      AppDropdown(
+                        key: _whenButtonKey,
+                        style: AppDropdownStyle.outline,
+                        variant: AppDropdownVariant.plain,
+                        value: widget.selectedUnit.label,
+                        placeholder: '',
+                        isOpen: _isUnitOpen,
+                        onTap: _isUnitOpen
+                            ? _closeUnitDropdown
+                            : _openUnitDropdown,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: AppGrid.grid16),
-              // When column
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      'When',
-                      style: AppTypography.bodySmall.semiBold,
-                      color: AppColors.textSecondary,
-                    ),
-                    SizedBox(height: AppGrid.grid8),
-                    AppDropdown(
-                      key: _whenButtonKey,
-                      style: AppDropdownStyle.outline,
-                      variant: AppDropdownVariant.plain,
-                      value: widget.selectedUnit.label,
-                      placeholder: '',
-                      isOpen: _isUnitOpen,
-                      onTap: _isUnitOpen
-                          ? _closeUnitDropdown
-                          : _openUnitDropdown,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

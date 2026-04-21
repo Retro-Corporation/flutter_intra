@@ -28,8 +28,15 @@ class ScoreBadge extends StatelessWidget {
   });
 
   double get _underlineHeight => switch (size) {
+        ScoreBadgeSize.lg => AppStroke.xl,
         ScoreBadgeSize.md => AppStroke.xl,
         ScoreBadgeSize.sm => AppStroke.md,
+      };
+
+  TextStyle get _scoreStyle => switch (size) {
+        ScoreBadgeSize.lg => AppTypography.bodyLarge.bold,
+        ScoreBadgeSize.md => AppTypography.body.bold,
+        ScoreBadgeSize.sm => AppTypography.body.bold,
       };
 
   Widget? _buildTrendIcon() => switch (variant) {
@@ -55,10 +62,11 @@ class ScoreBadge extends StatelessWidget {
             children: [
               AppText(
                 score.toStringAsFixed(1),
-                style: AppTypography.body.bold,
+                style: _scoreStyle,
                 color: AppColors.textPrimary,
               ),
-              if (size == ScoreBadgeSize.md) const SizedBox(height: AppGrid.grid4),
+              if (size != ScoreBadgeSize.sm)
+                const SizedBox(height: AppGrid.grid4),
               Container(height: _underlineHeight, color: underlineColor),
             ],
           ),

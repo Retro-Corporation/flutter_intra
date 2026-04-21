@@ -4,6 +4,7 @@ import '../../foundation/color/colors.dart';
 import '../../foundation/motion/curves.dart';
 import '../../foundation/motion/durations.dart';
 import '../../foundation/space/grid.dart';
+import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
 import '../../atoms/controls/sub_tab_item.dart';
 import 'sub_tab_bar_types.dart';
@@ -107,7 +108,12 @@ class _SubTabBarState extends State<SubTabBar> {
             left: _tabLefts[widget.activeIndex],
             width: _tabWidths[widget.activeIndex],
             height: AppStroke.xl,
-            child: const ColoredBox(color: AppColors.brand),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.brand,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+              ),
+            ),
           ),
       ],
     );

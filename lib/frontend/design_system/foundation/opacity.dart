@@ -8,4 +8,7 @@ abstract final class AppOpacity {
 
   /// Subtle background tint when a ghost button is pressed.
   static const double ghostPressed = 0.1;
+
+  /// Semi-transparent fill for selected filled badges (e.g. active filter chips).
+  static const double badgeSelected = 0.20;
 }

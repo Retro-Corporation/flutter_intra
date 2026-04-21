@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/grid.dart';
+import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
 import '../../foundation/type/typography.dart';
 import '../primitives/text.dart';
@@ -46,7 +47,13 @@ class SubTabItem extends StatelessWidget {
               ),
             ),
           ),
-          Container(height: AppStroke.xl, color: _underlineColor),
+          Container(
+            height: AppStroke.xl,
+            decoration: BoxDecoration(
+              color: _underlineColor,
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+          ),
         ],
       ),
     );
