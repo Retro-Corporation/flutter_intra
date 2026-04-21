@@ -100,6 +100,25 @@ class _SetSchemePickerPanelState extends State<SetSchemePickerPanel>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // ── Column header ──
+                Padding(
+                  padding: EdgeInsets.only(bottom: AppGrid.grid8),
+                  child: Row(
+                    children: [
+                      AppText(
+                        'Layout',
+                        style: AppTypography.caption.regular,
+                        color: AppColors.textSecondary,
+                      ),
+                      const Spacer(),
+                      AppText(
+                        'Reps / Holds x Sets',
+                        style: AppTypography.caption.regular,
+                        color: AppColors.textSecondary,
+                      ),
+                    ],
+                  ),
+                ),
                 // ── Scrollable scheme list — shrinks to content, capped by
                 // the parent's height constraint (Positioned bottom: grid20
                 // in template, ConstrainedBox in catalog). ──

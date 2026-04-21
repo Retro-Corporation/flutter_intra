@@ -37,7 +37,11 @@ class _MockExercise {
   final ScoreBadgeVariant scoreVariant;
   final String exerciseName;
   final String muscleGroup;
+  final ExerciseType type;
+  // Rep-type only. Empty string for hold-type.
   final String reps;
+  // Hold-type only. Null for rep-type.
+  final int? initialHoldSeconds;
   final String setCount;
   final String equipment;
   final List<String?> thumbnails;
@@ -53,7 +57,9 @@ class _MockExercise {
     required this.scoreVariant,
     required this.exerciseName,
     required this.muscleGroup,
-    required this.reps,
+    required this.type,
+    this.reps = '',
+    this.initialHoldSeconds,
     required this.setCount,
     required this.equipment,
     required this.thumbnails,
@@ -114,6 +120,9 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
   // ── Per-exercise controller maps (keyed by exercise id) ──
   final Map<String, TextEditingController> _repControllers = {};
   final Map<String, FocusNode> _repFocusNodes = {};
+  // Hold-type exercises only. Controllers hold "MM:SS" strings.
+  final Map<String, TextEditingController> _holdControllers = {};
+  final Map<String, FocusNode> _holdFocusNodes = {};
   final Map<String, TextEditingController> _setsControllers = {};
   final Map<String, FocusNode> _setsFocusNodes = {};
   final Map<String, TextEditingController> _equipmentNumericControllers = {};
@@ -129,10 +138,8 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   // ── Page state ──
   int _activeTabIndex = 1;
-  bool _isSelectMode = false;
   bool _isEditMode = false;
   final Set<String> _expandedExerciseIds = {};
-  final Set<String> _selectedExerciseIds = {};
   List<_MockExercise> _exercises = [];
   bool _isLoading = true;
   _ActiveOverlay _activeOverlay = const _OverlayNone();
@@ -160,19 +167,19 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
     _schemeGroups = const [
       SetSchemeGroup(name: 'Strength', schemes: [
-        SetScheme(id: 'strength_1', label: '3-6 × 4 - Controlled'),
-        SetScheme(id: 'strength_2', label: '1min x 4'),
+        SetScheme(id: 'strength_1', reps: 3, holdSeconds: 30, sets: 2),
+        SetScheme(id: 'strength_2', reps: 6, holdSeconds: 60, sets: 4),
       ]),
       SetSchemeGroup(name: 'Hypertrophy', schemes: [
-        SetScheme(id: 'hypertrophy_1', label: '8-12 × 3'),
-        SetScheme(id: 'hypertrophy_2', label: '2:30min × 4'),
+        SetScheme(id: 'hypertrophy_1', reps: 6, holdSeconds: 90, sets: 3),
+        SetScheme(id: 'hypertrophy_2', reps: 9, holdSeconds: 150, sets: 4),
       ]),
       SetSchemeGroup(name: 'Endurance', schemes: [
-        SetScheme(id: 'endurance_1', label: '15 × 2'),
-        SetScheme(id: 'endurance_2', label: '4min × 4'),
+        SetScheme(id: 'endurance_1', reps: 10, holdSeconds: 150, sets: 4),
+        SetScheme(id: 'endurance_2', reps: 15, holdSeconds: 180, sets: 6),
       ]),
     ];
-    _selectedSchemeId = 'strength_1';
+    _selectedSchemeId = null;
 
     const dumbellOptions = [
       EquipmentOption(id: 'dumbell_10', label: '10 lb'),
@@ -189,6 +196,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.trendUp,
         exerciseName: 'Shoulder Press',
         muscleGroup: 'Shoulder flexion',
+        type: ExerciseType.rep,
         reps: '6',
         setCount: '4',
         equipment: 'Dumbell 15lb',
@@ -204,6 +212,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Bicep Curl',
         muscleGroup: 'Shoulder flexion',
+        type: ExerciseType.rep,
         reps: '6',
         setCount: '4',
         equipment: 'Dumbell 15lb',
@@ -217,15 +226,16 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         score: 2.4,
         scoreColor: AppColors.textSecondary,
         scoreVariant: ScoreBadgeVariant.plain,
-        exerciseName: 'Lateral Raise',
-        muscleGroup: 'Shoulder flexion',
-        reps: '6',
-        setCount: '4',
-        equipment: 'Dumbell 15lb',
-        thumbnails: const [null, null, null, null],
-        equipmentLabel: 'Dumbell',
-        equipmentType: EquipmentFieldType.numbered,
-        equipmentOptions: dumbellOptions,
+        exerciseName: 'Plank',
+        muscleGroup: 'Core stability',
+        type: ExerciseType.hold,
+        initialHoldSeconds: 45,
+        setCount: '3',
+        equipment: 'No equipment',
+        thumbnails: const [null, null, null],
+        equipmentLabel: 'Equipment',
+        equipmentType: EquipmentFieldType.staticDisplay,
+        equipmentOptions: const [],
       ),
       _MockExercise(
         id: 'ex_4',
@@ -234,6 +244,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Tricep Pushdown',
         muscleGroup: 'Elbow extension',
+        type: ExerciseType.rep,
         reps: '12',
         setCount: '3',
         equipment: 'Dumbell 15lb',
@@ -249,6 +260,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Chest Press',
         muscleGroup: 'Shoulder flexion',
+        type: ExerciseType.rep,
         reps: '10',
         setCount: '4',
         equipment: 'Dumbell 15lb',
@@ -262,15 +274,16 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         score: 5.5,
         scoreColor: AppColors.textSecondary,
         scoreVariant: ScoreBadgeVariant.plain,
-        exerciseName: 'Leg Press',
+        exerciseName: 'Wall Sit',
         muscleGroup: 'Knee extension',
-        reps: '15',
+        type: ExerciseType.hold,
+        initialHoldSeconds: 60,
         setCount: '3',
-        equipment: 'Dumbell 15lb',
+        equipment: 'No equipment',
         thumbnails: const [null, null, null],
-        equipmentLabel: 'Dumbell',
-        equipmentType: EquipmentFieldType.numbered,
-        equipmentOptions: dumbellOptions,
+        equipmentLabel: 'Equipment',
+        equipmentType: EquipmentFieldType.staticDisplay,
+        equipmentOptions: const [],
       ),
       _MockExercise(
         id: 'ex_7',
@@ -279,6 +292,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Romanian Deadlift',
         muscleGroup: 'Hip hinge',
+        type: ExerciseType.rep,
         reps: '8',
         setCount: '4',
         equipment: 'Dumbell 15lb',
@@ -294,6 +308,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Cable Row',
         muscleGroup: 'Shoulder extension',
+        type: ExerciseType.rep,
         reps: '12',
         setCount: '3',
         equipment: 'Dumbell 15lb',
@@ -309,6 +324,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Face Pull',
         muscleGroup: 'Shoulder abduction',
+        type: ExerciseType.rep,
         reps: '15',
         setCount: '3',
         equipment: 'Dumbell 15lb',
@@ -324,6 +340,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         scoreVariant: ScoreBadgeVariant.plain,
         exerciseName: 'Incline Curl',
         muscleGroup: 'Elbow flexion',
+        type: ExerciseType.rep,
         reps: '12',
         setCount: '3',
         equipment: 'Dumbell 15lb',
@@ -335,17 +352,13 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     ];
 
     for (final ex in _exercises) {
-      _initControllersForExercise(ex.id,
-          initialReps: ex.reps, initialSets: ex.setCount);
+      _initControllersForExercise(ex);
     }
   }
 
-  void _initControllersForExercise(String id,
-      {String initialReps = '', String initialSets = ''}) {
-    _repControllers[id] = TextEditingController(text: initialReps)
-      ..addListener(_savePlan);
-    _repFocusNodes[id] = FocusNode();
-    _setsControllers[id] = TextEditingController(text: initialSets)
+  void _initControllersForExercise(_MockExercise ex) {
+    final id = ex.id;
+    _setsControllers[id] = TextEditingController(text: ex.setCount)
       ..addListener(_savePlan);
     _setsFocusNodes[id] = FocusNode();
     _equipmentNumericControllers[id] = TextEditingController(text: '15')
@@ -353,11 +366,45 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     _equipmentNumericFocusNodes[id] = FocusNode();
     _flowIndices[id] = 0;
     _selectedEquipmentIds[id] = null;
+
+    switch (ex.type) {
+      case ExerciseType.rep:
+        _repControllers[id] = TextEditingController(text: ex.reps)
+          ..addListener(_savePlan);
+        _repFocusNodes[id] = FocusNode();
+        break;
+      case ExerciseType.hold:
+        final initialSeconds = ex.initialHoldSeconds ?? kMinHoldSeconds;
+        _holdControllers[id] = TextEditingController(text: toMmss(initialSeconds))
+          ..addListener(_savePlan);
+        // Clamp-on-blur: when the field loses focus, reparse + enforce
+        // minimum. Allows transient partial input while typing.
+        final focusNode = FocusNode();
+        focusNode.addListener(() => _onHoldFocusChange(id, focusNode));
+        _holdFocusNodes[id] = focusNode;
+        break;
+    }
+  }
+
+  void _onHoldFocusChange(String id, FocusNode focusNode) {
+    if (focusNode.hasFocus) return;
+    final controller = _holdControllers[id];
+    if (controller == null) return;
+    final parsed = parseHoldInput(controller.text);
+    final clamped = (parsed == null || parsed < kMinHoldSeconds)
+        ? kMinHoldSeconds
+        : parsed;
+    final reformatted = toMmss(clamped);
+    if (controller.text != reformatted) {
+      controller.text = reformatted;
+    }
   }
 
   void _disposeControllersForExercise(String id) {
     _repControllers.remove(id)?.dispose();
     _repFocusNodes.remove(id)?.dispose();
+    _holdControllers.remove(id)?.dispose();
+    _holdFocusNodes.remove(id)?.dispose();
     _setsControllers.remove(id)?.dispose();
     _setsFocusNodes.remove(id)?.dispose();
     _equipmentNumericControllers.remove(id)?.dispose();
@@ -434,29 +481,37 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
   void _dismissOverlay() =>
       setState(() => _activeOverlay = const _OverlayNone());
 
+  /// Toggle: if [overlay] matches the active one, dismiss. Otherwise open it.
+  /// Used by the frequency / rest-timer / set-scheme triggers so tapping an
+  /// already-open trigger closes the panel.
+  void _toggleOverlay(_ActiveOverlay overlay) {
+    final match = switch ((overlay, _activeOverlay)) {
+      (_OverlayFrequency(), _OverlayFrequency()) => true,
+      (_OverlayRestTimer(), _OverlayRestTimer()) => true,
+      (_OverlaySetScheme(), _OverlaySetScheme()) => true,
+      _ => false,
+    };
+    if (match) {
+      _dismissOverlay();
+    } else {
+      _openOverlay(overlay);
+    }
+  }
+
   void _savePlan() => debugPrint('save triggered');
 
   void _onCardTap(String id) {
-    if (_isSelectMode) {
-      setState(() {
-        _selectedExerciseIds.contains(id)
-            ? _selectedExerciseIds.remove(id)
-            : _selectedExerciseIds.add(id);
-      });
-    } else {
-      setState(() {
-        _expandedExerciseIds.contains(id)
-            ? _expandedExerciseIds.remove(id)
-            : _expandedExerciseIds.add(id);
-      });
-    }
+    setState(() {
+      _expandedExerciseIds.contains(id)
+          ? _expandedExerciseIds.remove(id)
+          : _expandedExerciseIds.add(id);
+    });
   }
 
   void _onDeleteExercise(String id) {
     setState(() {
       _exercises.removeWhere((e) => e.id == id);
       _expandedExerciseIds.remove(id);
-      _selectedExerciseIds.remove(id);
       _disposeControllersForExercise(id);
     });
   }
@@ -517,11 +572,12 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row 1: frequency + rest timer
+          // Row 1: frequency (2/3) + rest timer (1/3)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
+                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -543,7 +599,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                       variant: AppDropdownVariant.plain,
                       value: _buildFrequencyLabel(),
                       placeholder: 'Choose frequency',
-                      onTap: () => _openOverlay(const _OverlayFrequency()),
+                      onTap: () => _toggleOverlay(const _OverlayFrequency()),
                       isOpen: _activeOverlay is _OverlayFrequency,
                     ),
                   ],
@@ -551,6 +607,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
               ),
               const SizedBox(width: AppGrid.grid12),
               Expanded(
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -572,7 +629,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                       variant: AppDropdownVariant.plain,
                       value: _buildRestTimerLabel(),
                       placeholder: 'Set timer',
-                      onTap: () => _openOverlay(const _OverlayRestTimer()),
+                      onTap: () => _toggleOverlay(const _OverlayRestTimer()),
                       isOpen: _activeOverlay is _OverlayRestTimer,
                     ),
                   ],
@@ -611,7 +668,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                         color: AppColors.brand,
                         label: _getSchemeLabel() ?? 'Select set scheme',
                         onPressed: () =>
-                            _openOverlay(const _OverlaySetScheme()),
+                            _toggleOverlay(const _OverlaySetScheme()),
                       ),
                     ),
                   ],
@@ -619,25 +676,11 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
               ),
               const SizedBox(width: AppGrid.grid12),
               FilterButton(
-                state: _isSelectMode
-                    ? FilterButtonState.sorted
-                    : FilterButtonState.idle,
-                icon: AppIcons.select,
-                label: 'Select',
-                labelBelow: false,
-                onTap: () => setState(() {
-                  _isSelectMode = !_isSelectMode;
-                  if (!_isSelectMode) _selectedExerciseIds.clear();
-                }),
-              ),
-              const SizedBox(width: AppGrid.grid12),
-              FilterButton(
                 state: _isEditMode
                     ? FilterButtonState.sorted
                     : FilterButtonState.idle,
                 icon: _isEditMode ? AppIcons.editFilled : AppIcons.edit,
-                label: 'Edit',
-                labelBelow: false,
+                boxSize: AppGrid.grid44,
                 onTap: () => setState(() {
                   _isEditMode = !_isEditMode;
                   if (_isEditMode) {
@@ -724,7 +767,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   Widget _buildExerciseCard(_MockExercise ex) {
     final isExpanded = _expandedExerciseIds.contains(ex.id);
-    final isSelected = _isSelectMode && _selectedExerciseIds.contains(ex.id);
     final editCard = ExerciseCardEdit(
       thumbnails: ex.thumbnails,
       currentIndex: _flowIndices[ex.id] ?? 0,
@@ -734,8 +776,11 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       scoreVariant: ex.scoreVariant,
       exerciseName: ex.exerciseName,
       muscleGroup: ex.muscleGroup,
-      repController: _repControllers[ex.id]!,
-      repFocusNode: _repFocusNodes[ex.id]!,
+      type: ex.type,
+      repController: _repControllers[ex.id],
+      repFocusNode: _repFocusNodes[ex.id],
+      holdController: _holdControllers[ex.id],
+      holdFocusNode: _holdFocusNodes[ex.id],
       setsController: _setsControllers[ex.id]!,
       setsFocusNode: _setsFocusNodes[ex.id]!,
       equipmentLabel: ex.equipmentLabel,
@@ -750,7 +795,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         _OverlayEquipment(exerciseId: final id) => id == ex.id,
         _ => false,
       },
-      isSelected: isSelected,
       onDelete: () => _onDeleteExercise(ex.id),
       onSwap: () => debugPrint('swap pressed for ${ex.id}'),
     );
@@ -768,22 +812,45 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                   },
                   child: editCard,
                 ))
-          : _buildSelectableReadCard(ex),
+          : _buildReadCard(ex),
     );
   }
 
-  Widget _buildSelectableReadCard(_MockExercise ex) {
-    final isSelected = _isSelectMode && _selectedExerciseIds.contains(ex.id);
+  Widget _buildReadCard(_MockExercise ex) {
+    final (repLabel, repValue) = switch (ex.type) {
+      ExerciseType.rep => ('Rep', _repControllers[ex.id]!.text),
+      ExerciseType.hold => (
+          'Hold',
+          toMmss(parseHoldInput(_holdControllers[ex.id]!.text) ??
+              kMinHoldSeconds),
+        ),
+    };
+    // staticDisplay exercises (e.g. "No equipment") hide the equipment slot.
+    // For other types the mock value has the shape "Name value"; split once
+    // on the first space to feed the read card's label/value truncation rule.
+    String? equipmentLabel;
+    String? equipmentValue;
+    if (ex.equipmentType != EquipmentFieldType.staticDisplay) {
+      final firstSpace = ex.equipment.indexOf(' ');
+      if (firstSpace < 0) {
+        equipmentLabel = ex.equipment;
+      } else {
+        equipmentLabel = ex.equipment.substring(0, firstSpace);
+        equipmentValue = ex.equipment.substring(firstSpace + 1);
+      }
+    }
     return ExerciseCardRead(
       score: ex.score,
       scoreColor: ex.scoreColor,
       scoreVariant: ex.scoreVariant,
       exerciseName: ex.exerciseName,
       muscleGroup: ex.muscleGroup,
-      reps: 'Rep ${ex.reps}',
-      setCount: 'Set ${ex.setCount}',
-      equipment: ex.equipment,
-      isSelected: isSelected,
+      repLabel: repLabel,
+      repValue: repValue,
+      setLabel: 'Set',
+      setValue: _setsControllers[ex.id]!.text,
+      equipmentLabel: equipmentLabel,
+      equipmentValue: equipmentValue,
       onTap: () => _onCardTap(ex.id),
     );
   }
@@ -813,6 +880,19 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
           selectedId: _selectedSchemeId,
           onSelected: (s) => setState(() {
             _selectedSchemeId = s.id;
+            // Apply scheme values to every exercise. Sets always apply;
+            // reps vs holds follows the exercise's own type.
+            for (final ex in _exercises) {
+              _setsControllers[ex.id]!.text = s.sets.toString();
+              switch (ex.type) {
+                case ExerciseType.rep:
+                  _repControllers[ex.id]!.text = s.reps.toString();
+                  break;
+                case ExerciseType.hold:
+                  _holdControllers[ex.id]!.text = toMmss(s.holdSeconds);
+                  break;
+              }
+            }
             _dismissOverlay();
           }),
           onCreateNew: () => debugPrint('create new scheme pressed'),
@@ -834,10 +914,36 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       // Layer 1: transparent backdrop — translucent Listener does not enter the
       // gesture arena, so a tap on another dropdown trigger both dismisses the
       // open panel and opens the new one in a single tap.
+      //
+      // If the pointer-down lands on the currently-active trigger, skip the
+      // dismiss — the trigger's own onTap toggles the overlay closed on
+      // pointer-up. Without this skip the backdrop would close first and the
+      // trigger would re-open on pointer-up.
       Positioned.fill(
         child: Listener(
           behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => _dismissOverlay(),
+          onPointerDown: (event) {
+            final GlobalKey? activeKey = switch (_activeOverlay) {
+              _OverlayFrequency() => _frequencyDropdownKey,
+              _OverlayRestTimer() => _restTimerDropdownKey,
+              _OverlaySetScheme() => _setSchemeButtonKey,
+              _ => null,
+            };
+            if (activeKey != null) {
+              final box = activeKey.currentContext?.findRenderObject()
+                  as RenderBox?;
+              if (box != null) {
+                final local = box.globalToLocal(event.position);
+                final size = box.size;
+                final onTrigger = local.dx >= 0 &&
+                    local.dy >= 0 &&
+                    local.dx <= size.width &&
+                    local.dy <= size.height;
+                if (onTrigger) return;
+              }
+            }
+            _dismissOverlay();
+          },
           child: const SizedBox.expand(),
         ),
       ),
