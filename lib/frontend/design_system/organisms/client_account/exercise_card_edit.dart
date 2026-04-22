@@ -97,6 +97,11 @@ class ExerciseCardEdit extends StatefulWidget {
   /// to indicate a selected state (e.g. Select mode in the Exercise Plan).
   final bool isSelected;
 
+  /// Called when the user taps empty space (padding / gaps) inside the card.
+  /// Interactive children (buttons, text fields) win the gesture arena for
+  /// their own taps — only bare-surface taps reach this callback.
+  final VoidCallback? onBackgroundTap;
+
   const ExerciseCardEdit({
     super.key,
     required this.thumbnails,
@@ -126,6 +131,7 @@ class ExerciseCardEdit extends StatefulWidget {
     required this.onDelete,
     required this.onSwap,
     this.isSelected = false,
+    this.onBackgroundTap,
   })  : assert(
           type != ExerciseType.rep ||
               (repController != null && repFocusNode != null),
@@ -238,7 +244,10 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onBackgroundTap,
+      child: ClipRRect(
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: Container(
       decoration: BoxDecoration(
@@ -257,15 +266,6 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Carousel ──
-            ExerciseFlowCarousel(
-              thumbnails: widget.thumbnails,
-              currentIndex: widget.currentIndex,
-              onIndexChanged: widget.onIndexChanged,
-            ),
-
-            const SizedBox(height: AppGrid.grid12),
-
             // ── Score + name + delete ──
             Row(
               children: [
@@ -288,7 +288,7 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
                 GestureDetector(
                   onTap: widget.onDelete,
                   child: AppIcon(
-                    AppIcons.delete,
+                    AppIcons.deleteFilled,
                     size: IconSizes.md,
                     color: AppColors.textSecondary,
                   ),
@@ -311,6 +311,15 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
                 style: AppTypography.bodySmall.regular,
                 color: AppColors.textPrimary,
               ),
+            ),
+
+            const SizedBox(height: AppGrid.grid12),
+
+            // ── Carousel ──
+            ExerciseFlowCarousel(
+              thumbnails: widget.thumbnails,
+              currentIndex: widget.currentIndex,
+              onIndexChanged: widget.onIndexChanged,
             ),
 
             const SizedBox(height: AppGrid.grid12),
@@ -347,55 +356,59 @@ class _ExerciseCardEditState extends State<ExerciseCardEdit> {
             const SizedBox(height: AppGrid.grid12),
 
             // ── Swap + Equipment row ──
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppText(
-                      'Swap',
-                      style: AppTypography.bodySmall.regular,
-                      color: AppColors.textSecondary,
-                    ),
-                    const SizedBox(height: AppGrid.grid4),
-                    SizedBox(
-                      height: AppGrid.grid48,
-                      width: AppGrid.grid48,
-                      child: PressableSurface(
-                        backgroundColor: AppColors.surface,
-                        borderColor: AppColors.surfaceBorder,
-                        borderRadius: AppRadius.sm,
-                        onTap: widget.onSwap,
-                        child: Center(
-                          child: AppIcon(
-                            AppIcons.refresh,
-                            size: IconSizes.md,
-                            color: AppColors.textPrimary,
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      AppText(
+                        'Swap',
+                        style: AppTypography.bodySmall.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                      const SizedBox(height: AppGrid.grid4),
+                      Expanded(
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: PressableSurface(
+                            backgroundColor: AppColors.surface,
+                            borderColor: AppColors.surfaceBorder,
+                            borderRadius: AppRadius.sm,
+                            onTap: widget.onSwap,
+                            child: Center(
+                              child: AppIcon(
+                                AppIcons.refresh,
+                                size: IconSizes.md,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: AppGrid.grid12),
-                Expanded(
-                  child: EquipmentField(
-                    label: widget.equipmentLabel,
-                    type: widget.equipmentType,
-                    controller: widget.equipmentController,
-                    focusNode: widget.equipmentFocusNode,
-                    unit: widget.equipmentUnit,
-                    selectedValue: widget.selectedEquipmentValue,
-                    onDropdownTap: widget.onEquipmentDropdownTap,
-                    isDropdownOpen: widget.isEquipmentDropdownOpen,
-                    staticValue: widget.staticEquipmentValue,
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppGrid.grid12),
+                  Expanded(
+                    child: EquipmentField(
+                      label: widget.equipmentLabel,
+                      type: widget.equipmentType,
+                      controller: widget.equipmentController,
+                      focusNode: widget.equipmentFocusNode,
+                      unit: widget.equipmentUnit,
+                      selectedValue: widget.selectedEquipmentValue,
+                      onDropdownTap: widget.onEquipmentDropdownTap,
+                      isDropdownOpen: widget.isEquipmentDropdownOpen,
+                      staticValue: widget.staticEquipmentValue,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
+      ),
       ),
       ),
     );
