@@ -38,6 +38,21 @@ class TemplatesCatalogHome extends StatelessWidget {
         onAddClients: () {},
       ),
     ),
+    'Add Exercise': (_) => _TemplateShell(
+      child: AddExerciseTemplate(
+        sections: _mockAddExerciseSections,
+        overallChips: _mockOverallChips,
+        bodyPartChips: _mockBodyPartChips,
+        outcomeChips: _mockOutcomeChips,
+        isLoading: false,
+        onBack: () {},
+        onCreateNew: () {},
+        onCardTap: (_) async => null,
+        onAddPressed: (_) {},
+        onSearchChanged: (_) {},
+        onFilterChanged: (_, _, _) {},
+      ),
+    ),
   };
 
   @override
@@ -174,6 +189,64 @@ const _mockAllClients = [
   AllClientData(clientId: '8',  clientName: 'Sofia Reyes',    email: 'sofia@email.com'),
   AllClientData(clientId: '9',  clientName: 'Noah Kim',       email: 'noah@email.com'),
   AllClientData(clientId: '10', clientName: 'Layla Hassan',   email: 'layla@email.com'),
+];
+
+// ── Add Exercise mock data ──
+
+const _mockOverallChips = <CategoryChip>[
+  CategoryChip(label: 'Templates', iconAsset: AppIcons.listView),
+  CategoryChip(label: 'Bundles'),
+  CategoryChip(label: 'Community', iconAsset: AppIcons.group),
+  CategoryChip(label: 'Core'),
+  CategoryChip(label: 'Full body'),
+  CategoryChip(label: 'Back'),
+  CategoryChip(label: 'Lower body'),
+  CategoryChip(label: 'Upper body'),
+];
+
+const _mockBodyPartChips = <String>[
+  'Hips',
+  'Shoulders',
+  'Knees',
+  'Elbows',
+  'Spine',
+  'Neck',
+  'Wrist + Hand',
+  'Ankle + Foot',
+];
+
+const _mockOutcomeChips = <String>[
+  'Mobility',
+  'Strength',
+  'Endurance',
+  'Stability + Motor Control',
+  'Power',
+];
+
+const _mockAddExerciseSections = <ExerciseSectionData>[
+  ExerciseSectionData(
+    title: 'Saved Templates',
+    layout: ExerciseSectionLayout.templateRow,
+    iconPath: AppIcons.star,
+    items: [
+      ExerciseItem(id: 't1', label: 'ACL Rehab'),
+      ExerciseItem(id: 't2', label: 'Hamstring Strain'),
+      ExerciseItem(id: 't3', label: 'Rotator Cuff'),
+    ],
+  ),
+  ExerciseSectionData(
+    title: 'Saved',
+    layout: ExerciseSectionLayout.exerciseGrid,
+    iconPath: AppIcons.star,
+    items: [
+      ExerciseItem(id: 'e1'),
+      ExerciseItem(id: 'e2'),
+      ExerciseItem(id: 'e3'),
+      ExerciseItem(id: 'e4'),
+      ExerciseItem(id: 'e5'),
+      ExerciseItem(id: 'e6'),
+    ],
+  ),
 ];
 
 // ── Smoke test template ──
