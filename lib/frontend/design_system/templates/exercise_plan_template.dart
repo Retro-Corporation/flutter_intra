@@ -15,9 +15,6 @@ class _OverlayFrequency extends _ActiveOverlay {
   const _OverlayFrequency();
 }
 
-class _OverlayRestTimer extends _ActiveOverlay {
-  const _OverlayRestTimer();
-}
 
 class _OverlaySetScheme extends _ActiveOverlay {
   const _OverlaySetScheme();
@@ -113,7 +110,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   // ── Plan-level value state ──
   FrequencyUnit _frequencyUnit = FrequencyUnit.weekly;
-  DurationUnit _restTimerUnit = DurationUnit.seconds;
   String? _selectedSchemeId;
   late List<SetSchemeGroup> _schemeGroups;
 
@@ -132,9 +128,10 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   // ── Overlay anchor keys ──
   final _frequencyDropdownKey = GlobalKey();
-  final _restTimerDropdownKey = GlobalKey();
   final _setSchemeButtonKey = GlobalKey();
   double _overlayAnchorTop = 200.0;
+
+  Color _restTimerBorderColor = AppColors.surfaceBorder;
 
   // ── Page state ──
   int _activeTabIndex = 1;
@@ -153,6 +150,17 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     _restTimerAmountFocus = FocusNode();
     _frequencyAmountController.addListener(_savePlan);
     _restTimerAmountController.addListener(_savePlan);
+    _restTimerAmountFocus.addListener(() {
+      if (_restTimerAmountFocus.hasFocus) {
+        setState(() => _restTimerBorderColor = AppColors.brand);
+      } else {
+        final seconds =
+            parseHoldInput(_restTimerAmountController.text) ?? kMinHoldSeconds;
+        _restTimerAmountController.text =
+            toDisplayMmss(seconds.clamp(kMinHoldSeconds, 59 * 60 + 59));
+        setState(() => _restTimerBorderColor = AppColors.surfaceBorder);
+      }
+    });
     _mockData();
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) setState(() => _isLoading = false);
@@ -162,8 +170,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
   void _mockData() {
     _frequencyAmountController.text = '2';
     _frequencyUnit = FrequencyUnit.daily;
-    _restTimerAmountController.text = '45';
-    _restTimerUnit = DurationUnit.seconds;
+    _restTimerAmountController.text = toDisplayMmss(45); // "0:45"
 
     _schemeGroups = const [
       SetSchemeGroup(name: 'Strength', schemes: [
@@ -375,7 +382,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
         break;
       case ExerciseType.hold:
         final initialSeconds = ex.initialHoldSeconds ?? kMinHoldSeconds;
-        _holdControllers[id] = TextEditingController(text: toMmss(initialSeconds))
+        _holdControllers[id] = TextEditingController(text: toDisplayMmss(initialSeconds))
           ..addListener(_savePlan);
         // Clamp-on-blur: when the field loses focus, reparse + enforce
         // minimum. Allows transient partial input while typing.
@@ -394,7 +401,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     final clamped = (parsed == null || parsed < kMinHoldSeconds)
         ? kMinHoldSeconds
         : parsed;
-    final reformatted = toMmss(clamped);
+    final reformatted = toDisplayMmss(clamped);
     if (controller.text != reformatted) {
       controller.text = reformatted;
     }
@@ -436,16 +443,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     return '${amount}x - $unit';
   }
 
-  String? _buildRestTimerLabel() {
-    final amount = _restTimerAmountController.text.trim();
-    if (amount.isEmpty) return null;
-    final unit = switch (_restTimerUnit) {
-      DurationUnit.seconds => 'sec',
-      DurationUnit.min => 'min',
-    };
-    return '$amount $unit';
-  }
-
   String? _getSchemeLabel() {
     if (_selectedSchemeId == null) return null;
     for (final group in _schemeGroups) {
@@ -460,7 +457,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
     final safeTop = MediaQuery.of(context).padding.top;
     final GlobalKey? key = switch (overlay) {
       _OverlayFrequency() => _frequencyDropdownKey,
-      _OverlayRestTimer() => _restTimerDropdownKey,
       _OverlaySetScheme() => _setSchemeButtonKey,
       _ => null,
     };
@@ -482,12 +478,11 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       setState(() => _activeOverlay = const _OverlayNone());
 
   /// Toggle: if [overlay] matches the active one, dismiss. Otherwise open it.
-  /// Used by the frequency / rest-timer / set-scheme triggers so tapping an
-  /// already-open trigger closes the panel.
+  /// Used by the frequency / set-scheme triggers so tapping an already-open
+  /// trigger closes the panel.
   void _toggleOverlay(_ActiveOverlay overlay) {
     final match = switch ((overlay, _activeOverlay)) {
       (_OverlayFrequency(), _OverlayFrequency()) => true,
-      (_OverlayRestTimer(), _OverlayRestTimer()) => true,
       (_OverlaySetScheme(), _OverlaySetScheme()) => true,
       _ => false,
     };
@@ -502,9 +497,12 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
 
   void _onCardTap(String id) {
     setState(() {
-      _expandedExerciseIds.contains(id)
-          ? _expandedExerciseIds.remove(id)
-          : _expandedExerciseIds.add(id);
+      if (_expandedExerciseIds.contains(id)) {
+        _expandedExerciseIds.remove(id);
+      } else {
+        _expandedExerciseIds.clear(); // close any other open card first
+        _expandedExerciseIds.add(id);
+      }
     });
   }
 
@@ -546,8 +544,18 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                   onTabChanged: (i) => setState(() => _activeTabIndex = i),
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: _buildTabContent(),
+                  child: NotificationListener<ScrollStartNotification>(
+                    onNotification: (_) {
+                      FocusScope.of(context).unfocus();
+                      return false;
+                    },
+                    child: SingleChildScrollView(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: _buildTabContent(),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -623,14 +631,12 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                       ],
                     ),
                     const SizedBox(height: AppGrid.grid4),
-                    AppDropdown(
-                      key: _restTimerDropdownKey,
-                      style: AppDropdownStyle.outline,
-                      variant: AppDropdownVariant.plain,
-                      value: _buildRestTimerLabel(),
-                      placeholder: 'Set timer',
-                      onTap: () => _toggleOverlay(const _OverlayRestTimer()),
-                      isOpen: _activeOverlay is _OverlayRestTimer,
+                    AppTextField3D(
+                      controller: _restTimerAmountController,
+                      focusNode: _restTimerAmountFocus,
+                      borderColor: _restTimerBorderColor,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [HoldDurationFormatter()],
                     ),
                   ],
                 ),
@@ -797,6 +803,9 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       },
       onDelete: () => _onDeleteExercise(ex.id),
       onSwap: () => debugPrint('swap pressed for ${ex.id}'),
+      onBackgroundTap: !_isEditMode
+          ? () => setState(() => _expandedExerciseIds.remove(ex.id))
+          : () => FocusScope.of(context).unfocus(),
     );
     return AnimatedSize(
       duration: AppDurations.toggle,
@@ -821,7 +830,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
       ExerciseType.rep => ('Rep', _repControllers[ex.id]!.text),
       ExerciseType.hold => (
           'Hold',
-          toMmss(parseHoldInput(_holdControllers[ex.id]!.text) ??
+          toDisplayMmss(parseHoldInput(_holdControllers[ex.id]!.text) ??
               kMinHoldSeconds),
         ),
     };
@@ -869,12 +878,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
           selectedUnit: _frequencyUnit,
           onUnitChanged: (u) => setState(() => _frequencyUnit = u),
         ),
-      _OverlayRestTimer() => RestTimerPickerPanel(
-          amountController: _restTimerAmountController,
-          amountFocusNode: _restTimerAmountFocus,
-          selectedUnit: _restTimerUnit,
-          onUnitChanged: (u) => setState(() => _restTimerUnit = u),
-        ),
       _OverlaySetScheme() => SetSchemePickerPanel(
           groups: _schemeGroups,
           selectedId: _selectedSchemeId,
@@ -889,7 +892,7 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
                   _repControllers[ex.id]!.text = s.reps.toString();
                   break;
                 case ExerciseType.hold:
-                  _holdControllers[ex.id]!.text = toMmss(s.holdSeconds);
+                  _holdControllers[ex.id]!.text = toDisplayMmss(s.holdSeconds);
                   break;
               }
             }
@@ -925,7 +928,6 @@ class _ExercisePlanTemplateState extends State<ExercisePlanTemplate> {
           onPointerDown: (event) {
             final GlobalKey? activeKey = switch (_activeOverlay) {
               _OverlayFrequency() => _frequencyDropdownKey,
-              _OverlayRestTimer() => _restTimerDropdownKey,
               _OverlaySetScheme() => _setSchemeButtonKey,
               _ => null,
             };
