@@ -84,6 +84,7 @@ class AppIcons {
   static const trophy = '$_base/trophy.svg';
 
   // ── UI ──
+  static const bundles = '$_base/bundles.svg';
   static const calendar = '$_base/calendar.svg';
   static const dragHandle = '$_base/drag-handle.svg';
   static const ellipses = '$_base/ellipses.svg';
@@ -188,6 +189,7 @@ class AppIcons {
     'arrow-right': arrowRight,
     'arrow-up': arrowUp,
     'body': body,
+    'bundles': bundles,
     'calendar': calendar,
     'camera': camera,
     'chat': chat,

@@ -195,7 +195,7 @@ const _mockAllClients = [
 
 const _mockOverallChips = <CategoryChip>[
   CategoryChip(label: 'Templates', iconAsset: AppIcons.listView),
-  CategoryChip(label: 'Bundles'),
+  CategoryChip(label: 'Bundles', iconAsset: AppIcons.bundles),
   CategoryChip(label: 'Community', iconAsset: AppIcons.group),
   CategoryChip(label: 'Core'),
   CategoryChip(label: 'Full body'),
