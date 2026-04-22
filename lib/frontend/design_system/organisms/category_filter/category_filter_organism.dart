@@ -130,7 +130,7 @@ class _CategoryFilterOrganismState extends State<CategoryFilterOrganism> {
             child: _isExpanded ? _buildExpandedRow1() : _buildDefaultRow1(),
           ),
         ),
-        const SizedBox(height: AppGrid.grid8),
+        const SizedBox(height: AppGrid.grid16),
         SizedBox(
           height: _chipRowHeight,
           child: AnimatedSwitcher(
@@ -257,6 +257,11 @@ class _CategoryFilterOrganismState extends State<CategoryFilterOrganism> {
 
 // ── Private chip tiles ──
 
+/// Minimum pill width for every chip in this organism. Short labels
+/// ("Hip") expand to this width with content centered, so no chip is too
+/// small to comfortably tap.
+const double _chipMinWidth = AppGrid.grid60;
+
 class _OverallChipTile extends StatelessWidget {
   final CategoryChip chip;
   final bool selected;
@@ -275,6 +280,7 @@ class _OverallChipTile extends StatelessWidget {
       leadingIcon: selected ? AppIcons.close : chip.iconAsset,
       type: selected ? BadgeType.filled : BadgeType.outline,
       color: selected ? AppColors.brand : AppColors.textPrimary,
+      minWidth: _chipMinWidth,
       onTap: onTap,
     );
   }
@@ -298,6 +304,7 @@ class _BodyPartChipTile extends StatelessWidget {
       leadingIcon: selected ? AppIcons.close : null,
       type: selected ? BadgeType.filled : BadgeType.outline,
       color: selected ? AppColors.brand : AppColors.textPrimary,
+      minWidth: _chipMinWidth,
       onTap: onTap,
     );
   }
@@ -321,6 +328,7 @@ class _OutcomeChipTile extends StatelessWidget {
       leadingIcon: selected ? AppIcons.close : null,
       type: selected ? BadgeType.filled : BadgeType.outline,
       color: selected ? AppColors.brand : AppColors.textPrimary,
+      minWidth: _chipMinWidth,
       onTap: onTap,
     );
   }

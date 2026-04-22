@@ -138,6 +138,11 @@ class AppBadge extends StatelessWidget {
   /// Optional tap callback. When null, badge is display-only.
   final VoidCallback? onTap;
 
+  /// Optional minimum width in logical pixels. When set, the pill stretches
+  /// to at least this width and its content is centered. When null, the
+  /// badge sizes to its intrinsic content width (default behavior).
+  final double? minWidth;
+
   const AppBadge({
     super.key,
     this.label,
@@ -147,6 +152,7 @@ class AppBadge extends StatelessWidget {
     this.size = BadgeSize.md,
     this.color = AppColors.brand,
     this.onTap,
+    this.minWidth,
   }) : assert(
          label != null || leadingIcon != null || trailingIcon != null,
          'AppBadge requires at least a label or icon',
@@ -198,10 +204,18 @@ class AppBadge extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: children,
       ),
     );
+
+    if (minWidth != null) {
+      badge = ConstrainedBox(
+        constraints: BoxConstraints(minWidth: minWidth!),
+        child: badge,
+      );
+    }
 
     if (onTap != null) {
       badge = GestureDetector(onTap: onTap, child: badge);
