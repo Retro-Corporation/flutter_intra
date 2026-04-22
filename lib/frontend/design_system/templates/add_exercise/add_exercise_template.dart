@@ -90,12 +90,7 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppGrid.grid16,
-        AppGrid.grid8,
-        AppGrid.grid16,
-        AppGrid.grid8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppGrid.grid16),
       child: Row(
         children: [
           GestureDetector(
@@ -110,7 +105,7 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
           Expanded(
             child: AppText(
               'Add Exercise',
-              style: AppTypography.proHeading6.bold,
+              style: AppTypography.bodyLarge.bold,
             ),
           ),
           AppButton(
@@ -118,6 +113,7 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
             leadingIcon: AppIcons.add,
             type: ButtonType.outline,
             size: ButtonSize.md,
+            color: AppColors.textPrimary,
             onPressed: widget.onCreateNew,
           ),
         ],
@@ -127,15 +123,11 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
 
   Widget _buildSearch() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppGrid.grid16,
-        0,
-        AppGrid.grid16,
-        AppGrid.grid12,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppGrid.grid16),
       child: AppSearchBar(
         controller: _searchController,
         focusNode: _searchFocusNode,
+        variant: SearchBarVariant.card,
         onChanged: widget.onSearchChanged,
       ),
     );
@@ -159,7 +151,7 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
             _categoriesLabel,
             const SizedBox(height: AppGrid.grid8),
             _filter,
-            const SizedBox(height: AppGrid.grid16),
+            const SizedBox(height: AppGrid.grid24),
             const AddExerciseSkeletonOrganism(),
           ],
         ),
@@ -175,7 +167,7 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
             _categoriesLabel,
             const SizedBox(height: AppGrid.grid8),
             _filter,
-            const SizedBox(height: AppGrid.grid16),
+            const SizedBox(height: AppGrid.grid24),
             Expanded(
               child: EmptyExerciseList(onAddExercise: widget.onCreateNew),
             ),
@@ -193,50 +185,54 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
           _categoriesLabel,
           const SizedBox(height: AppGrid.grid8),
           _filter,
-          const SizedBox(height: AppGrid.grid16),
-          for (final section in widget.sections) ...[
+          const SizedBox(height: AppGrid.grid24),
+          for (int i = 0; i < widget.sections.length; i++) ...[
             ExerciseSectionRowOrganism(
-              title: section.title,
-              layout: section.layout,
-              items: section.items,
-              iconPath: section.iconPath,
+              title: widget.sections[i].title,
+              layout: widget.sections[i].layout,
+              items: widget.sections[i].items,
+              iconPath: widget.sections[i].iconPath,
               selectedIds: _selectedExerciseIds,
               onCardTap: _handleCardTap,
             ),
-            const SizedBox(height: AppGrid.grid16),
+            if (i < widget.sections.length - 1)
+              const SizedBox(height: AppGrid.grid20),
           ],
         ],
       ),
     );
   }
 
+  /// Floating Add button. Absent entirely when the cart is empty — slides and
+  /// fades in on first selection, out on last deselection. Count changes
+  /// cross-fade via the `ValueKey<int>(count)`.
   Widget _buildAddButtonFooter() {
     final int count = _selectedExerciseIds.length;
-    final bool isActive = count > 0;
-    return Padding(
-      padding: const EdgeInsets.all(AppGrid.grid16),
-      child: AnimatedSlide(
-        offset: isActive ? Offset.zero : const Offset(0, 0.08),
-        duration: AppDurations.toggle,
-        curve: AppCurves.toggle,
-        child: AnimatedSwitcher(
-          duration: AppDurations.toggle,
-          switchInCurve: AppCurves.toggle,
-          switchOutCurve: AppCurves.toggle,
-          transitionBuilder: (child, animation) =>
-              FadeTransition(opacity: animation, child: child),
-          child: AppButton(
-            key: ValueKey<int>(count),
-            label: 'Add ($count)',
-            leadingIcon: AppIcons.add,
-            type: ButtonType.filled,
-            size: ButtonSize.lg,
-            color: AppColors.brand,
-            isDisabled: !isActive,
-            onPressed: () => widget.onAddPressed(_selectedExerciseIds),
-          ),
+    return AnimatedSwitcher(
+      duration: AppDurations.toggle,
+      switchInCurve: AppCurves.toggle,
+      switchOutCurve: AppCurves.toggle,
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.2),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
         ),
       ),
+      child: count == 0
+          ? const SizedBox.shrink()
+          : AppButton(
+              key: ValueKey<int>(count),
+              label: 'Add ($count)',
+              leadingIcon: AppIcons.add,
+              type: ButtonType.filled,
+              size: ButtonSize.md,
+              color: AppColors.brand,
+              onPressed: () => widget.onAddPressed(_selectedExerciseIds),
+            ),
     );
   }
 
@@ -245,13 +241,28 @@ class _AddExerciseTemplateState extends State<AddExerciseTemplate> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildSearch(),
-            Expanded(child: _buildContent()),
-            _buildAddButtonFooter(),
-          ],
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: AppGrid.grid24),
+                  _buildSearch(),
+                  const SizedBox(height: AppGrid.grid24),
+                  Expanded(child: _buildContent()),
+                ],
+              ),
+              Positioned(
+                left: AppGrid.grid16,
+                right: AppGrid.grid16,
+                bottom: AppGrid.grid16,
+                child: _buildAddButtonFooter(),
+              ),
+            ],
+          ),
         ),
       ),
     );
