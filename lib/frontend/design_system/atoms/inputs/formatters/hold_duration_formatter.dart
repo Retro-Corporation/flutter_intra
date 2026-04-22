@@ -1,44 +1,46 @@
 import 'package:flutter/services.dart';
 
-/// `TextInputFormatter` that shapes raw keystrokes into an `MM:SS` mask.
+/// `TextInputFormatter` that softly cleans duration input without forcing a colon.
 ///
-/// As the user types digits, a colon is auto-inserted once three or more
-/// digits are present. Up to four digits total:
+/// While the user types, the field is permissive:
+/// - Strips any character that is not a digit or colon.
+/// - Allows at most one colon.
+/// - Without a colon: caps at 2 digits (e.g. "33").
+/// - With a colon: caps each side at 2 digits (e.g. "33:59").
 ///
-///     ""       →  ""
-///     "3"      →  "3"
-///     "30"     →  "30"
-///     "300"    →  "3:00"
-///     "1000"   →  "10:00"
-///     "3a:5x"  →  "3:5" (non-digit chars stripped)
-///     "30:555" →  "30:55" (trailing digit beyond cap dropped)
+/// The caret is pinned to the end on every edit.
 ///
-/// The caret is pinned to the end of the formatted text on every edit — for
-/// a four-character-max field this is simpler and less error-prone than
-/// trying to preserve fine-grained cursor position.
+/// **No colon is auto-inserted.** The user types freely — "3", "33", "3:30"
+/// are all valid in-progress states. On focus loss the owning template calls
+/// `parseHoldInput` (bare digits → minutes) and `toDisplayMmss` to commit
+/// a canonical "M:SS" value.
 ///
-/// **Does not enforce a minimum value.** The shape-only constraint allows
-/// transient in-progress input ("0", ":0", "00:00") while the user is
-/// still typing. Clamping to [kMinHoldSeconds] happens outside the
-/// formatter, on focus loss / commit — typically a focus-node listener in
-/// the owning template.
+/// **Does not enforce a minimum value.** Clamping to [kMinHoldSeconds]
+/// happens on focus loss in the owning template.
 class HoldDurationFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    final capped = digits.length > 4 ? digits.substring(0, 4) : digits;
-    final formatted = switch (capped.length) {
-      0 => '',
-      1 || 2 => capped,
-      3 => '${capped[0]}:${capped.substring(1)}',
-      _ => '${capped.substring(0, 2)}:${capped.substring(2)}',
-    };
+    final raw = newValue.text;
+    final colonIndex = raw.indexOf(':');
+    final String cleaned;
+    if (colonIndex < 0) {
+      // No colon yet — allow up to 2 digits
+      final digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
+      cleaned = digits.length > 2 ? digits.substring(0, 2) : digits;
+    } else {
+      // Colon present — enforce MM:SS shape, cap each side at 2 digits
+      final mm = raw.substring(0, colonIndex).replaceAll(RegExp(r'[^0-9]'), '');
+      final ss = raw.substring(colonIndex + 1).replaceAll(RegExp(r'[^0-9]'), '');
+      final mmCapped = mm.length > 2 ? mm.substring(0, 2) : mm;
+      final ssCapped = ss.length > 2 ? ss.substring(0, 2) : ss;
+      cleaned = '$mmCapped:$ssCapped';
+    }
     return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      text: cleaned,
+      selection: TextSelection.collapsed(offset: cleaned.length),
     );
   }
 }
