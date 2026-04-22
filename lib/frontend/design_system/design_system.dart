@@ -135,12 +135,12 @@ export 'organisms/client_list/client_list_types.dart';
 
 // Templates
 export 'templates/exercise_plan_template.dart';
+export 'templates/add_exercise/add_exercise_template.dart';
+export 'templates/add_exercise/add_exercise_template_types.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
 export 'organisms/client_account/frequency_picker_types.dart';
-export 'organisms/client_account/rest_timer_picker_panel.dart';
-export 'organisms/client_account/rest_timer_picker_types.dart';
 export 'organisms/client_account/set_scheme_picker_panel.dart';
 export 'organisms/client_account/set_scheme_picker_types.dart';
 export 'organisms/client_account/equipment_picker_panel.dart';
