@@ -174,7 +174,7 @@ class _AppTextField3DState extends State<AppTextField3D>
           inputFormatters: widget.inputFormatters,
           maxLength: widget.maxLength,
           enabled: widget.enabled,
-          style: widget.textStyle ?? AppTypography.body.regular,
+          style: widget.textStyle ?? AppTypography.body.bold,
           cursorColor: AppColors.brand,
           buildCounter: (context,
                   {required currentLength,
@@ -183,7 +183,7 @@ class _AppTextField3DState extends State<AppTextField3D>
               null,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            hintStyle: (widget.textStyle ?? AppTypography.body.regular)
+            hintStyle: (widget.textStyle ?? AppTypography.body.bold)
                 .copyWith(color: AppColors.textSecondary),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
