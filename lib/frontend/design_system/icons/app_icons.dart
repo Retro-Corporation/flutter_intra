@@ -97,6 +97,9 @@ class AppIcons {
   static const notebook = '$_base/notebook.svg';
   static const sidebar = '$_base/sidebar.svg';
 
+  // ── Brand (multi-color — do not tint; use SvgPicture.asset directly, not AppIcon) ──
+  static const googleG = '$_base/google-g.svg';
+
   // ══════════════════════════════════════════
   // ── Filled variants (active state) ──
   // ══════════════════════════════════════════
@@ -212,6 +215,7 @@ class AppIcons {
     'filter': filter,
     'flag': flag,
     'goal': goal,
+    'google-g': googleG,
     'group': group,
     'heart-rate': heartRate,
     'home': home,
