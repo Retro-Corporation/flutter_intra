@@ -126,7 +126,7 @@ class GivenExerciseTemplate extends StatelessWidget {
                     children: [
                       AppButton(
                         label: 'Skip to homepage',
-                        leadingIcon: AppIcons.home,
+                        leadingIcon: AppIcons.homeFilled,
                         type: ButtonType.outline,
                         color: AppColors.textPrimary,
                         size: ButtonSize.md,
@@ -144,7 +144,7 @@ class GivenExerciseTemplate extends StatelessWidget {
                   ),
                 GivenExerciseState.error => AppButton(
                     label: 'Skip to homepage',
-                    leadingIcon: AppIcons.home,
+                    leadingIcon: AppIcons.homeFilled,
                     type: ButtonType.filled,
                     size: ButtonSize.md,
                     onPressed: onSkipToHome,
