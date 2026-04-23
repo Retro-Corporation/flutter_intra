@@ -35,6 +35,13 @@ class TemplatesCatalogHome extends StatelessWidget {
         onLogIn: () {},
       ),
     ),
+    'Log In': (_) => _TemplateShell(
+      child: LogInTemplate(
+        onLogIn: (_) {},
+        onGoogle: () {},
+        onCreateAccount: () {},
+      ),
+    ),
     'Name Entry': (_) => _TemplateShell(
       child: NameEntryTemplate(
         onBack: () {},
@@ -105,6 +112,23 @@ class TemplatesCatalogHome extends StatelessWidget {
         onSkip: () {},
         progressBaseValue: 0.5,
         errorMessage: 'Incorrect code. Please try again.',
+      ),
+    ),
+    'Branch Entry': (_) => _TemplateShell(
+      child: BranchEntryTemplate(
+        onBack: () {},
+        onSubmit: (_) {},
+        onSkip: () {},
+        progressBaseValue: 0.7,
+      ),
+    ),
+    'Branch Entry — Error': (_) => _TemplateShell(
+      child: BranchEntryTemplate(
+        onBack: () {},
+        onSubmit: (_) {},
+        onSkip: () {},
+        progressBaseValue: 0.7,
+        errorMessage: 'Invalid branch code. Please try again.',
       ),
     ),
     'Value Exp 3 (Adaptive + Skip)': (_) => _TemplateShell(

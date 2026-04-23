@@ -148,7 +148,9 @@ export 'templates/add_exercise/add_exercise_template.dart';
 export 'templates/add_exercise/add_exercise_template_types.dart';
 export 'templates/name_entry_template.dart';
 export 'templates/sign_up_template.dart';
+export 'templates/log_in_template.dart';
 export 'templates/code_entry_template.dart';
+export 'templates/branch_entry_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
