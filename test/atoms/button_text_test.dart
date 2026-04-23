@@ -43,15 +43,15 @@ void main() {
     );
 
     testWidgets(
-      'Button text uses semiBold weight from size config typography',
+      'Button text uses bold weight from size config typography',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestButton(label: 'Click', size: ButtonSize.md));
 
         final appText = tester.widget<AppText>(find.byType(AppText));
-        // md size maps to AppTypography.body → semiBold = w600
-        expect(appText.style.fontWeight, FontWeight.w600);
+        // md size maps to AppTypography.body → bold = w700
+        expect(appText.style.fontWeight, FontWeight.w700);
         // md body fontSize is 1rem = 16px
-        expect(appText.style.fontSize, AppTypography.body.semiBold.fontSize);
+        expect(appText.style.fontSize, AppTypography.body.bold.fontSize);
       },
     );
 

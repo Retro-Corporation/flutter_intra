@@ -399,7 +399,7 @@ class _AppButtonState extends State<AppButton>
       children.add(
         AppText(
           widget.label!,
-          style: sizeConfig.typeStyle.semiBold,
+          style: sizeConfig.typeStyle.bold,
           color: colors.foreground,
         ),
       );

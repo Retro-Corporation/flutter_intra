@@ -110,11 +110,11 @@ class AppTextField extends StatelessWidget {
       borderSide: BorderSide(color: bColor, width: AppStroke.xs),
     );
 
-    final textStyle = AppTypography.body.regular.copyWith(
+    final textStyle = AppTypography.body.bold.copyWith(
       color: textColor,
     );
 
-    final hintStyle = AppTypography.body.regular.copyWith(
+    final hintStyle = AppTypography.body.bold.copyWith(
       color: hintColor ?? AppColors.textSecondary,
     );
 
