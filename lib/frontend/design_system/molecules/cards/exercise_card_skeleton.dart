@@ -3,6 +3,7 @@ import '../../foundation/color/colors.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
+import 'exercise_card_skeleton_types.dart';
 
 /// Molecule: loading skeleton for [ExerciseCardRead].
 ///
@@ -10,7 +11,12 @@ import '../../foundation/space/radius.dart';
 /// All content areas are solid grey blocks — no shimmer animation (added later).
 /// Zero constructor params — structure is fixed.
 class ExerciseCardSkeleton extends StatelessWidget {
-  const ExerciseCardSkeleton({super.key});
+  final ExerciseCardSkeletonVariant variant;
+
+  const ExerciseCardSkeleton({
+    super.key,
+    this.variant = ExerciseCardSkeletonVariant.full,
+  });
 
   Widget _placeholder({
     double? width,
@@ -31,6 +37,13 @@ class ExerciseCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return switch (variant) {
+      ExerciseCardSkeletonVariant.full => _buildFull(),
+      ExerciseCardSkeletonVariant.simple => _buildSimple(),
+    };
+  }
+
+  Widget _buildFull() {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -97,6 +110,64 @@ class ExerciseCardSkeleton extends StatelessWidget {
                       width: AppGrid.grid64,
                       height: AppGrid.grid12,
                       color: AppColors.grey700,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSimple() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.surfaceBorder, width: 1),
+      ),
+      padding: const EdgeInsets.all(AppPadding.rem075),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _placeholder(
+            width: AppGrid.grid76,
+            height: AppGrid.grid76,
+            color: AppColors.grey800,
+            radius: AppRadius.sm,
+          ),
+          const SizedBox(width: AppGrid.grid12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _placeholder(
+                  width: AppGrid.grid128,
+                  height: AppGrid.grid12,
+                  color: AppColors.grey700,
+                ),
+                const SizedBox(height: AppGrid.grid8),
+                Row(
+                  children: [
+                    _placeholder(
+                      width: AppGrid.grid48,
+                      height: AppGrid.grid12,
+                      color: AppColors.grey800,
+                    ),
+                    const SizedBox(width: AppGrid.grid16),
+                    _placeholder(
+                      width: AppGrid.grid36,
+                      height: AppGrid.grid12,
+                      color: AppColors.grey800,
+                    ),
+                    const SizedBox(width: AppGrid.grid16),
+                    _placeholder(
+                      width: AppGrid.grid64,
+                      height: AppGrid.grid12,
+                      color: AppColors.grey800,
                     ),
                   ],
                 ),

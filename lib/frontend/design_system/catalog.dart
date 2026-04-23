@@ -146,8 +146,12 @@ class _ProgressBarSliderDemoState extends State<_ProgressBarSliderDemo> {
 /// interactively without pushing index state into [_CatalogHomeState].
 class _CarouselDemo extends StatefulWidget {
   final List<String?> thumbnails;
+  final ExerciseFlowCarouselSize size;
 
-  const _CarouselDemo({required this.thumbnails});
+  const _CarouselDemo({
+    required this.thumbnails,
+    this.size = ExerciseFlowCarouselSize.sm,
+  });
 
   @override
   State<_CarouselDemo> createState() => _CarouselDemoState();
@@ -162,6 +166,7 @@ class _CarouselDemoState extends State<_CarouselDemo> {
       thumbnails: widget.thumbnails,
       currentIndex: _currentIndex,
       onIndexChanged: (i) => setState(() => _currentIndex = i),
+      size: widget.size,
     );
   }
 }
@@ -302,6 +307,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Exercise Thumbnail Card',
         'Icon Section Header',
         'AppOtpField',
+        'Practitioner Header',
+        'Phone Fields',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -1424,9 +1431,14 @@ class _CatalogHomeState extends State<CatalogHome> {
       _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
-      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      AppText('SM — 332×408 (default)', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const MediaHolder(),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('LG — 360×452', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const MediaHolder(size: MediaHolderSize.lg),
 
       _sectionDivider(),
 
@@ -3284,6 +3296,15 @@ class _CatalogHomeState extends State<CatalogHome> {
           ],
         ),
       ),
+      const SizedBox(height: AppGrid.grid16),
+      AppText('SIMPLE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: const ExerciseCardSkeleton(
+          variant: ExerciseCardSkeletonVariant.simple,
+        ),
+      ),
 
       _sectionDivider(),
 
@@ -3428,6 +3449,24 @@ class _CatalogHomeState extends State<CatalogHome> {
         ),
       ),
 
+      const SizedBox(height: AppGrid.grid16),
+      AppText('SIMPLE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: ExerciseCardRead(
+          variant: ExerciseCardReadVariant.simple,
+          exerciseName: 'Exercise name',
+          repLabel: 'Rep',
+          repValue: '6',
+          setLabel: 'Set',
+          setValue: '4',
+          equipmentLabel: 'Dumbell',
+          equipmentValue: '15lb',
+          onTap: () {},
+        ),
+      ),
+
       _sectionDivider(),
 
       // ── Empty Exercise List ──
@@ -3464,6 +3503,22 @@ class _CatalogHomeState extends State<CatalogHome> {
       const SizedBox(height: AppGrid.grid8),
       const _CarouselDemo(
         thumbnails: [null, null, null, null, null, null, null, null, null, null],
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('LG — 5 ITEMS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CarouselDemo(
+        thumbnails: [null, null, null, null, null],
+        size: ExerciseFlowCarouselSize.lg,
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('LG — SINGLE ITEM (dots hidden)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _CarouselDemo(
+        thumbnails: [null],
+        size: ExerciseFlowCarouselSize.lg,
       ),
 
       _sectionDivider(),
@@ -3564,6 +3619,104 @@ class _CatalogHomeState extends State<CatalogHome> {
       AppText('ERROR', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const _OtpFieldCatalogDemo(hasError: true),
+
+      _sectionDivider(),
+
+      // ── Practitioner Header ──
+      _subSectionHeader(subs[21]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const PractitionerHeader(
+        avatarUrl: 'https://i.pravatar.cc/150?img=32',
+        name: 'Shashi Panchal',
+        clinic: 'Retro Clinic',
+      ),
+
+      _sectionDivider(),
+
+      // ── Phone Fields ──
+      _subSectionHeader(subs[22]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('STATES', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+
+      // Empty — default state
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPhoneField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Phone number',
+            hintText: 'Phone number',
+          ),
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+
+      // Partially typed — 7 digits formatted
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          initialText: '(555) 123',
+          builder: (controller, focusNode) => AppPhoneField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Phone number',
+            hintText: 'Phone number',
+          ),
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+
+      // Complete — 10 digits, success state auto-shows via built-in validator
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          initialText: '(555) 123-4567',
+          builder: (controller, focusNode) => AppPhoneField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Phone number',
+            hintText: 'Phone number',
+          ),
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+
+      // Error state — explicit
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          builder: (controller, focusNode) => AppPhoneField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Phone number',
+            hintText: 'Phone number',
+            state: FieldState.error,
+            helperText: 'Please enter a valid 10-digit phone number',
+          ),
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid16),
+
+      // Disabled — with formatted value
+      SizedBox(
+        width: 300,
+        child: _CatalogInputDemo(
+          initialText: '(555) 123-4567',
+          builder: (controller, focusNode) => AppPhoneField(
+            controller: controller,
+            focusNode: focusNode,
+            label: 'Phone number',
+            hintText: 'Phone number',
+            state: FieldState.disabled,
+          ),
+        ),
+      ),
     ];
   }
 

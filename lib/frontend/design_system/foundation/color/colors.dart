@@ -53,8 +53,9 @@ class AppColors {
     (green500,  green700,  green900),
     (yellow500, yellow700, yellow900),
     (purple500, purple700, purple900),
-    (grey500,   grey700,   grey900),
-    (textPrimary, grey300, grey700),
+    (grey500,       grey700, grey900),
+    (surfaceBorder, grey800, grey900),
+    (textPrimary,   grey300, grey700),
   ];
 
   /// Maps primary palette colors to their 700 (shadow) variant.

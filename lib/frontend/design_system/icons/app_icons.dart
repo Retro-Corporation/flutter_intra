@@ -153,6 +153,7 @@ class AppIcons {
   // Fitness
   static const bodyFilled = '$_base/body-filled.svg';
   static const computerVisionFilled = '$_base/computer-vision-filled.svg';
+  static const clinicFilled = '$_base/clinic-filled.svg';
   static const doctorFilled = '$_base/doctor-filled.svg';
   static const heartRateFilled = '$_base/heart-rate-filled.svg';
   static const streakFilled = '$_base/streak-filled.svg';
@@ -269,6 +270,7 @@ class AppIcons {
     'camera': cameraFilled,
     'chat': chatFilled,
     'checkbox': checkboxFilled,
+    'clinic': clinicFilled,
     'comment': commentFilled,
     'computer-vision': computerVisionFilled,
     'copy': copyFilled,

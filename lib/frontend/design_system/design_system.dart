@@ -55,6 +55,7 @@ export 'atoms/primitives/static_display_field.dart';
 export 'atoms/primitives/progress_bar.dart';
 export 'atoms/primitives/divider.dart';
 export 'atoms/primitives/media_holder.dart';
+export 'atoms/primitives/media_holder_types.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
@@ -96,6 +97,7 @@ export 'molecules/form_fields/form_field.dart';
 export 'molecules/form_fields/form_field_variant.dart';
 export 'molecules/form_fields/text_field_molecule.dart';
 export 'molecules/form_fields/password_field.dart';
+export 'molecules/form_fields/phone_field.dart';
 export 'molecules/form_fields/text_area.dart';
 export 'molecules/form_fields/number_field.dart';
 export 'molecules/form_fields/number_field_types.dart';
@@ -106,6 +108,7 @@ export 'molecules/form_fields/equipment_field_types.dart';
 export 'molecules/display/section_header.dart';
 export 'molecules/display/icon_section_header.dart';
 export 'molecules/display/icon_text_action.dart';
+export 'molecules/display/practitioner_header.dart';
 
 // Molecules — cards
 export 'molecules/cards/current_client_card.dart';
@@ -113,9 +116,12 @@ export 'molecules/cards/current_client_card_types.dart';
 export 'molecules/cards/all_client_card.dart';
 export 'molecules/cards/all_client_card_types.dart';
 export 'molecules/cards/exercise_card_skeleton.dart';
+export 'molecules/cards/exercise_card_skeleton_types.dart';
 export 'molecules/cards/exercise_card_read.dart';
+export 'molecules/cards/exercise_card_read_types.dart';
 export 'molecules/cards/empty_exercise_list.dart';
 export 'molecules/cards/exercise_flow_carousel.dart';
+export 'molecules/cards/exercise_flow_carousel_types.dart';
 export 'molecules/cards/exercise_thumbnail_card.dart';
 export 'molecules/cards/exercise_thumbnail_card_types.dart';
 
@@ -148,9 +154,16 @@ export 'templates/add_exercise/add_exercise_template.dart';
 export 'templates/add_exercise/add_exercise_template_types.dart';
 export 'templates/name_entry_template.dart';
 export 'templates/sign_up_template.dart';
+export 'templates/client_onboarding/client_onboarding_account_template.dart';
+export 'templates/client_onboarding/client_onboarding_account_template_types.dart';
+export 'templates/client_onboarding/client_onboarding_name_template.dart';
 export 'templates/log_in_template.dart';
 export 'templates/code_entry_template.dart';
 export 'templates/branch_entry_template.dart';
+export 'templates/given_exercise_template_types.dart';
+export 'templates/given_exercise_template.dart';
+export 'templates/exercise_detail/exercise_detail_template_types.dart';
+export 'templates/exercise_detail/exercise_detail_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';

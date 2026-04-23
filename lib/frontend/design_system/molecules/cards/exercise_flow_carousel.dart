@@ -5,30 +5,41 @@ import '../../foundation/motion/curves.dart';
 import '../../atoms/primitives/thumbnail.dart';
 import '../../atoms/primitives/thumbnail_types.dart';
 import '../../atoms/primitives/dot_indicator.dart';
+import '../../atoms/primitives/media_holder.dart';
+import '../../atoms/primitives/media_holder_types.dart';
+import 'exercise_flow_carousel_types.dart';
 
 /// Half of [AppGrid.grid12]: each slot contributes this on each touching side,
 /// creating exactly [AppGrid.grid12] (12px) of gap between adjacent slots.
 const double _kHalfSlotGap = AppGrid.grid12 / 2;
 
-/// Molecule: horizontally scrolling carousel of exercise thumbnails
-/// with a dot indicator below.
+/// Molecule: horizontally scrolling carousel of exercise slots with a dot
+/// indicator below.
 ///
-/// Active item (at [currentIndex]) shows [ThumbnailSize.size100] (100×100).
-/// Inactive items show [ThumbnailSize.size76] (76×76).
-/// Gap between slots: [AppGrid.grid12].
+/// Sized by [size]:
+///   - [ExerciseFlowCarouselSize.sm] (default) — active slot shows
+///     [ThumbnailSize.size100] (100×100), inactive shows [ThumbnailSize.size76]
+///     (76×76). Existing behaviour preserved.
+///   - [ExerciseFlowCarouselSize.lg] — each slot renders a
+///     [MediaHolder] at [MediaHolderSize.lg] (360×452). Page width = 372px so
+///     neighbours peek slightly on a standard phone.
+///
+/// Dot indicator is hidden when [thumbnails] has only one item.
 /// Parent owns [currentIndex]; molecule reports changes via [onIndexChanged].
 class ExerciseFlowCarousel extends StatefulWidget {
   /// Image paths for each slot. Length drives item count.
-  /// Values reserved for future image support — currently ignored by [Thumbnail].
+  /// Values reserved for future image support — currently ignored.
   final List<String?> thumbnails;
   final int currentIndex;
   final ValueChanged<int> onIndexChanged;
+  final ExerciseFlowCarouselSize size;
 
   const ExerciseFlowCarousel({
     super.key,
     required this.thumbnails,
     required this.currentIndex,
     required this.onIndexChanged,
+    this.size = ExerciseFlowCarouselSize.sm,
   });
 
   @override
@@ -39,12 +50,18 @@ class _ExerciseFlowCarouselState extends State<ExerciseFlowCarousel> {
   PageController? _pageController;
   double? _lastFraction;
 
-  // Each page = active thumbnail width + full gap (112px).
-  // Half-gap on each side of every item = exactly AppGrid.grid12 between neighbours.
-  static const double _kPageWidth = AppGrid.grid100 + AppGrid.grid12;
+  // sm: active thumbnail width (100) + full gap (12) = 112px
+  // lg: MediaHolder lg width (360) + full gap (12) = 372px
+  double get _pageWidth => widget.size == ExerciseFlowCarouselSize.lg
+      ? AppGrid.grid360 + AppGrid.grid12
+      : AppGrid.grid100 + AppGrid.grid12;
+
+  double get _viewportHeight => widget.size == ExerciseFlowCarouselSize.lg
+      ? AppGrid.grid452
+      : AppGrid.grid100;
 
   PageController _controllerFor(double availableWidth) {
-    final fraction = (_kPageWidth / availableWidth).clamp(0.1, 1.0);
+    final fraction = (_pageWidth / availableWidth).clamp(0.1, 1.0);
     if (_lastFraction != fraction) {
       _pageController?.dispose();
       _pageController = PageController(
@@ -74,13 +91,32 @@ class _ExerciseFlowCarouselState extends State<ExerciseFlowCarousel> {
     super.dispose();
   }
 
+  Widget _buildSlot(int i) {
+    if (widget.size == ExerciseFlowCarouselSize.lg) {
+      return const Center(child: MediaHolder(size: MediaHolderSize.lg));
+    }
+    // sm: active/inactive thumbnail with peek alignment
+    final isActive = i == widget.currentIndex;
+    final alignment = isActive
+        ? Alignment.center
+        : i < widget.currentIndex
+            ? Alignment.centerRight
+            : Alignment.centerLeft;
+    return Align(
+      alignment: alignment,
+      child: Thumbnail(
+        size: isActive ? ThumbnailSize.size100 : ThumbnailSize.size76,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: AppGrid.grid100,
+          height: _viewportHeight,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final controller = _controllerFor(constraints.maxWidth);
@@ -91,46 +127,32 @@ class _ExerciseFlowCarouselState extends State<ExerciseFlowCarousel> {
                 physics: const PageScrollPhysics(),
                 onPageChanged: widget.onIndexChanged,
                 itemBuilder: (context, i) {
-                  final isActive = i == widget.currentIndex;
-                  // Inactive items align toward the nearest viewport edge so
-                  // they sit right at the peek boundary (centering hides them).
-                  final alignment = isActive
-                      ? Alignment.center
-                      : i < widget.currentIndex
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft;
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: _kHalfSlotGap),
-                    child: Align(
-                      alignment: alignment,
-                      child: Thumbnail(
-                        size: isActive
-                            ? ThumbnailSize.size100
-                            : ThumbnailSize.size76,
-                      ),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: _kHalfSlotGap),
+                    child: _buildSlot(i),
                   );
                 },
               );
             },
           ),
         ),
-        SizedBox(height: AppGrid.grid8),
-        Center(
-          child: DotIndicator(
-            count: widget.thumbnails.length,
-            currentIndex: widget.currentIndex,
-            onJump: (i) {
-              widget.onIndexChanged(i);
-              _pageController?.animateToPage(
-                i,
-                duration: AppDurations.toggle,
-                curve: AppCurves.toggle,
-              );
-            },
+        if (widget.thumbnails.length > 1) ...[
+          SizedBox(height: AppGrid.grid8),
+          Center(
+            child: DotIndicator(
+              count: widget.thumbnails.length,
+              currentIndex: widget.currentIndex,
+              onJump: (i) {
+                widget.onIndexChanged(i);
+                _pageController?.animateToPage(
+                  i,
+                  duration: AppDurations.toggle,
+                  curve: AppCurves.toggle,
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

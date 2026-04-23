@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'design_system.dart';
 import 'templates/client_list_template.dart';
-import 'templates/exercise_plan_template.dart';
 import 'templates/value_explanation_template.dart';
 
 /// Run with: flutter run -t lib/frontend/design_system/templates_catalog.dart
@@ -49,6 +48,18 @@ class TemplatesCatalogHome extends StatelessWidget {
         progressBaseValue: 0.2,
       ),
     ),
+    'Client Onboarding — Account': (_) => _TemplateShell(
+      child: ClientOnboardingAccountTemplate(
+        onBack: () {},
+        onSubmit: (_) {},
+      ),
+    ),
+    'Client Onboarding — Name': (_) => _TemplateShell(
+      child: ClientOnboardingNameTemplate(
+        onBack: () {},
+        onSubmit: (_) {},
+      ),
+    ),
     'Client Account — Exercise Plan': (_) => const _TemplateShell(child: ExercisePlanTemplate()),
     'Client List': (_) => _TemplateShell(
       child: ClientListTemplate(
@@ -73,6 +84,78 @@ class TemplatesCatalogHome extends StatelessWidget {
         onAddPressed: (_) {},
         onSearchChanged: (_) {},
         onFilterChanged: (_, _, _) {},
+      ),
+    ),
+    'Exercise Detail — Basic': (_) => _TemplateShell(
+      child: ExerciseDetailTemplate(
+        variant: ExerciseDetailVariant.basic,
+        headerTitle: 'Exercise name',
+        items: const [
+          ExerciseDetailItem(
+            id: 'e1',
+            name: 'Shoulder Flexion',
+            muscleGroup: 'Shoulder Mobility',
+            equipment: 'Dumbells',
+          ),
+        ],
+        onBack: () {},
+        onAddExercise: (_) {},
+      ),
+    ),
+    'Exercise Detail — Set': (_) => _TemplateShell(
+      child: ExerciseDetailTemplate(
+        variant: ExerciseDetailVariant.set,
+        headerTitle: 'Exercise set name',
+        items: const [
+          ExerciseDetailItem(
+            id: 'e1',
+            name: 'Shoulder Flexion',
+            muscleGroup: 'Shoulder Mobility',
+            equipment: 'Dumbells',
+          ),
+          ExerciseDetailItem(
+            id: 'e2',
+            name: 'Hip Abduction',
+            muscleGroup: 'Hip Mobility',
+          ),
+          ExerciseDetailItem(
+            id: 'e3',
+            name: 'Quad Extension',
+            muscleGroup: 'Knee Stability',
+            equipment: 'Band',
+          ),
+        ],
+        onBack: () {},
+        onAddExercise: (_) {},
+        onAddSet: (_) {},
+      ),
+    ),
+    'Exercise Detail — Template': (_) => _TemplateShell(
+      child: ExerciseDetailTemplate(
+        variant: ExerciseDetailVariant.template,
+        headerTitle: 'Template name',
+        items: const [
+          ExerciseDetailItem(
+            id: 'e1',
+            name: 'Shoulder Flexion',
+            muscleGroup: 'Shoulder Mobility',
+            equipment: 'Dumbells',
+          ),
+          ExerciseDetailItem(
+            id: 'e2',
+            name: 'Hip Abduction',
+            muscleGroup: 'Hip Mobility',
+          ),
+          ExerciseDetailItem(
+            id: 'e3',
+            name: 'Quad Extension',
+            muscleGroup: 'Knee Stability',
+            equipment: 'Band',
+          ),
+        ],
+        onBack: () {},
+        onAddExercise: (_) {},
+        onAddTemplate: (_) {},
       ),
     ),
     'Value Exp 1 (Coach)': (_) => _TemplateShell(
@@ -129,6 +212,54 @@ class TemplatesCatalogHome extends StatelessWidget {
         onSkip: () {},
         progressBaseValue: 0.7,
         errorMessage: 'Invalid branch code. Please try again.',
+      ),
+    ),
+    'Given Exercise — Loaded': (_) => _TemplateShell(
+      child: GivenExerciseTemplate(
+        practitioner: const PractitionerInfo(
+          avatarUrl: 'https://i.pravatar.cc/150?img=32',
+          name: 'Shashi Panchal',
+          clinic: 'Retro Clinic',
+        ),
+        state: GivenExerciseState.loaded,
+        exercises: const [
+          ExerciseData(exerciseName: 'Shoulder Flexion', repLabel: 'Rep',  repValue: '6',  setLabel: 'Set', setValue: '4', equipmentLabel: 'Dumbell', equipmentValue: '15lb'),
+          ExerciseData(exerciseName: 'Hip Abduction',    repLabel: 'Rep',  repValue: '10', setLabel: 'Set', setValue: '3', equipmentLabel: 'Band',    equipmentValue: 'Med'),
+          ExerciseData(exerciseName: 'Quad Extension',   repLabel: 'Hold', repValue: '45', setLabel: 'Set', setValue: '3'),
+          ExerciseData(exerciseName: 'Calf Raise',       repLabel: 'Rep',  repValue: '12', setLabel: 'Set', setValue: '4', equipmentLabel: 'Weight',  equipmentValue: '10lb'),
+          ExerciseData(exerciseName: 'Hamstring Curl',   repLabel: 'Rep',  repValue: '8',  setLabel: 'Set', setValue: '3', equipmentLabel: 'Machine', equipmentValue: '40lb'),
+          ExerciseData(exerciseName: 'Glute Bridge',     repLabel: 'Hold', repValue: '30', setLabel: 'Set', setValue: '4'),
+          ExerciseData(exerciseName: 'Lateral Band Walk',repLabel: 'Rep',  repValue: '15', setLabel: 'Set', setValue: '3', equipmentLabel: 'Band',    equipmentValue: 'Light'),
+        ],
+        onBack: () {},
+        onSkipToHome: () {},
+        onStartExercise: () {},
+      ),
+    ),
+    'Given Exercise — Loading': (_) => _TemplateShell(
+      child: GivenExerciseTemplate(
+        practitioner: const PractitionerInfo(
+          avatarUrl: 'https://i.pravatar.cc/150?img=32',
+          name: 'Shashi Panchal',
+          clinic: 'Retro Clinic',
+        ),
+        state: GivenExerciseState.loading,
+        onBack: () {},
+        onSkipToHome: () {},
+        onStartExercise: () {},
+      ),
+    ),
+    'Given Exercise — Error': (_) => _TemplateShell(
+      child: GivenExerciseTemplate(
+        practitioner: const PractitionerInfo(
+          avatarUrl: 'https://i.pravatar.cc/150?img=32',
+          name: 'Shashi Panchal',
+          clinic: 'Retro Clinic',
+        ),
+        state: GivenExerciseState.error,
+        onBack: () {},
+        onSkipToHome: () {},
+        onStartExercise: () {},
       ),
     ),
     'Value Exp 3 (Adaptive + Skip)': (_) => _TemplateShell(

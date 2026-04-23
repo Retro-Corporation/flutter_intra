@@ -11,6 +11,7 @@ import '../../foundation/space/padding.dart';
 import '../../foundation/space/radius.dart';
 import '../../foundation/space/stroke.dart';
 import '../../foundation/type/typography.dart';
+import 'exercise_card_read_types.dart';
 
 /// Molecule: read-only exercise card for the exercise list.
 ///
@@ -20,16 +21,25 @@ import '../../foundation/type/typography.dart';
 ///
 /// Wrap in a [GestureDetector] or supply [onTap] to make it tappable.
 class ExerciseCardRead extends StatelessWidget {
-  final double score;
+  /// Controls which visual layout is rendered.
+  /// Defaults to [ExerciseCardReadVariant.full].
+  final ExerciseCardReadVariant variant;
+
+  /// Score value shown in [ScoreBadge]. Required when [variant] is [ExerciseCardReadVariant.full].
+  final double? score;
 
   /// Underline color for [ScoreBadge] — resolved by caller from domain state.
-  final Color scoreColor;
+  /// Required when [variant] is [ExerciseCardReadVariant.full].
+  final Color? scoreColor;
 
-  final ScoreBadgeVariant scoreVariant;
+  /// Required when [variant] is [ExerciseCardReadVariant.full].
+  final ScoreBadgeVariant? scoreVariant;
+
   final String exerciseName;
 
   /// Muscle group label shown as a full-width pill badge (e.g. "Shoulder flexion").
-  final String muscleGroup;
+  /// Required when [variant] is [ExerciseCardReadVariant.full].
+  final String? muscleGroup;
 
   /// First metric label — e.g. "Rep" or "Hold".
   final String repLabel;
@@ -59,11 +69,12 @@ class ExerciseCardRead extends StatelessWidget {
 
   const ExerciseCardRead({
     super.key,
-    required this.score,
-    required this.scoreColor,
-    required this.scoreVariant,
+    this.variant = ExerciseCardReadVariant.full,
+    this.score,
+    this.scoreColor,
+    this.scoreVariant,
     required this.exerciseName,
-    required this.muscleGroup,
+    this.muscleGroup,
     required this.repLabel,
     required this.repValue,
     required this.setLabel,
@@ -72,7 +83,14 @@ class ExerciseCardRead extends StatelessWidget {
     this.equipmentValue,
     required this.onTap,
     this.isSelected = false,
-  });
+  }) : assert(
+          variant != ExerciseCardReadVariant.full ||
+              (score != null &&
+                  scoreColor != null &&
+                  scoreVariant != null &&
+                  muscleGroup != null),
+          'ExerciseCardRead.full requires score, scoreColor, scoreVariant, and muscleGroup.',
+        );
 
   String get _truncatedEquipmentLabel {
     if (equipmentLabel == null) return '';
@@ -86,6 +104,13 @@ class ExerciseCardRead extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return switch (variant) {
+      ExerciseCardReadVariant.full   => _buildFull(context),
+      ExerciseCardReadVariant.simple => _buildSimple(),
+    };
+  }
+
+  Widget _buildFull(BuildContext context) {
     return PressableSurface(
       onTap: onTap,
       backgroundColor: AppColors.surface,
@@ -114,10 +139,10 @@ class ExerciseCardRead extends StatelessWidget {
                 Row(
                   children: [
                     ScoreBadge(
-                      score: score,
-                      underlineColor: scoreColor,
+                      score: score!,
+                      underlineColor: scoreColor!,
                       size: ScoreBadgeSize.sm,
-                      variant: scoreVariant,
+                      variant: scoreVariant!,
                     ),
                     const SizedBox(width: AppGrid.grid8),
                     Expanded(
@@ -143,7 +168,7 @@ class ExerciseCardRead extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: AppText(
-                    muscleGroup,
+                    muscleGroup!,
                     style: AppTypography.bodySmall.regular,
                     color: AppColors.textPrimary,
                   ),
@@ -173,6 +198,56 @@ class ExerciseCardRead extends StatelessWidget {
             ),
           ),
         ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimple() {
+    return PressableSurface(
+      onTap: onTap,
+      backgroundColor: AppColors.surface,
+      borderColor: AppColors.surfaceBorder,
+      borderRadius: AppRadius.md,
+      child: Padding(
+        padding: const EdgeInsets.all(AppPadding.rem075),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Thumbnail(size: ThumbnailSize.size76),
+            const SizedBox(width: AppGrid.grid12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText(
+                    exerciseName,
+                    style: AppTypography.body.bold,
+                    color: AppColors.textPrimary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppGrid.grid8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _MetricGroup(label: repLabel, value: repValue),
+                      _MetricGroup(label: setLabel, value: setValue),
+                      if (_hasEquipment)
+                        Flexible(
+                          child: _MetricGroup(
+                            label: _truncatedEquipmentLabel,
+                            value: equipmentValue,
+                            ellipsizeValue: true,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

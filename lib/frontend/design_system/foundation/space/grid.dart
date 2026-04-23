@@ -50,4 +50,8 @@ class AppGrid {
   static const double grid128 = 8 * AppScale.root;
   static const double grid160 = 10 * AppScale.root;
   static const double grid240 = 15 * AppScale.root;
+  static const double grid332 = 20.75 * AppScale.root;  // 332px — MediaHolder sm width
+  static const double grid360 = 22.5  * AppScale.root;  // 360px — MediaHolder lg width
+  static const double grid408 = 25.5  * AppScale.root;  // 408px — MediaHolder sm height
+  static const double grid452 = 28.25 * AppScale.root;  // 452px — MediaHolder lg height
 }
