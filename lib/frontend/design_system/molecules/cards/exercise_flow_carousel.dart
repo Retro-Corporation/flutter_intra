@@ -137,11 +137,9 @@ class _ExerciseFlowCarouselState extends State<ExerciseFlowCarousel> {
     final hasDots = widget.thumbnails.length > 1;
 
     return Column(
-      mainAxisSize: isLg ? MainAxisSize.max : MainAxisSize.min,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        isLg
-            ? Expanded(child: _buildPageView())
-            : SizedBox(height: _viewportHeight, child: _buildPageView()),
+        SizedBox(height: _viewportHeight, child: _buildPageView()),
         if (hasDots) ...[
           SizedBox(height: AppGrid.grid8),
           Center(
