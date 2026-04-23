@@ -214,7 +214,7 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
               onPressed: _handlePrimaryAdd,
             ),
           ),
-          const SizedBox(height: AppGrid.grid36),
+          const SizedBox(height: AppGrid.grid8),
         ],
       ),
     );
