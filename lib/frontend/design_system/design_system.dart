@@ -52,10 +52,14 @@ export 'atoms/primitives/scheme_option_row.dart';
 export 'atoms/primitives/thumbnail.dart';
 export 'atoms/primitives/thumbnail_types.dart';
 export 'atoms/primitives/static_display_field.dart';
+export 'atoms/primitives/progress_bar.dart';
+export 'atoms/primitives/divider.dart';
+export 'atoms/primitives/media_holder.dart';
 
 // Atoms — controls
 export 'atoms/controls/button.dart';
 export 'atoms/controls/button_types.dart';
+export 'atoms/controls/google_sign_in_button.dart';
 export 'atoms/controls/checkbox.dart';
 export 'atoms/controls/checkbox_types.dart';
 export 'atoms/controls/radio.dart';
@@ -69,6 +73,8 @@ export 'atoms/controls/sub_tab_item.dart';
 // Atoms — inputs
 export 'atoms/inputs/text_field.dart';
 export 'atoms/inputs/text_field_3d.dart';
+export 'atoms/inputs/otp_cell.dart';
+export 'atoms/inputs/otp_cell_types.dart';
 export 'atoms/inputs/formatters/hold_duration_format.dart';
 export 'atoms/inputs/formatters/hold_duration_formatter.dart';
 
@@ -81,6 +87,9 @@ export 'atoms/path/path_button_renderer.dart';
 export 'molecules/behaviors/field_state.dart';
 export 'molecules/behaviors/validator_mixin.dart';
 export 'molecules/behaviors/form_field_mixin.dart';
+
+// Molecules — OTP
+export 'molecules/otp/otp_field.dart';
 
 // Molecules — form fields
 export 'molecules/form_fields/form_field.dart';
@@ -137,6 +146,9 @@ export 'organisms/client_list/client_list_types.dart';
 export 'templates/exercise_plan_template.dart';
 export 'templates/add_exercise/add_exercise_template.dart';
 export 'templates/add_exercise/add_exercise_template_types.dart';
+export 'templates/name_entry_template.dart';
+export 'templates/sign_up_template.dart';
+export 'templates/code_entry_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';

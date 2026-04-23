@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'design_system.dart';
 import 'templates/client_list_template.dart';
 import 'templates/exercise_plan_template.dart';
+import 'templates/value_explanation_template.dart';
 
 /// Run with: flutter run -t lib/frontend/design_system/templates_catalog.dart
 void main() => runApp(const TemplatesCatalogApp());
@@ -27,6 +28,20 @@ class TemplatesCatalogHome extends StatelessWidget {
   // _HelloWorldTemplate is defined at the bottom of this file as a smoke test.
   static final Map<String, WidgetBuilder> _templates = {
     'Hello World': (_) => const _TemplateShell(child: _HelloWorldTemplate()),
+    'Sign Up': (_) => _TemplateShell(
+      child: SignUpTemplate(
+        onCreateAccount: (_) {},
+        onGoogle: () {},
+        onLogIn: () {},
+      ),
+    ),
+    'Name Entry': (_) => _TemplateShell(
+      child: NameEntryTemplate(
+        onBack: () {},
+        onSubmit: (_) {},
+        progressBaseValue: 0.2,
+      ),
+    ),
     'Client Account — Exercise Plan': (_) => const _TemplateShell(child: ExercisePlanTemplate()),
     'Client List': (_) => _TemplateShell(
       child: ClientListTemplate(
@@ -51,6 +66,57 @@ class TemplatesCatalogHome extends StatelessWidget {
         onAddPressed: (_) {},
         onSearchChanged: (_) {},
         onFilterChanged: (_, _, _) {},
+      ),
+    ),
+    'Value Exp 1 (Coach)': (_) => _TemplateShell(
+      child: ValueExplanationTemplate(
+        heading: 'Train With A Real Coach Experience',
+        subheading: 'Your trainer watches your movement and helps you train safely and effectively.',
+        progressValue: 0.4,
+        primaryLabel: 'Continue',
+        onBack: () {},
+        onPrimary: () {},
+      ),
+    ),
+    'Value Exp 2 (Feedback)': (_) => _TemplateShell(
+      child: ValueExplanationTemplate(
+        heading: 'Real Feedback. Every Rep.',
+        subheading: 'Your coach tracks your movement in real time and corrects your technique as you train.',
+        progressValue: 0.6,
+        primaryLabel: 'Continue',
+        onBack: () {},
+        onPrimary: () {},
+      ),
+    ),
+    'Code Entry': (_) => _TemplateShell(
+      child: CodeEntryTemplate(
+        onBack: () {},
+        onCompleted: (_) {},
+        onPractitionerSignIn: () {},
+        onSkip: () {},
+        progressBaseValue: 0.5,
+      ),
+    ),
+    'Code Entry — Error': (_) => _TemplateShell(
+      child: CodeEntryTemplate(
+        onBack: () {},
+        onCompleted: (_) {},
+        onPractitionerSignIn: () {},
+        onSkip: () {},
+        progressBaseValue: 0.5,
+        errorMessage: 'Incorrect code. Please try again.',
+      ),
+    ),
+    'Value Exp 3 (Adaptive + Skip)': (_) => _TemplateShell(
+      child: ValueExplanationTemplate(
+        heading: 'Training That Adapts To You',
+        subheading: 'Your coach analyzes every session and adjusts exercises to match your progress.',
+        progressValue: 0.8,
+        primaryLabel: 'Continue',
+        secondaryLabel: 'Skip for now',
+        onBack: () {},
+        onPrimary: () {},
+        onSecondary: () {},
       ),
     ),
   };
