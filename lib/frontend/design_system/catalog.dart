@@ -56,6 +56,91 @@ class _CatalogInputDemoState extends State<_CatalogInputDemo> {
   Widget build(BuildContext context) => widget.builder(_controller, _focusNode);
 }
 
+/// Catalog-only widget that owns 6 controllers + 6 focus nodes for
+/// [AppOtpField] demos. Mirrors the role of [_CatalogInputDemo] for lists.
+class _OtpFieldCatalogDemo extends StatefulWidget {
+  final bool hasError;
+  const _OtpFieldCatalogDemo({this.hasError = false});
+
+  @override
+  State<_OtpFieldCatalogDemo> createState() => _OtpFieldCatalogDemoState();
+}
+
+class _OtpFieldCatalogDemoState extends State<_OtpFieldCatalogDemo> {
+  late final _controllers = List.generate(6, (_) => TextEditingController());
+  late final _focusNodes = List.generate(6, (_) => FocusNode());
+
+  @override
+  void dispose() {
+    for (final c in _controllers) c.dispose();
+    for (final f in _focusNodes) f.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppOtpField(
+      controllers: _controllers,
+      focusNodes: _focusNodes,
+      hasError: widget.hasError,
+    );
+  }
+}
+
+/// Catalog-only wrapper that drives [AppProgressBar] with a live slider.
+/// Exists so the progress bar entry can be interactive without pushing
+/// value state into [_CatalogHomeState].
+class _ProgressBarSliderDemo extends StatefulWidget {
+  const _ProgressBarSliderDemo();
+
+  @override
+  State<_ProgressBarSliderDemo> createState() => _ProgressBarSliderDemoState();
+}
+
+class _ProgressBarSliderDemoState extends State<_ProgressBarSliderDemo> {
+  double _value = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    final snapshots = [0.0, 0.25, 0.50, 0.75, 1.0];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText('STATIC SNAPSHOTS', style: AppTypography.overline.semiBold),
+        const SizedBox(height: AppGrid.grid8),
+        ...snapshots.map((v) => Padding(
+          padding: const EdgeInsets.only(bottom: AppGrid.grid12),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 36,
+                child: AppText(
+                  '${(v * 100).round()}%',
+                  style: AppTypography.caption.regular,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(width: AppGrid.grid8),
+              Expanded(child: AppProgressBar(value: v)),
+            ],
+          ),
+        )),
+        const SizedBox(height: AppGrid.grid16),
+        AppText('LIVE SLIDER', style: AppTypography.overline.semiBold),
+        const SizedBox(height: AppGrid.grid8),
+        AppProgressBar(value: _value),
+        Slider(
+          value: _value,
+          onChanged: (v) => setState(() => _value = v),
+          activeColor: AppColors.brand,
+          inactiveColor: AppColors.surface,
+        ),
+      ],
+    );
+  }
+}
+
 /// Catalog-only wrapper that owns the currentIndex state for an
 /// [ExerciseFlowCarousel] demo. Exists so carousel entries can be rendered
 /// interactively without pushing index state into [_CatalogHomeState].
@@ -174,6 +259,9 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Dot Indicator',
         'Thumbnail',
         'Static Display Field',
+        'Progress Bar',
+        'Divider',
+        'Media Holder',
         // controls/
         'Buttons',
         'Checkboxes',
@@ -184,6 +272,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Sub Tab Item',
         // inputs/
         'Text Fields',
+        'OTP Cells',
         // path/
         'Path Buttons',
         // behaviors/
@@ -212,6 +301,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Exercise Flow Carousel',
         'Exercise Thumbnail Card',
         'Icon Section Header',
+        'AppOtpField',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -1308,11 +1398,43 @@ class _CatalogHomeState extends State<CatalogHome> {
         child: AppStaticDisplayField(value: 'No Equipment'),
       ),
 
+      // Progress Bar
+      _subSectionHeader(subs[9]),
+      const SizedBox(height: AppGrid.grid12),
+      _ProgressBarSliderDemo(),
+
+      // Divider
+      _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const AppDivider(),
+      const SizedBox(height: AppGrid.grid24),
+
+      AppText('LABELED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const AppDivider(label: 'or'),
+      const SizedBox(height: AppGrid.grid16),
+      const AppDivider(label: 'OR'),
+      const SizedBox(height: AppGrid.grid16),
+      const AppDivider(label: 'Continue with'),
+
+      // Media Holder
+      _subSectionHeader(subs[11]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const MediaHolder(),
+
+      _sectionDivider(),
+
       // ── CONTROLS ──
       _folderGroupHeader('CONTROLS'),
 
       // Buttons
-      _subSectionHeader(subs[9]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('TYPES', style: AppTypography.overline.semiBold),
@@ -1408,7 +1530,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Checkboxes
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1478,7 +1600,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Toggles
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1537,7 +1659,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Radios
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1606,7 +1728,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Nav Bar Item
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1652,7 +1774,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Filter Button
-      _subSectionHeader(subs[14]),
+      _subSectionHeader(subs[17]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1713,7 +1835,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // Sub Tab Item
-      _subSectionHeader(subs[15]),
+      _subSectionHeader(subs[18]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -1754,7 +1876,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('INPUTS'),
 
       // Text Fields
-      _subSectionHeader(subs[16]),
+      _subSectionHeader(subs[19]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -1771,12 +1893,65 @@ class _CatalogHomeState extends State<CatalogHome> {
       const SizedBox(height: AppGrid.grid8),
       AppTextField(controller: _textFieldPassword, hintText: 'Enter password...', obscureText: true),
 
+      // OTP Cells
+      _subSectionHeader(subs[20]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('EMPTY', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      _CatalogInputDemo(
+        builder: (controller, focusNode) => OtpCell(
+          controller: controller,
+          focusNode: focusNode,
+          state: OtpCellState.empty,
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('FILLED', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      _CatalogInputDemo(
+        initialText: '4',
+        builder: (controller, focusNode) => OtpCell(
+          controller: controller,
+          focusNode: focusNode,
+          state: OtpCellState.filled,
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('ERROR', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      _CatalogInputDemo(
+        initialText: '4',
+        builder: (controller, focusNode) => OtpCell(
+          controller: controller,
+          focusNode: focusNode,
+          state: OtpCellState.error,
+        ),
+      ),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('INTERACTIVE (TAP TO FOCUS)', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(6, (i) => Padding(
+          padding: EdgeInsets.only(right: i < 5 ? AppGrid.grid8 : 0),
+          child: _CatalogInputDemo(
+            builder: (controller, focusNode) => OtpCell(
+              controller: controller,
+              focusNode: focusNode,
+            ),
+          ),
+        )),
+      ),
 
       // ── PATH ──
       _folderGroupHeader('PATH'),
 
       // Path Buttons
-      _subSectionHeader(subs[17]),
+      _subSectionHeader(subs[21]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('ACTIVE (TAP TO STOP PULSE)', style: AppTypography.overline.semiBold),
@@ -2088,7 +2263,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('BEHAVIORS'),
 
       // Pressable Surface
-      _subSectionHeader(subs[18]),
+      _subSectionHeader(subs[22]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -2157,7 +2332,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // Button Playground (collapsed by default)
       _CollapsibleSubsection(
-        sub: subs[19],
+        sub: subs[23],
         child: const _ButtonPlayground(),
       ),
     ];
@@ -3374,6 +3549,21 @@ class _CatalogHomeState extends State<CatalogHome> {
           iconPath: AppIcons.crown,
         ),
       ),
+
+      _sectionDivider(),
+
+      // ── AppOtpField ──
+      _subSectionHeader(subs[20]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('DEFAULT', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _OtpFieldCatalogDemo(),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('ERROR', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _OtpFieldCatalogDemo(hasError: true),
     ];
   }
 
