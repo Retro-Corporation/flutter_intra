@@ -79,9 +79,9 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
   }
 
   String get _primaryLabel => switch (widget.variant) {
-        ExerciseDetailVariant.basic    => '+ Add exercise',
-        ExerciseDetailVariant.set      => '+ Add exercise',
-        ExerciseDetailVariant.template => '+ Add template',
+        ExerciseDetailVariant.basic    => 'Add exercise',
+        ExerciseDetailVariant.set      => 'Add exercise',
+        ExerciseDetailVariant.template => 'Add template',
       };
 
   // ── Rows ──
@@ -171,9 +171,7 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
 
   Widget _buildMediaArea() {
     return switch (widget.variant) {
-      ExerciseDetailVariant.basic => const Center(
-          child: MediaHolder(size: MediaHolderSize.lg),
-        ),
+      ExerciseDetailVariant.basic => const MediaHolder(size: MediaHolderSize.lg),
       ExerciseDetailVariant.set ||
       ExerciseDetailVariant.template =>
         ExerciseFlowCarousel(
@@ -195,7 +193,7 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                label: '+ Add exercise set',
+                label: 'Add exercise set',
                 leadingIcon: AppIcons.add,
                 type: ButtonType.filled,
                 size: ButtonSize.md,
@@ -203,7 +201,7 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
                 onPressed: () => widget.onAddSet!(_allIds),
               ),
             ),
-            const SizedBox(height: AppGrid.grid24),
+            const SizedBox(height: AppGrid.grid8),
           ],
           SizedBox(
             width: double.infinity,
@@ -216,7 +214,7 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
               onPressed: _handlePrimaryAdd,
             ),
           ),
-          const SizedBox(height: AppGrid.grid40),
+          const SizedBox(height: AppGrid.grid36),
         ],
       ),
     );
@@ -235,13 +233,14 @@ class _ExerciseDetailTemplateState extends State<ExerciseDetailTemplate> {
             _buildSubtitle(),
             const SizedBox(height: AppGrid.grid12),
             _buildMuscleGroupPill(),
-            const SizedBox(height: AppGrid.grid24),
+            const SizedBox(height: AppGrid.grid20),
             Expanded(
               child: Align(
                 alignment: Alignment.topCenter,
                 child: _buildMediaArea(),
               ),
             ),
+            const SizedBox(height: AppGrid.grid8),
             _buildFooter(),
           ],
         ),

@@ -110,33 +110,39 @@ class _ExerciseFlowCarouselState extends State<ExerciseFlowCarousel> {
     );
   }
 
+  Widget _buildPageView() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final controller = _controllerFor(constraints.maxWidth);
+        return PageView.builder(
+          controller: controller,
+          itemCount: widget.thumbnails.length,
+          clipBehavior: Clip.none,
+          physics: const PageScrollPhysics(),
+          onPageChanged: widget.onIndexChanged,
+          itemBuilder: (context, i) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _kHalfSlotGap),
+              child: _buildSlot(i),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLg = widget.size == ExerciseFlowCarouselSize.lg;
+    final hasDots = widget.thumbnails.length > 1;
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: isLg ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        SizedBox(
-          height: _viewportHeight,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final controller = _controllerFor(constraints.maxWidth);
-              return PageView.builder(
-                controller: controller,
-                itemCount: widget.thumbnails.length,
-                clipBehavior: Clip.none,
-                physics: const PageScrollPhysics(),
-                onPageChanged: widget.onIndexChanged,
-                itemBuilder: (context, i) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: _kHalfSlotGap),
-                    child: _buildSlot(i),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        if (widget.thumbnails.length > 1) ...[
+        isLg
+            ? Expanded(child: _buildPageView())
+            : SizedBox(height: _viewportHeight, child: _buildPageView()),
+        if (hasDots) ...[
           SizedBox(height: AppGrid.grid8),
           Center(
             child: DotIndicator(
