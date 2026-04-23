@@ -56,6 +56,8 @@ class _CodeEntryTemplateState extends State<CodeEntryTemplate> {
   int get _filledCount =>
       _controllers.where((c) => c.text.isNotEmpty).length;
 
+  bool get _allFilled => _filledCount == _cellCount;
+
   double get _progressValue =>
       widget.progressBaseValue + _filledCount * widget.cellProgressDelta;
 
@@ -193,11 +195,14 @@ class _CodeEntryTemplateState extends State<CodeEntryTemplate> {
                     ),
                     const SizedBox(height: AppGrid.grid12),
                     AppButton(
-                      label: 'Skip for Now',
+                      label: _allFilled ? 'Continue' : 'Skip for Now',
                       type: ButtonType.filled,
                       size: ButtonSize.md,
                       color: AppColors.brand,
-                      onPressed: widget.onSkip,
+                      onPressed: _allFilled
+                          ? () => widget.onCompleted(
+                              _controllers.map((c) => c.text).join())
+                          : widget.onSkip,
                     ),
                   ],
                 ),
