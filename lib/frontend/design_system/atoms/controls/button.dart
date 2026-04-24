@@ -176,6 +176,10 @@ class AppButton extends StatefulWidget {
   /// Asset path from [AppIcons] for a leading icon.
   final String? leadingIcon;
 
+  /// Overrides the default icon size derived from [size] for the leading icon.
+  /// Defaults to null (uses [_ButtonSizeConfig.iconSize]).
+  final double? leadingIconSize;
+
   /// Asset path from [AppIcons] for a trailing icon.
   final String? trailingIcon;
 
@@ -218,6 +222,7 @@ class AppButton extends StatefulWidget {
     super.key,
     this.label,
     this.leadingIcon,
+    this.leadingIconSize,
     this.trailingIcon,
     this.type = ButtonType.filled,
     this.size = ButtonSize.md,
@@ -388,7 +393,7 @@ class _AppButtonState extends State<AppButton>
 
     if (widget.leadingIcon != null) {
       children.add(
-        AppIcon(widget.leadingIcon!, size: sizeConfig.iconSize, color: colors.foreground),
+        AppIcon(widget.leadingIcon!, size: widget.leadingIconSize ?? sizeConfig.iconSize, color: colors.foreground),
       );
     }
 
