@@ -110,6 +110,9 @@ export 'molecules/display/icon_section_header.dart';
 export 'molecules/display/icon_text_action.dart';
 export 'molecules/display/practitioner_header.dart';
 
+// Molecules — text
+export 'molecules/text/heading_with_subtitle_molecule.dart';
+
 // Molecules — cards
 export 'molecules/cards/current_client_card.dart';
 export 'molecules/cards/current_client_card_types.dart';
@@ -139,6 +142,7 @@ export 'molecules/navigation/practitioner_nav_bar.dart';
 export 'molecules/navigation/practitioner_nav_bar_types.dart';
 export 'molecules/navigation/sub_tab_bar.dart';
 export 'molecules/navigation/sub_tab_bar_types.dart';
+export 'molecules/navigation/back_and_progress_bar_molecule.dart';
 
 // Organisms — sort
 export 'organisms/sort/sort_panel.dart';

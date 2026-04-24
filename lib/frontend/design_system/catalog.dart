@@ -309,6 +309,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         'AppOtpField',
         'Practitioner Header',
         'Phone Fields',
+        'Back And Progress Bar',
+        'Heading With Subtitle',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -3716,6 +3718,38 @@ class _CatalogHomeState extends State<CatalogHome> {
             state: FieldState.disabled,
           ),
         ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Back And Progress Bar ──
+      _folderGroupHeader('NAVIGATION'),
+      _subSectionHeader(subs[23]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      BackAndProgressBarMolecule(progress: 0.25, onBack: () => debugPrint('back')),
+      const SizedBox(height: AppGrid.grid16),
+      BackAndProgressBarMolecule(progress: 0.5, onBack: () => debugPrint('back')),
+      const SizedBox(height: AppGrid.grid16),
+      BackAndProgressBarMolecule(progress: 0.9, onBack: () => debugPrint('back')),
+
+      _sectionDivider(),
+
+      // ── Heading With Subtitle ──
+      _folderGroupHeader('TEXT'),
+      _subSectionHeader(subs[24]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const HeadingWithSubtitleMolecule(
+        heading: 'Exercise area setup',
+        subtitle: 'Create space to workout in',
+      ),
+      const SizedBox(height: AppGrid.grid16),
+      const HeadingWithSubtitleMolecule(
+        heading: 'How Exercise Creation Works',
+        subtitle: 'Record the movement, correct key positions, then define the exercise.',
       ),
     ];
   }
