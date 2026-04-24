@@ -1332,6 +1332,20 @@ class _CatalogHomeState extends State<CatalogHome> {
         ],
       ),
 
+      // Upload variant
+      const SizedBox(height: AppGrid.grid16),
+      AppText('UPLOAD', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      Row(
+        children: [
+          AppAvatar(content: AvatarUpload(), size: AvatarSize.xl, onTap: () {}),
+          SizedBox(width: AppGrid.grid12),
+          AppAvatar(content: AvatarUpload(), size: AvatarSize.lg, onTap: () {}),
+          SizedBox(width: AppGrid.grid12),
+          AppAvatar(content: AvatarUpload(), size: AvatarSize.md, onTap: () {}),
+        ],
+      ),
+
       _sectionDivider(),
 
       // Scheme Option Row
@@ -3163,6 +3177,22 @@ class _CatalogHomeState extends State<CatalogHome> {
           );
         },
       ),
+
+      const SizedBox(height: AppGrid.grid24),
+
+      // ── Labeled Toggle ──
+      _subSectionHeader('Labeled Toggle'),
+      const SizedBox(height: AppGrid.grid12),
+      LabeledToggle(label: 'Client help alerts', value: true, onChanged: (_) {}),
+      const SizedBox(height: AppGrid.grid12),
+      LabeledToggle(label: 'Practitioner updates', value: false, onChanged: (_) {}),
+      const SizedBox(height: AppGrid.grid12),
+      LabeledToggle(
+        label: 'A very long notification label that wraps to multiple lines and tests overflow behavior',
+        value: true,
+        onChanged: (_) {},
+      ),
+      const SizedBox(height: AppGrid.grid24),
 
       _sectionDivider(),
 

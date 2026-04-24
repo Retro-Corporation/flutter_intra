@@ -130,6 +130,7 @@ export 'molecules/cards/exercise_thumbnail_card_types.dart';
 
 // Molecules — controls
 export 'molecules/controls/labeled_checkbox.dart';
+export 'molecules/controls/labeled_toggle.dart';
 export 'molecules/controls/search_bar.dart';
 export 'molecules/controls/search_bar_types.dart';
 export 'molecules/controls/app_dropdown.dart';
