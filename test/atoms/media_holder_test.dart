@@ -27,6 +27,28 @@ void main() {
         expect(sizedBox.height, 408.0);
       },
     );
+
+    testWidgets(
+      'Renders at 360×360 for hero size',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: Center(child: MediaHolder(size: MediaHolderSize.hero)),
+            ),
+          ),
+        );
+
+        final sizedBox = tester.widget<SizedBox>(
+          find.descendant(
+            of: find.byType(MediaHolder),
+            matching: find.byType(SizedBox),
+          ),
+        );
+        expect(sizedBox.width, 360.0);
+        expect(sizedBox.height, 360.0);
+      },
+    );
   });
 
   group('MediaHolder decoration', () {
