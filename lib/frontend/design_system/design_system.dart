@@ -109,6 +109,8 @@ export 'molecules/display/section_header.dart';
 export 'molecules/display/icon_section_header.dart';
 export 'molecules/display/icon_text_action.dart';
 export 'molecules/display/practitioner_header.dart';
+export 'molecules/display/app_confirmation_dialog.dart';
+export 'molecules/display/info_carousel.dart';
 
 // Molecules — text
 export 'molecules/text/heading_with_subtitle_molecule.dart';
@@ -139,8 +141,8 @@ export 'atoms/controls/filter_button.dart';
 export 'atoms/controls/filter_button_types.dart';
 
 // Molecules — navigation
-export 'molecules/navigation/practitioner_nav_bar.dart';
-export 'molecules/navigation/practitioner_nav_bar_types.dart';
+export 'molecules/navigation/app_nav_bar.dart';
+export 'molecules/navigation/app_nav_bar_types.dart';
 export 'molecules/navigation/sub_tab_bar.dart';
 export 'molecules/navigation/sub_tab_bar_types.dart';
 export 'molecules/navigation/back_and_progress_bar_molecule.dart';
@@ -182,6 +184,8 @@ export 'organisms/client_account/equipment_picker_types.dart';
 export 'organisms/client_account/exercise_card_edit.dart';
 export 'organisms/client_account/exercise_plan_page_header.dart';
 export 'organisms/client_account/exercise_types.dart';
+export 'organisms/client_account/label_option_picker_panel.dart';
+export 'organisms/client_account/label_option_picker_types.dart';
 
 // Organisms — category filter
 export 'organisms/category_filter/category_filter_organism.dart';

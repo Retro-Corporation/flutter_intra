@@ -296,9 +296,10 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Current Client Card',
         'All Client Card',
         'Labeled Checkbox',
+        'Labeled Toggle',
         'Search Bar',
         'Dropdown',
-        'Practitioner Nav Bar',
+        'App Nav Bar',
         'Sub Tab Bar',
         'Exercise Card Skeleton',
         'Exercise Card Read',
@@ -311,6 +312,8 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Phone Fields',
         'Back And Progress Bar',
         'Heading With Subtitle',
+        'Confirmation Dialog',
+        'Info Carousel',
       ]),
       _Section('Organisms', [
         // client_list/
@@ -327,6 +330,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Exercise Section Row',
         'Add Exercise Skeleton',
         'Exercise Type Grid',
+        'Label Option Picker',
       ]),
       _Section('Templates', []),
     ];
@@ -3181,7 +3185,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       const SizedBox(height: AppGrid.grid24),
 
       // ── Labeled Toggle ──
-      _subSectionHeader('Labeled Toggle'),
+      _subSectionHeader(subs[10]),
       const SizedBox(height: AppGrid.grid12),
       LabeledToggle(label: 'Client help alerts', value: true, onChanged: (_) {}),
       const SizedBox(height: AppGrid.grid12),
@@ -3197,7 +3201,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Search Bar ──
-      _subSectionHeader(subs[10]),
+      _subSectionHeader(subs[11]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PILL / DEFAULT', style: AppTypography.overline.semiBold),
@@ -3246,7 +3250,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Dropdown ──
-      _subSectionHeader(subs[11]),
+      _subSectionHeader(subs[12]),
       const SizedBox(height: AppGrid.grid12),
 
       const _DropdownCatalogDemo(),
@@ -3255,24 +3259,30 @@ class _CatalogHomeState extends State<CatalogHome> {
       _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
-      _subSectionHeader(subs[12]),
+      _subSectionHeader(subs[13]),
       const SizedBox(height: AppGrid.grid12),
 
-      AppText('TABS', style: AppTypography.overline.semiBold),
+      // Practitioner tabs
+      AppText('PRACTITIONER TABS', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       StatefulBuilder(
         builder: (context, setState) {
-          PractitionerTab selected = PractitionerTab.clients;
+          var selectedIndex = 0;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PractitionerNavBar(
-                selectedTab: selected,
-                onTabSelected: (tab) => setState(() => selected = tab),
+              AppNavBar(
+                tabs: const [
+                  NavBarTab(activeIcon: AppIcons.groupFilled,   inactiveIcon: AppIcons.group),
+                  NavBarTab(activeIcon: AppIcons.bodyFilled,    inactiveIcon: AppIcons.body),
+                  NavBarTab(activeIcon: AppIcons.profileFilled, inactiveIcon: AppIcons.profile),
+                ],
+                selectedIndex: selectedIndex,
+                onTabSelected: (i) => setState(() => selectedIndex = i),
               ),
               const SizedBox(height: AppGrid.grid8),
               AppText(
-                'Selected: ${selected.name}',
+                'Selected: $selectedIndex',
                 style: AppTypography.caption.bold,
                 color: AppColors.textSecondary,
               ),
@@ -3281,8 +3291,28 @@ class _CatalogHomeState extends State<CatalogHome> {
         },
       ),
 
+      const SizedBox(height: AppGrid.grid16),
+
+      // Athlete tabs
+      AppText('ATHLETE TABS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      StatefulBuilder(
+        builder: (context, setState) {
+          var selectedIndex = 0;
+          return AppNavBar(
+            tabs: const [
+              NavBarTab(activeIcon: AppIcons.homeFilled,    inactiveIcon: AppIcons.home),
+              NavBarTab(activeIcon: AppIcons.crownFilled,   inactiveIcon: AppIcons.crown),
+              NavBarTab(activeIcon: AppIcons.profileFilled, inactiveIcon: AppIcons.profile),
+            ],
+            selectedIndex: selectedIndex,
+            onTabSelected: (i) => setState(() => selectedIndex = i),
+          );
+        },
+      ),
+
       // ── Sub Tab Bar ──
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('all enabled', style: AppTypography.overline.semiBold),
@@ -3311,7 +3341,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       // ── Exercise Card Skeleton ──
-      _subSectionHeader(subs[14]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
       AppText('SINGLE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3347,7 +3377,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Card Read ──
-      _subSectionHeader(subs[15]),
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PLAIN', style: AppTypography.overline.semiBold),
@@ -3508,7 +3538,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Empty Exercise List ──
-      _subSectionHeader(subs[16]),
+      _subSectionHeader(subs[17]),
       const SizedBox(height: AppGrid.grid12),
 
       SizedBox(
@@ -3520,7 +3550,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Flow Carousel ──
-      _subSectionHeader(subs[17]),
+      _subSectionHeader(subs[18]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('3 ITEMS', style: AppTypography.overline.semiBold),
@@ -3562,7 +3592,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Thumbnail Card ──
-      _subSectionHeader(subs[18]),
+      _subSectionHeader(subs[19]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('SMALL (EXERCISES & SETS)', style: AppTypography.overline.semiBold),
@@ -3617,7 +3647,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Icon Section Header ──
-      _subSectionHeader(subs[19]),
+      _subSectionHeader(subs[20]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -3646,7 +3676,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── AppOtpField ──
-      _subSectionHeader(subs[20]),
+      _subSectionHeader(subs[21]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -3661,7 +3691,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Practitioner Header ──
-      _subSectionHeader(subs[21]),
+      _subSectionHeader(subs[22]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -3675,7 +3705,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Phone Fields ──
-      _subSectionHeader(subs[22]),
+      _subSectionHeader(subs[23]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -3760,7 +3790,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Back And Progress Bar ──
       _folderGroupHeader('NAVIGATION'),
-      _subSectionHeader(subs[23]),
+      _subSectionHeader(subs[24]),
       const SizedBox(height: AppGrid.grid12),
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3774,7 +3804,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Heading With Subtitle ──
       _folderGroupHeader('TEXT'),
-      _subSectionHeader(subs[24]),
+      _subSectionHeader(subs[25]),
       const SizedBox(height: AppGrid.grid12),
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3787,6 +3817,49 @@ class _CatalogHomeState extends State<CatalogHome> {
         heading: 'How Exercise Creation Works',
         subtitle: 'Record the movement, correct key positions, then define the exercise.',
       ),
+
+      _sectionDivider(),
+
+      // ── Confirmation Dialog ──
+      _subSectionHeader(subs[26]),
+      const SizedBox(height: AppGrid.grid12),
+
+      AppText('VARIANTS', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+
+      SizedBox(
+        width: 300,
+        child: AppConfirmationDialog(
+          subtitle: 'Do you want to',
+          title: 'Sign Out?',
+          confirmLabel: 'Yes - Sign me out',
+          cancelLabel: 'Not now',
+          onConfirm: () {},
+          onCancel: () {},
+        ),
+      ),
+      const SizedBox(height: AppGrid.grid24),
+
+      SizedBox(
+        width: 300,
+        child: AppConfirmationDialog(
+          subtitle: 'Do you want to',
+          title: 'Delete Your Account?',
+          confirmLabel: 'Yes - Delete account',
+          cancelLabel: 'No please',
+          onConfirm: () {},
+          onCancel: () {},
+        ),
+      ),
+
+      _sectionDivider(),
+
+      // ── Info Carousel ──
+      _subSectionHeader(subs[27]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _InfoCarouselDemo(),
     ];
   }
 
@@ -4021,6 +4094,16 @@ class _CatalogHomeState extends State<CatalogHome> {
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const _ExerciseTypeGridDemo(),
+
+      _sectionDivider(),
+
+      // ── Label Option Picker ──
+      _folderGroupHeader('CLIENT ACCOUNT'),
+      _subSectionHeader(subs[11]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _LabelOptionPickerDemo(),
     ];
   }
 
@@ -5005,6 +5088,23 @@ class _DropdownCatalogDemo extends StatelessWidget {
           AppText('icon label', style: AppTypography.caption.bold, color: AppColors.textSecondary),
           const SizedBox(height: AppGrid.grid8),
           AppDropdown(style: AppDropdownStyle.filled, variant: AppDropdownVariant.iconLabel, color: AppColors.brand, label: 'Set scheme', iconPath: AppIcons.crown, value: '3-6 × 4 - Controlled', placeholder: 'Select set scheme', onTap: () {}),
+
+          const SizedBox(height: AppGrid.grid24),
+
+          // ── FLAT ──
+          AppText('FLAT', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid12),
+
+          AppText('label only', style: AppTypography.caption.bold, color: AppColors.textSecondary),
+          const SizedBox(height: AppGrid.grid8),
+          AppDropdown(
+            style: AppDropdownStyle.flat,
+            variant: AppDropdownVariant.labelOnly,
+            label: 'Body segment',
+            value: null,
+            placeholder: 'Select...',
+            onTap: () {},
+          ),
         ],
       ),
     );
@@ -5168,27 +5268,98 @@ class _EquipmentPickerDemo extends StatefulWidget {
 }
 
 class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
-  // CATALOG ONLY — stub options. Real options come from the exercise's
-  // related equipment list in the data layer.
-  static const _options = [
-    EquipmentOption(id: 'e1', label: 'Resistance Bands'),
-    EquipmentOption(id: 'e2', label: 'Pull-up Bar'),
-    EquipmentOption(id: 'e3', label: 'Doorway'),
-    EquipmentOption(id: 'e4', label: 'No Equipment'),
+  // CATALOG ONLY — stub data. Real data comes from the data layer.
+  static const _categories = [
+    EquipmentFilterCategory(id: 'weights', label: 'Weights'),
+    EquipmentFilterCategory(id: 'balance', label: 'Balance'),
+    EquipmentFilterCategory(id: 'bands', label: 'Bands'),
+    EquipmentFilterCategory(id: 'furniture', label: 'Furniture'),
   ];
 
-  String? _selectedId = 'e1';
+  static const _options = [
+    EquipmentOption(id: 'e1', label: 'Barbell'),
+    EquipmentOption(id: 'e2', label: 'Dumbbell'),
+  ];
+
+  // simple variant state
+  String? _simpleSelectedId = 'e1';
+
+  // withFilters interactive state
+  String? _filtersSelectedId;
+  String? _selectedCategoryId;
 
   @override
   Widget build(BuildContext context) {
     // CATALOG ONLY — ConstrainedBox simulates the template's Overlay bounds.
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 260),
-      child: EquipmentPickerPanel(
-        title: 'Related equipment',
-        options: _options,
-        selectedId: _selectedId,
-        onSelected: (option) => setState(() => _selectedId = option.id),
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ── simple ──
+          AppText('SIMPLE', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          EquipmentPickerPanel(
+            title: 'Related equipment',
+            options: _options,
+            selectedId: _simpleSelectedId,
+            onSelected: (o) => setState(() => _simpleSelectedId = o.id),
+          ),
+
+          const SizedBox(height: AppGrid.grid16),
+
+          // ── withFilters — interactive (no chip selected) ──
+          AppText('WITH FILTERS — interactive', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          EquipmentPickerPanel(
+            variant: EquipmentPickerVariant.withFilters,
+            title: 'Equipment category',
+            subtitle: 'Sub title',
+            categories: _categories,
+            selectedCategoryId: _selectedCategoryId,
+            options: _options,
+            selectedId: _filtersSelectedId,
+            onCategoryChanged: (cat) => setState(() => _selectedCategoryId = cat?.id),
+            onSelected: (o) => setState(() => _filtersSelectedId = o.id),
+            onAddNew: () {},
+          ),
+
+          const SizedBox(height: AppGrid.grid16),
+
+          // ── withFilters — chip selected ──
+          AppText('WITH FILTERS — chip selected', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          EquipmentPickerPanel(
+            variant: EquipmentPickerVariant.withFilters,
+            title: 'Equipment category',
+            subtitle: 'Sub title',
+            categories: _categories,
+            selectedCategoryId: 'weights',
+            options: _options,
+            selectedId: null,
+            onCategoryChanged: (_) {},
+            onSelected: (_) {},
+            onAddNew: () {},
+          ),
+
+          const SizedBox(height: AppGrid.grid16),
+
+          // ── withFilters — empty filtered list ──
+          AppText('WITH FILTERS — empty list', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          EquipmentPickerPanel(
+            variant: EquipmentPickerVariant.withFilters,
+            title: 'Equipment category',
+            subtitle: 'Sub title',
+            categories: _categories,
+            selectedCategoryId: 'bands',
+            options: const [],
+            selectedId: null,
+            onCategoryChanged: (_) {},
+            onSelected: (_) {},
+            onAddNew: () {},
+          ),
+        ],
       ),
     );
   }
@@ -5386,6 +5557,113 @@ class _ExerciseTypeGridDemoState extends State<_ExerciseTypeGridDemo> {
     return ExerciseTypeGridOrganism(
       initialValue: _selected,
       onChanged: (value) => setState(() => _selected = value),
+    );
+  }
+}
+
+// ── Info Carousel Catalog ──
+
+class _InfoCarouselDemo extends StatefulWidget {
+  const _InfoCarouselDemo();
+
+  @override
+  State<_InfoCarouselDemo> createState() => _InfoCarouselDemoState();
+}
+
+class _InfoCarouselDemoState extends State<_InfoCarouselDemo> {
+  // CATALOG ONLY — two message sets to demonstrate didUpdateWidget restart.
+  // In production the template passes the correct set for the active tab.
+  static const _setA = [
+    'Finalize the exercise details.',
+    'Add a body segment to help with filtering.',
+    'Outcome goals help clients understand intent.',
+  ];
+  static const _setB = [
+    'Give your exercise a clear name.',
+    'Equipment is optional but useful.',
+    'Preview your exercise before saving.',
+  ];
+
+  bool _useSetA = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InfoCarousel(messages: _useSetA ? _setA : _setB),
+        SizedBox(height: AppGrid.grid16),
+        // CATALOG ONLY — tap to swap message sets and observe the timer reset.
+        AppButton(
+          label: _useSetA ? 'Switch to Set B' : 'Switch to Set A',
+          variant: ButtonVariant.outline,
+          size: ButtonSize.sm,
+          onPressed: () => setState(() => _useSetA = !_useSetA),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Label Option Picker Catalog ──
+
+class _LabelOptionPickerDemo extends StatefulWidget {
+  const _LabelOptionPickerDemo();
+
+  @override
+  State<_LabelOptionPickerDemo> createState() => _LabelOptionPickerDemoState();
+}
+
+class _LabelOptionPickerDemoState extends State<_LabelOptionPickerDemo> {
+  // CATALOG ONLY — stub data mirrors the Create Exercise Details page.
+  static const _bodySegments = [
+    LabelOption(id: 'core', label: 'Core'),
+    LabelOption(id: 'hips', label: 'Hips'),
+    LabelOption(id: 'full_body', label: 'Full Body'),
+    LabelOption(id: 'shoulders', label: 'Shoulders'),
+    LabelOption(id: 'back', label: 'Back'),
+    LabelOption(id: 'knees', label: 'Knees'),
+    LabelOption(id: 'lower_body', label: 'Lower Body'),
+    LabelOption(id: 'elbows', label: 'Elbows'),
+    LabelOption(id: 'upper_body', label: 'Upper Body'),
+    LabelOption(id: 'neck', label: 'Neck'),
+    LabelOption(id: 'wrist_hand', label: 'Wrist + Hand'),
+    LabelOption(id: 'ankle_foot', label: 'Ankle + Foot'),
+  ];
+
+  static const _outcomes = [
+    LabelOption(id: 'mobility', label: 'Mobility'),
+    LabelOption(id: 'strength', label: 'Strength'),
+    LabelOption(id: 'endurance', label: 'Endurance'),
+    LabelOption(id: 'stability', label: 'Stability + Motor Control'),
+    LabelOption(id: 'power', label: 'Power'),
+  ];
+
+  String? _selectedSegment = 'hips';
+  String? _selectedOutcome = 'strength';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Body Segments — grid2 layout
+        LabelOptionPickerPanel(
+          title: 'Body Segments',
+          options: _bodySegments,
+          selectedId: _selectedSegment,
+          layout: LabelPickerLayout.grid2,
+          onSelected: (opt) => setState(() => _selectedSegment = opt.id),
+        ),
+        SizedBox(height: AppGrid.grid24),
+        // Outcome Goals — column layout
+        LabelOptionPickerPanel(
+          title: 'Outcome Goals',
+          options: _outcomes,
+          selectedId: _selectedOutcome,
+          layout: LabelPickerLayout.column,
+          onSelected: (opt) => setState(() => _selectedOutcome = opt.id),
+        ),
+      ],
     );
   }
 }

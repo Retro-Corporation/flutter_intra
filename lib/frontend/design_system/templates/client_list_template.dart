@@ -34,7 +34,7 @@ class _ClientListTemplateState extends State<ClientListTemplate> {
   final _scrollController = ScrollController();
   Map<SortCategory, SortOption?> _activeSort = {};
   bool _sortOpen = false;
-  PractitionerTab _selectedTab = PractitionerTab.clients;
+  int _selectedNavIndex = 0;
 
   @override
   void initState() {
@@ -62,9 +62,14 @@ class _ClientListTemplateState extends State<ClientListTemplate> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      bottomNavigationBar: PractitionerNavBar(
-        selectedTab: _selectedTab,
-        onTabSelected: (tab) => setState(() => _selectedTab = tab),
+      bottomNavigationBar: AppNavBar(
+        tabs: const [
+          NavBarTab(activeIcon: AppIcons.groupFilled,   inactiveIcon: AppIcons.group),
+          NavBarTab(activeIcon: AppIcons.bodyFilled,    inactiveIcon: AppIcons.body),
+          NavBarTab(activeIcon: AppIcons.profileFilled, inactiveIcon: AppIcons.profile),
+        ],
+        selectedIndex: _selectedNavIndex,
+        onTabSelected: (i) => setState(() => _selectedNavIndex = i),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
