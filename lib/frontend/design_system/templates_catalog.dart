@@ -274,6 +274,65 @@ class TemplatesCatalogHome extends StatelessWidget {
         onSecondary: () {},
       ),
     ),
+    'Create Exercise Intro': (_) => _TemplateShell(
+      child: AvatarMessageTemplate(
+        heading: "Let's create a new exercise for your clients",
+        primaryLabel: 'Create Exercise',
+        onPrimary: () {},
+        secondaryLabel: 'Not Now',
+        secondaryButtonType: ButtonType.ghost,
+        onSecondary: () {},
+      ),
+    ),
+    'Completed Exercise': (_) => _TemplateShell(
+      child: AvatarMessageTemplate(
+        heading: 'Exercise saved great job!',
+        primaryLabel: 'Client page',
+        onPrimary: () {},
+        primaryLeadingIcon: AppIcons.groupFilled,
+        primaryLeadingIconSize: IconSizes.lg,
+        secondaryLabel: 'View Exercise',
+        secondaryButtonType: ButtonType.outline,
+        secondaryLeadingIcon: AppIcons.crownFilled,
+        onSecondary: () {},
+      ),
+    ),
+    'How To': (_) => _TemplateShell(
+      child: ProgressStepTemplate(
+        progress: 0.25,
+        onBack: () {},
+        heading: 'How Exercise Creation Works',
+        subtitle: 'Record the movement, correct key positions, then define the exercise.',
+        body: const MediaHolder(size: MediaHolderSize.sm),
+        primaryLabel: 'Continue',
+        onPrimary: () {},
+      ),
+    ),
+    'Basic Set Up (area)': (_) => _TemplateShell(
+      child: ProgressStepTemplate(
+        progress: 0.5,
+        onBack: () {},
+        heading: 'Exercise area setup',
+        subtitle: 'Create space to workout in',
+        body: const MediaHolder(size: MediaHolderSize.sm),
+        primaryLabel: 'Continue',
+        onPrimary: () {},
+      ),
+    ),
+    'Basic Set Up (phone)': (_) => _TemplateShell(
+      child: ProgressStepTemplate(
+        progress: 0.75,
+        onBack: () {},
+        heading: 'Phone setup',
+        subtitle: 'Place phone on the left/right of you at 45°',
+        body: const MediaHolder(size: MediaHolderSize.sm),
+        primaryLabel: "Let's start",
+        onPrimary: () {},
+      ),
+    ),
+    'Select Exercise Type': (_) => const _TemplateShell(
+      child: _SelectExerciseTypePreview(),
+    ),
   };
 
   @override
@@ -469,6 +528,37 @@ const _mockAddExerciseSections = <ExerciseSectionData>[
     ],
   ),
 ];
+
+// ── Select Exercise Type preview ──
+// Stateful wrapper so card selection is live in the template viewer.
+
+class _SelectExerciseTypePreview extends StatefulWidget {
+  const _SelectExerciseTypePreview();
+
+  @override
+  State<_SelectExerciseTypePreview> createState() =>
+      _SelectExerciseTypePreviewState();
+}
+
+class _SelectExerciseTypePreviewState extends State<_SelectExerciseTypePreview> {
+  ExerciseDiscipline? _selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProgressStepTemplate(
+      progress: 1.0,
+      onBack: () {},
+      heading: 'Select Exercise Type',
+      subtitle: "Choose the type of exercise you're creating.",
+      body: ExerciseTypeGridOrganism(
+        initialValue: _selected,
+        onChanged: (value) => setState(() => _selected = value),
+      ),
+      primaryLabel: 'Continue',
+      onPrimary: _selected == null ? null : () {},
+    );
+  }
+}
 
 // ── Smoke test template ──
 // Verifies the viewer works end-to-end. Private to this file — not exported.

@@ -168,6 +168,8 @@ export 'templates/given_exercise_template_types.dart';
 export 'templates/given_exercise_template.dart';
 export 'templates/exercise_detail/exercise_detail_template_types.dart';
 export 'templates/exercise_detail/exercise_detail_template.dart';
+export 'templates/avatar_message_template.dart';
+export 'templates/progress_step_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
@@ -188,3 +190,7 @@ export 'organisms/category_filter/category_filter_types.dart';
 export 'organisms/exercise_list/exercise_section_row_types.dart';
 export 'organisms/exercise_list/exercise_section_row_organism.dart';
 export 'organisms/exercise_list/add_exercise_skeleton_organism.dart';
+
+// Organisms — exercise type grid
+export 'organisms/exercise_type_grid/exercise_type_grid_types.dart';
+export 'organisms/exercise_type_grid/exercise_type_grid_organism.dart';

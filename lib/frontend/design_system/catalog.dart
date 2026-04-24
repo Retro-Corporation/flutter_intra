@@ -326,6 +326,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Category Filter',
         'Exercise Section Row',
         'Add Exercise Skeleton',
+        'Exercise Type Grid',
       ]),
       _Section('Templates', []),
     ];
@@ -1441,6 +1442,11 @@ class _CatalogHomeState extends State<CatalogHome> {
       AppText('LG — 360×452', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
       const MediaHolder(size: MediaHolderSize.lg),
+
+      const SizedBox(height: AppGrid.grid24),
+      AppText('HERO — 360×360', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const MediaHolder(size: MediaHolderSize.hero),
 
       _sectionDivider(),
 
@@ -3975,6 +3981,16 @@ class _CatalogHomeState extends State<CatalogHome> {
         width: 360,
         child: AddExerciseSkeletonOrganism(),
       ),
+
+      // ── EXERCISE TYPE GRID ──
+      _folderGroupHeader('EXERCISE TYPE GRID'),
+
+      // ── Exercise Type Grid ──
+      _subSectionHeader(subs[10]),
+      const SizedBox(height: AppGrid.grid12),
+      AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+      const SizedBox(height: AppGrid.grid8),
+      const _ExerciseTypeGridDemo(),
     ];
   }
 
@@ -5319,6 +5335,27 @@ class _CategoryFilterDemoState extends State<_CategoryFilterDemo> {
           color: AppColors.textSecondary,
         ),
       ],
+    );
+  }
+}
+
+// ── Exercise Type Grid ──
+
+class _ExerciseTypeGridDemo extends StatefulWidget {
+  const _ExerciseTypeGridDemo();
+
+  @override
+  State<_ExerciseTypeGridDemo> createState() => _ExerciseTypeGridDemoState();
+}
+
+class _ExerciseTypeGridDemoState extends State<_ExerciseTypeGridDemo> {
+  ExerciseDiscipline? _selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExerciseTypeGridOrganism(
+      initialValue: _selected,
+      onChanged: (value) => setState(() => _selected = value),
     );
   }
 }
