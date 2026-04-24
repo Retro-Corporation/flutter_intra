@@ -92,6 +92,10 @@ class AppAvatar extends StatefulWidget {
   /// Reduces opacity to 0.4 when true.
   final bool isDisabled;
 
+  /// Optional tap callback. When non-null the avatar is wrapped in a
+  /// GestureDetector. Use with [AvatarUpload] to trigger an image picker.
+  final VoidCallback? onTap;
+
   const AppAvatar({
     super.key,
     this.content,
@@ -99,6 +103,7 @@ class AppAvatar extends StatefulWidget {
     this.size = AvatarSize.md,
     this.isLoading = false,
     this.isDisabled = false,
+    this.onTap,
   });
 
   @override
@@ -132,6 +137,10 @@ class _AppAvatarState extends State<AppAvatar> {
       avatar = Opacity(opacity: AppOpacity.disabled, child: avatar);
     }
 
+    if (widget.onTap != null) {
+      avatar = GestureDetector(onTap: widget.onTap, child: avatar);
+    }
+
     return Semantics(
       image: true,
       label: _semanticLabel,
@@ -142,8 +151,9 @@ class _AppAvatarState extends State<AppAvatar> {
   String get _semanticLabel {
     return switch (widget.content) {
       AvatarInitials(:final initials) => '$initials avatar',
-      AvatarImage() => 'User avatar',
-      null => 'Avatar',
+      AvatarImage()                   => 'User avatar',
+      AvatarUpload()                  => 'Upload profile photo',
+      null                            => 'Avatar',
     };
   }
 
@@ -168,6 +178,7 @@ class _AppAvatarState extends State<AppAvatar> {
               },
             ),
       AvatarInitials(:final initials) => _buildInitials(initials, config),
+      AvatarUpload() => _buildUploadPlaceholder(config),
       null => _buildPersonIcon(config),
     };
 
@@ -206,6 +217,19 @@ class _AppAvatarState extends State<AppAvatar> {
       child: Center(
         child: AppIcon(
           AppIcons.profileFilled,
+          size: config.iconSize,
+          color: AppColors.textSecondary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUploadPlaceholder(_AvatarSizeConfig config) {
+    return ColoredBox(
+      color: AppColors.surface,
+      child: Center(
+        child: AppIcon(
+          AppIcons.add,
           size: config.iconSize,
           color: AppColors.textSecondary,
         ),

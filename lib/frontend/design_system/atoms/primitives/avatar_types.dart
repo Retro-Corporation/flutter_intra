@@ -15,3 +15,7 @@ class AvatarInitials extends AvatarContent {
   final String initials;
   const AvatarInitials(this.initials);
 }
+
+class AvatarUpload extends AvatarContent {
+  const AvatarUpload();
+}
