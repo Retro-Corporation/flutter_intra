@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_intra/frontend/design_system/design_system.dart';
 import 'package:flutter_intra/frontend/design_system/organisms/client_account/exercise_card_edit.dart';
+import 'package:flutter_intra/frontend/design_system/organisms/client_account/exercise_types.dart';
 import 'package:flutter_intra/frontend/design_system/atoms/primitives/score_badge_types.dart';
 import 'package:flutter_intra/frontend/design_system/molecules/form_fields/equipment_field_types.dart';
 import 'package:flutter_intra/frontend/design_system/icons/app_icons.dart';
@@ -57,6 +58,7 @@ class _TestHarnessState extends State<_TestHarness> {
       scoreVariant: ScoreBadgeVariant.plain,
       exerciseName: widget.exerciseName,
       muscleGroup: widget.muscleGroup,
+      type: ExerciseType.rep,
       repController: _repController,
       repFocusNode: _repFocusNode,
       setsController: _setsController,
@@ -181,7 +183,7 @@ void main() {
 
       // Tap the delete icon directly — GestureDetector wrapping it will fire
       final deleteIcon = find.byWidgetPredicate(
-        (w) => w is AppIcon && w.icon == AppIcons.delete,
+        (w) => w is AppIcon && w.icon == AppIcons.deleteFilled,
       );
       expect(deleteIcon, findsOneWidget);
       await tester.tap(deleteIcon);
