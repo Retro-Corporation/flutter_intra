@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
 import '../../foundation/type/typography.dart';
 import 'text.dart';
 
@@ -29,10 +30,10 @@ class SchemeOptionRow extends StatelessWidget {
           color: isSelected ? AppColors.surface : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.sm),
           border: isSelected
-              ? Border.all(color: AppColors.brand, width: 1)
+              ? Border.all(color: AppColors.brand, width: AppStroke.xs)
               : null,
         ),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: AppGrid.grid12,
           vertical: AppGrid.grid8,
         ),

@@ -14,9 +14,14 @@ import 'text.dart';
 class AppStaticDisplayField extends StatelessWidget {
   final String value;
 
+  /// Alignment of the text within the field box.
+  /// Defaults to [Alignment.center] to preserve existing behaviour.
+  final Alignment alignment;
+
   const AppStaticDisplayField({
     super.key,
     required this.value,
+    this.alignment = Alignment.center,
   });
 
   @override
@@ -29,7 +34,7 @@ class AppStaticDisplayField extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(color: AppColors.surfaceBorder, width: AppStroke.xs),
       ),
-      alignment: Alignment.center,
+      alignment: alignment,
       padding: const EdgeInsets.symmetric(horizontal: AppGrid.grid16),
       child: AppText(value, style: AppTypography.body.bold, color: AppColors.textPrimary),
     );

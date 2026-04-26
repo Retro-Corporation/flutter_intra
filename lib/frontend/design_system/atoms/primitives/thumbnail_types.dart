@@ -1,5 +1,8 @@
 /// Size variants for [Thumbnail].
 enum ThumbnailSize {
+  /// 60 × 60px placeholder box.
+  size60,
+
   /// 76 × 76px placeholder box.
   size76,
 

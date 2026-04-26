@@ -15,6 +15,7 @@ class Thumbnail extends StatelessWidget {
   const Thumbnail({super.key, required this.size});
 
   double get _dimension => switch (size) {
+    ThumbnailSize.size60  => AppGrid.grid60,
     ThumbnailSize.size76  => AppGrid.grid76,
     ThumbnailSize.size100 => AppGrid.grid100,
     ThumbnailSize.size128 => AppGrid.grid128,
