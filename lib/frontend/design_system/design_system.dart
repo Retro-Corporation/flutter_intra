@@ -177,6 +177,7 @@ export 'templates/exercise_detail/exercise_detail_template.dart';
 export 'templates/avatar_message_template.dart';
 export 'templates/progress_step_template.dart';
 export 'templates/settings/athlete_settings_template.dart';
+export 'templates/settings/practitioner_settings_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
