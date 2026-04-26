@@ -299,6 +299,7 @@ class _CatalogHomeState extends State<CatalogHome> {
         'Labeled Toggle',
         'Search Bar',
         'Dropdown',
+        'Thumbnail Option Row',
         'App Nav Bar',
         'Sub Tab Bar',
         'Exercise Card Skeleton',
@@ -3255,11 +3256,19 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       const _DropdownCatalogDemo(),
 
+      _sectionDivider(),
+
+      // ── Thumbnail Option Row ──
+      _subSectionHeader(subs[13]),
+      const SizedBox(height: AppGrid.grid12),
+
+      const _ThumbnailOptionRowDemo(),
+
       // ── NAVIGATION ──
       _folderGroupHeader('NAVIGATION'),
 
       // ── Practitioner Nav Bar ──
-      _subSectionHeader(subs[13]),
+      _subSectionHeader(subs[14]),
       const SizedBox(height: AppGrid.grid12),
 
       // Practitioner tabs
@@ -3312,7 +3321,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       // ── Sub Tab Bar ──
-      _subSectionHeader(subs[14]),
+      _subSectionHeader(subs[15]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('all enabled', style: AppTypography.overline.semiBold),
@@ -3341,7 +3350,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       ),
 
       // ── Exercise Card Skeleton ──
-      _subSectionHeader(subs[15]),
+      _subSectionHeader(subs[16]),
       const SizedBox(height: AppGrid.grid12),
       AppText('SINGLE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3377,7 +3386,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Card Read ──
-      _subSectionHeader(subs[16]),
+      _subSectionHeader(subs[17]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('PLAIN', style: AppTypography.overline.semiBold),
@@ -3538,7 +3547,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Empty Exercise List ──
-      _subSectionHeader(subs[17]),
+      _subSectionHeader(subs[18]),
       const SizedBox(height: AppGrid.grid12),
 
       SizedBox(
@@ -3550,7 +3559,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Flow Carousel ──
-      _subSectionHeader(subs[18]),
+      _subSectionHeader(subs[19]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('3 ITEMS', style: AppTypography.overline.semiBold),
@@ -3592,7 +3601,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Exercise Thumbnail Card ──
-      _subSectionHeader(subs[19]),
+      _subSectionHeader(subs[20]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('SMALL (EXERCISES & SETS)', style: AppTypography.overline.semiBold),
@@ -3647,7 +3656,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Icon Section Header ──
-      _subSectionHeader(subs[20]),
+      _subSectionHeader(subs[21]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -3676,7 +3685,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── AppOtpField ──
-      _subSectionHeader(subs[21]),
+      _subSectionHeader(subs[22]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -3691,7 +3700,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Practitioner Header ──
-      _subSectionHeader(subs[22]),
+      _subSectionHeader(subs[23]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('DEFAULT', style: AppTypography.overline.semiBold),
@@ -3705,7 +3714,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Phone Fields ──
-      _subSectionHeader(subs[23]),
+      _subSectionHeader(subs[24]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('STATES', style: AppTypography.overline.semiBold),
@@ -3790,7 +3799,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Back And Progress Bar ──
       _folderGroupHeader('NAVIGATION'),
-      _subSectionHeader(subs[24]),
+      _subSectionHeader(subs[25]),
       const SizedBox(height: AppGrid.grid12),
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3804,7 +3813,7 @@ class _CatalogHomeState extends State<CatalogHome> {
 
       // ── Heading With Subtitle ──
       _folderGroupHeader('TEXT'),
-      _subSectionHeader(subs[25]),
+      _subSectionHeader(subs[26]),
       const SizedBox(height: AppGrid.grid12),
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -3821,7 +3830,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Confirmation Dialog ──
-      _subSectionHeader(subs[26]),
+      _subSectionHeader(subs[27]),
       const SizedBox(height: AppGrid.grid12),
 
       AppText('VARIANTS', style: AppTypography.overline.semiBold),
@@ -3855,7 +3864,7 @@ class _CatalogHomeState extends State<CatalogHome> {
       _sectionDivider(),
 
       // ── Info Carousel ──
-      _subSectionHeader(subs[27]),
+      _subSectionHeader(subs[28]),
       const SizedBox(height: AppGrid.grid12),
       AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
       const SizedBox(height: AppGrid.grid8),
@@ -5111,6 +5120,65 @@ class _DropdownCatalogDemo extends StatelessWidget {
   }
 }
 
+// ── Thumbnail Option Row demo ──
+
+class _ThumbnailOptionRowDemo extends StatefulWidget {
+  const _ThumbnailOptionRowDemo();
+
+  @override
+  State<_ThumbnailOptionRowDemo> createState() =>
+      _ThumbnailOptionRowDemoState();
+}
+
+class _ThumbnailOptionRowDemoState extends State<_ThumbnailOptionRowDemo> {
+  String? _selectedId;
+
+  static const _options = [
+    (id: 'dumbbells', label: 'Dumbbells'),
+    (id: 'barbell', label: 'Barbell'),
+    (id: 'bands', label: 'Resistance Bands'),
+    (id: 'bodyweight', label: 'Bodyweight'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppText('INTERACTIVE', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          for (final opt in _options) ...[
+            ThumbnailOptionRow(
+              label: opt.label,
+              isSelected: _selectedId == opt.id,
+              onTap: () => setState(() => _selectedId = opt.id),
+            ),
+            const SizedBox(height: AppGrid.grid8),
+          ],
+          const SizedBox(height: AppGrid.grid16),
+          AppText('UNSELECTED', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          ThumbnailOptionRow(
+            label: 'Cable Machine',
+            isSelected: false,
+            onTap: () {},
+          ),
+          const SizedBox(height: AppGrid.grid8),
+          AppText('SELECTED', style: AppTypography.overline.semiBold),
+          const SizedBox(height: AppGrid.grid8),
+          ThumbnailOptionRow(
+            label: 'Cable Machine',
+            isSelected: true,
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Sub Tab Bar demo ──
 
 class _SubTabBarDemo extends StatefulWidget {
@@ -5303,7 +5371,8 @@ class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
             title: 'Related equipment',
             options: _options,
             selectedId: _simpleSelectedId,
-            onSelected: (o) => setState(() => _simpleSelectedId = o.id),
+            onSelected: (o) => setState(() =>
+                _simpleSelectedId = _simpleSelectedId == o.id ? null : o.id),
           ),
 
           const SizedBox(height: AppGrid.grid16),
@@ -5321,6 +5390,7 @@ class _EquipmentPickerDemoState extends State<_EquipmentPickerDemo> {
             selectedId: _filtersSelectedId,
             onCategoryChanged: (cat) => setState(() => _selectedCategoryId = cat?.id),
             onSelected: (o) => setState(() => _filtersSelectedId = o.id),
+            onDeselected: () => setState(() => _filtersSelectedId = null),
             onAddNew: () {},
           ),
 
@@ -5595,7 +5665,7 @@ class _InfoCarouselDemoState extends State<_InfoCarouselDemo> {
         // CATALOG ONLY — tap to swap message sets and observe the timer reset.
         AppButton(
           label: _useSetA ? 'Switch to Set B' : 'Switch to Set A',
-          variant: ButtonVariant.outline,
+          type: ButtonType.outline,
           size: ButtonSize.sm,
           onPressed: () => setState(() => _useSetA = !_useSetA),
         ),

@@ -137,6 +137,7 @@ export 'molecules/controls/search_bar.dart';
 export 'molecules/controls/search_bar_types.dart';
 export 'molecules/controls/app_dropdown.dart';
 export 'molecules/controls/app_dropdown_types.dart';
+export 'molecules/controls/thumbnail_option_row.dart';
 export 'atoms/controls/filter_button.dart';
 export 'atoms/controls/filter_button_types.dart';
 
@@ -156,6 +157,8 @@ export 'organisms/client_list/client_list_organism.dart';
 export 'organisms/client_list/client_list_types.dart';
 
 // Templates
+export 'templates/create_exercise/create_exercise_details_template_types.dart';
+export 'templates/create_exercise/create_exercise_details_template.dart';
 export 'templates/exercise_plan_template.dart';
 export 'templates/add_exercise/add_exercise_template.dart';
 export 'templates/add_exercise/add_exercise_template_types.dart';
@@ -173,6 +176,7 @@ export 'templates/exercise_detail/exercise_detail_template_types.dart';
 export 'templates/exercise_detail/exercise_detail_template.dart';
 export 'templates/avatar_message_template.dart';
 export 'templates/progress_step_template.dart';
+export 'templates/settings/athlete_settings_template.dart';
 
 // Organisms — client account
 export 'organisms/client_account/frequency_picker_panel.dart';
