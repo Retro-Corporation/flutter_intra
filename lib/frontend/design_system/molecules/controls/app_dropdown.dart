@@ -6,6 +6,7 @@ import '../../foundation/color/color_utils.dart';
 import '../../foundation/color/colors.dart';
 import '../../foundation/space/grid.dart';
 import '../../foundation/space/radius.dart';
+import '../../foundation/space/stroke.dart';
 import '../../foundation/type/typography.dart';
 import '../../icons/icon_sizes.dart';
 import 'app_dropdown_types.dart';
@@ -69,7 +70,9 @@ class AppDropdown extends StatelessWidget {
     this.iconPath,
     this.isOpen = false,
   })  : assert(
-          style == AppDropdownStyle.outline || color != null,
+          style == AppDropdownStyle.outline ||
+          style == AppDropdownStyle.flat   ||
+          color != null,
           'color is required when style is filled',
         ),
         assert(
@@ -84,12 +87,14 @@ class AppDropdown extends StatelessWidget {
   Color get _backgroundColor => switch (style) {
         AppDropdownStyle.outline => AppColors.surface,
         AppDropdownStyle.filled => color!,
+        AppDropdownStyle.flat => AppColors.surface,
       };
 
   Color get _borderColor => switch (style) {
         AppDropdownStyle.outline =>
           isOpen ? AppColors.brand : AppColors.surfaceBorder,
         AppDropdownStyle.filled => resolve700(color!),
+        AppDropdownStyle.flat => AppColors.surfaceBorder,
       };
 
   Color get _textColor {
@@ -142,9 +147,35 @@ class AppDropdown extends StatelessWidget {
   PressableStyle get _pressStyle => switch (style) {
         AppDropdownStyle.outline => PressableStyle.outline,
         AppDropdownStyle.filled  => PressableStyle.filled,
+        AppDropdownStyle.flat    => PressableStyle.outline,
       };
 
   Widget _buildBox() {
+    if (style == AppDropdownStyle.flat) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: AppGrid.grid48,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            border: Border.all(
+              color: AppColors.surfaceBorder,
+              width: AppStroke.xs,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: AppGrid.grid16),
+          alignment: Alignment.centerLeft,
+          child: AppText(
+            value ?? placeholder,
+            style: AppTypography.body.bold,
+            color: value != null ? AppColors.textPrimary : AppColors.textSecondary,
+          ),
+        ),
+      );
+    }
+
     return PressableSurface(
       onTap: onTap,
       style: _pressStyle,
@@ -157,7 +188,7 @@ class AppDropdown extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppGrid.grid16),
           child: Align(
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft,
             child: AppText(
               value ?? placeholder,
               style: AppTypography.body.bold,

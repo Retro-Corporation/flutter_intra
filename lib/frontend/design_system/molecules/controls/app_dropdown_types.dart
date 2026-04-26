@@ -2,7 +2,7 @@
 ///
 /// - [outline] — bordered box with surface background.
 /// - [filled] — solid color background; pass [AppDropdown.color] to set the fill.
-enum AppDropdownStyle { outline, filled }
+enum AppDropdownStyle { outline, filled, flat }
 
 /// Layout variant for [AppDropdown].
 ///

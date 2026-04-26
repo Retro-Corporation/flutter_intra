@@ -28,7 +28,7 @@ class LabeledToggle extends StatelessWidget {
         Expanded(
           child: AppText(
             label,
-            style: AppTypography.body.regular,
+            style: AppTypography.body.bold,
             color: AppColors.textPrimary,
           ),
         ),
