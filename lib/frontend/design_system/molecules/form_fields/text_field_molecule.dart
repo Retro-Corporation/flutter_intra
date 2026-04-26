@@ -39,6 +39,10 @@ class AppTextFieldMolecule extends StatefulWidget {
   /// Whether this field is required — shows a red asterisk next to the label.
   final bool isRequired;
 
+  /// Whether to show the clear (✕) button when the field has text.
+  /// Defaults to true to preserve existing behaviour.
+  final bool showClearButton;
+
   const AppTextFieldMolecule({
     super.key,
     required this.controller,
@@ -55,6 +59,7 @@ class AppTextFieldMolecule extends StatefulWidget {
     this.variant = InputVariant.flat,
     this.validator,
     this.isRequired = false,
+    this.showClearButton = true,
   });
 
   @override
@@ -100,7 +105,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     final isDisabled = effectiveState == FieldState.disabled;
 
     Widget? suffix;
-    if (widget.controller.text.isNotEmpty) {
+    if (widget.showClearButton && widget.controller.text.isNotEmpty) {
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
@@ -144,7 +149,7 @@ class _AppTextFieldMoleculeState extends State<AppTextFieldMolecule>
     final isDisabled = effectiveState == FieldState.disabled;
 
     Widget? suffix;
-    if (widget.controller.text.isNotEmpty) {
+    if (widget.showClearButton && widget.controller.text.isNotEmpty) {
       suffix = GestureDetector(
         onTap: _clear,
         child: Padding(
