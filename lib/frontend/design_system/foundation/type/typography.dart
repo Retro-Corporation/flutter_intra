@@ -45,6 +45,7 @@ class TypeStyle {
         letterSpacing: letterSpacing,
         height: height,
         color: color,
+        decoration: TextDecoration.none,
       );
 }
 
